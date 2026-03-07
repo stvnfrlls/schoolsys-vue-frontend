@@ -31,6 +31,11 @@
             Subjects
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/admin/students" class="nav-link text-white">
+            Students
+          </RouterLink>
+        </li>
       </ul>
 
       <div class="mt-auto pt-3 border-top border-secondary">
