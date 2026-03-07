@@ -26,6 +26,11 @@
             Grades & Sections
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/admin/subjects" class="nav-link text-white">
+            Subjects
+          </RouterLink>
+        </li>
       </ul>
 
       <div class="mt-auto pt-3 border-top border-secondary">
