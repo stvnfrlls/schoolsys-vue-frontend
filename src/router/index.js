@@ -17,7 +17,11 @@ const routes = [
                 path: 'dashboard',
                 name: 'AdminDashboard',
                 component: () => import('@/pages/admin/DashboardPage.vue'),
-            }
+            }, {
+                path: 'users',
+                name: 'Users',
+                component: () => import('@/pages/admin/UsersPage.vue'),
+            },
         ]
     },
     {
