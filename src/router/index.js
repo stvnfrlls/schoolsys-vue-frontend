@@ -21,6 +21,10 @@ const routes = [
                 path: 'users',
                 name: 'Users',
                 component: () => import('@/pages/admin/UsersPage.vue'),
+            }, {
+                path: 'grades-sections',
+                name: 'Grades & Sections',
+                component: () => import('@/pages/admin/GradeSectionPage.vue'),
             },
         ]
     },
