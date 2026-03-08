@@ -37,6 +37,10 @@ const routes = [
                 path: 'enrollments',
                 name: 'Enrollments',
                 component: () => import('@/pages/admin/EnrollmentsPage.vue'),
+            }, {
+                path: 'scheduling',
+                name: 'Scheduling',
+                component: () => import('@/pages/admin/SchedulingPage.vue'),
             },
         ]
     },
