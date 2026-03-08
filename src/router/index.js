@@ -33,6 +33,10 @@ const routes = [
                 path: 'students',
                 name: 'Students',
                 component: () => import('@/pages/admin/StudentsPage.vue'),
+            }, {
+                path: 'enrollments',
+                name: 'Enrollments',
+                component: () => import('@/pages/admin/EnrollmentsPage.vue'),
             },
         ]
     },
