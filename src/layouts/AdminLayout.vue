@@ -41,6 +41,11 @@
             Enrollments
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/admin/scheduling" class="nav-link text-white">
+            Scheduling
+          </RouterLink>
+        </li>
       </ul>
 
       <div class="mt-auto pt-3 border-top border-secondary">
