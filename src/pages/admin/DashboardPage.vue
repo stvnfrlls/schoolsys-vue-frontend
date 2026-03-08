@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Stat cards -->
     <div class="row g-3 mb-4">
       <div
         class="col-sm-6 col-lg-3"
@@ -8,17 +9,29 @@
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <div class="text-muted small mb-1">{{ card.label }}</div>
-            <div class="fs-4 fw-bold">{{ card.value }}</div>
+            <div class="fs-4 fw-bold">
+              <span v-if="loading">—</span>
+              <span v-else>{{ card.value }}</span>
+            </div>
+            <div v-if="card.sub" class="text-muted small mt-1">
+              {{ card.sub }}
+            </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Error -->
+    <div v-if="error" class="alert alert-warning small py-2">
+      {{ error }}
+    </div>
+
+    <!-- Welcome -->
     <div class="card border-0 shadow-sm">
       <div class="card-body">
         <h6 class="fw-semibold mb-1">Welcome back, {{ auth.user?.name }}</h6>
         <p class="text-muted small mb-0">
-          This is your admin dashboard. More features coming soon.
+          {{ currentSchoolYear() }} · Admin Dashboard
         </p>
       </div>
     </div>
@@ -26,14 +39,76 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { studentService } from "@/services/student";
+import { sectionService } from "@/services/grade";
+import { subjectService } from "@/services/subject";
+import { userService } from "@/services/user";
 
 const auth = useAuthStore();
+const loading = ref(true);
+const error = ref("");
 
-const statCards = [
-  { label: "Total Students", value: "—" },
-  { label: "Total Teachers", value: "—" },
-  { label: "Sections", value: "—" },
-  { label: "Subjects", value: "—" },
-];
+const totalStudents = ref(null);
+const totalTeachers = ref(null);
+const totalSections = ref(null);
+const totalSubjects = ref(null);
+
+const statCards = computed(() => [
+  { label: "Total Students", value: totalStudents.value ?? "—" },
+  {
+    label: "Total Teachers",
+    value: totalTeachers.value ?? "—",
+    sub: "Faculty role",
+  },
+  { label: "Sections", value: totalSections.value ?? "—" },
+  { label: "Subjects", value: totalSubjects.value ?? "—" },
+]);
+
+onMounted(async () => {
+  try {
+    const [studentsRes, usersRes, sectionsRes, subjectsRes] =
+      await Promise.allSettled([
+        studentService.getAll(1),
+        userService.getAll(1), // we fetch page 1 and use total for students/subjects
+        sectionService.getAll(),
+        subjectService.getAll(1),
+      ]);
+
+    if (studentsRes.status === "fulfilled") {
+      totalStudents.value = studentsRes.value.data.total;
+    }
+
+    if (usersRes.status === "fulfilled") {
+      // No dedicated /teachers endpoint — filter faculty from users
+      // userService.getAll returns paginated; use per_page=200 via direct call
+      const users = usersRes.value.data?.data ?? [];
+      totalTeachers.value = users.filter((u) =>
+        u.roles?.some(
+          (r) => (typeof r === "string" ? r : r.name) === "faculty",
+        ),
+      ).length;
+    }
+
+    if (sectionsRes.status === "fulfilled") {
+      totalSections.value = sectionsRes.value.data.length;
+    }
+
+    if (subjectsRes.status === "fulfilled") {
+      totalSubjects.value = subjectsRes.value.data.total;
+    }
+  } catch {
+    error.value = "Some stats could not be loaded.";
+  } finally {
+    loading.value = false;
+  }
+});
+
+function currentSchoolYear() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const startYear = now.getMonth() >= 7 ? year : year - 1;
+  return `${startYear}-${startYear + 1}`;
+}
 </script>
