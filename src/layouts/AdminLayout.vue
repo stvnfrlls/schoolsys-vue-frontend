@@ -36,6 +36,11 @@
             Students
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/admin/enrollments" class="nav-link text-white">
+            Enrollments
+          </RouterLink>
+        </li>
       </ul>
 
       <div class="mt-auto pt-3 border-top border-secondary">
