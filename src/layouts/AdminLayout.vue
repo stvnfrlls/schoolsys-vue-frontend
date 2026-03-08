@@ -51,6 +51,11 @@
             Grading
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/admin/attendance" class="nav-link text-white">
+            Attendance
+          </RouterLink>
+        </li>
       </ul>
 
       <div class="mt-auto pt-3 border-top border-secondary">

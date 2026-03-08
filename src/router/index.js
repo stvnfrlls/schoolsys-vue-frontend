@@ -45,6 +45,10 @@ const routes = [
                 path: 'grading',
                 name: 'Grading',
                 component: () => import('@/pages/admin/GradingPage.vue'),
+            }, {
+                path: 'attendance',
+                name: 'Attendance',
+                component: () => import('@/pages/admin/AttendancePage.vue'),
             },
         ]
     },
