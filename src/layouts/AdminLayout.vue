@@ -46,6 +46,11 @@
             Scheduling
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/admin/grading" class="nav-link text-white">
+            Grading
+          </RouterLink>
+        </li>
       </ul>
 
       <div class="mt-auto pt-3 border-top border-secondary">
