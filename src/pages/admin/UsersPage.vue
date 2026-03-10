@@ -114,7 +114,8 @@
               {{ formError }}
             </div>
 
-            <div class="mb-3">
+            <!-- Account Fields -->
+            <div class="mb-3" v-if="!isProfileRole">
               <label class="form-label">Name</label>
               <input v-model="form.name" type="text" class="form-control" />
             </div>
@@ -138,6 +139,85 @@
                 </option>
               </select>
             </div>
+
+            <!-- Profile Fields: shown only for student or faculty -->
+            <template v-if="isProfileRole">
+              <hr class="my-3" />
+              <p class="small text-muted fw-semibold mb-3 text-uppercase">
+                {{ selectedRoleName }} Profile
+              </p>
+
+              <div class="row g-2 mb-3">
+                <div class="col">
+                  <label class="form-label"
+                    >First Name <span class="text-danger">*</span></label
+                  >
+                  <input
+                    v-model="form.first_name"
+                    type="text"
+                    class="form-control" />
+                </div>
+                <div class="col">
+                  <label class="form-label"
+                    >Last Name <span class="text-danger">*</span></label
+                  >
+                  <input
+                    v-model="form.last_name"
+                    type="text"
+                    class="form-control" />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col">
+                  <label class="form-label">Middle Name</label>
+                  <input
+                    v-model="form.middle_name"
+                    type="text"
+                    class="form-control" />
+                </div>
+                <div class="col">
+                  <label class="form-label">Suffix</label>
+                  <input
+                    v-model="form.suffix"
+                    type="text"
+                    class="form-control"
+                    placeholder="Jr., Sr., III…" />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col">
+                  <label class="form-label"
+                    >Date of Birth <span class="text-danger">*</span></label
+                  >
+                  <input
+                    v-model="form.date_of_birth"
+                    type="date"
+                    class="form-control" />
+                </div>
+                <div class="col">
+                  <label class="form-label"
+                    >Gender <span class="text-danger">*</span></label
+                  >
+                  <select v-model="form.gender" class="form-select">
+                    <option disabled value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Faculty only -->
+              <div class="mb-3" v-if="selectedRoleName === 'faculty'">
+                <label class="form-label">Specialization</label>
+                <input
+                  v-model="form.specialization"
+                  type="text"
+                  class="form-control" />
+              </div>
+            </template>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeModal">
@@ -184,7 +264,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { Modal } from "bootstrap";
 import { userService, roleService } from "@/services/user";
 
@@ -198,8 +278,38 @@ const isEditing = ref(false);
 const selectedUser = ref(null);
 const pagination = ref({});
 
-const form = ref({ name: "", email: "", password: "", role_id: "" });
+// ── Form ──────────────────────────────────────────────────────────────────────
+const emptyForm = () => ({
+  name: "",
+  email: "",
+  password: "",
+  role_id: "",
+  // profile fields
+  first_name: "",
+  last_name: "",
+  middle_name: "",
+  suffix: "",
+  date_of_birth: "",
+  gender: "",
+  specialization: "",
+});
 
+const form = ref(emptyForm());
+
+// ── Computed: resolve role name from selected role_id ─────────────────────────
+const selectedRoleName = computed(() => {
+  const found = roles.value.find((r) => r.id === form.value.role_id);
+  return found?.name ?? "";
+});
+
+// Roles that require the extra profile section
+const PROFILE_ROLES = ["student", "faculty"];
+
+const isProfileRole = computed(() =>
+  PROFILE_ROLES.includes(selectedRoleName.value),
+);
+
+// ── Bootstrap modals ──────────────────────────────────────────────────────────
 const modalEl = ref(null);
 const deleteModalEl = ref(null);
 let modalInstance = null;
@@ -212,6 +322,7 @@ onMounted(async () => {
   await fetchRoles();
 });
 
+// ── Data fetching ─────────────────────────────────────────────────────────────
 async function fetchUsers(page = 1) {
   loading.value = true;
   error.value = "";
@@ -237,9 +348,10 @@ async function fetchRoles() {
   roles.value = res.data;
 }
 
+// ── Modal helpers ─────────────────────────────────────────────────────────────
 function openCreate() {
   isEditing.value = false;
-  form.value = { name: "", email: "", password: "", role_id: "" };
+  form.value = emptyForm();
   formError.value = "";
   modalInstance.show();
 }
@@ -248,9 +360,9 @@ function openEdit(user) {
   isEditing.value = true;
   selectedUser.value = user;
   form.value = {
+    ...emptyForm(),
     name: user.name,
     email: user.email,
-    password: "",
     role_id: user.roles[0]?.id ?? "",
   };
   formError.value = "";
@@ -270,20 +382,35 @@ function closeDeleteModal() {
   deleteModalInstance.hide();
 }
 
+// ── Save ──────────────────────────────────────────────────────────────────────
 async function saveUser() {
+  if (saving.value) return;
   formError.value = "";
-  if (
-    !form.value.name ||
-    !form.value.email ||
-    (!isEditing.value && !form.value.password)
-  ) {
+
+  // Base validation
+  if (!form.value.email || (!isEditing.value && !form.value.password)) {
     formError.value = "Please fill in all required fields.";
     return;
   }
 
+  // Profile fields validation for student/faculty (create only)
+  if (!isEditing.value && isProfileRole.value) {
+    if (
+      !form.value.first_name ||
+      !form.value.last_name ||
+      !form.value.date_of_birth ||
+      !form.value.gender
+    ) {
+      formError.value = "Please fill in all required profile fields.";
+      return;
+    }
+  }
+
   saving.value = true;
+
   try {
     if (isEditing.value) {
+      // Edit: only update account fields (backend store() is for create)
       await userService.update(selectedUser.value.id, {
         name: form.value.name,
         email: form.value.email,
@@ -294,15 +421,30 @@ async function saveUser() {
         ]);
       }
     } else {
-      const res = await userService.create({
+      // Create: single request — send role name + all profile fields together
+      const payload = {
         name: form.value.name,
         email: form.value.email,
         password: form.value.password,
-      });
-      if (form.value.role_id) {
-        await userService.syncRoles(res.data.id, [form.value.role_id]);
+        role: selectedRoleName.value || undefined,
+      };
+
+      if (isProfileRole.value) {
+        payload.first_name = form.value.first_name;
+        payload.last_name = form.value.last_name;
+        payload.middle_name = form.value.middle_name || undefined;
+        payload.suffix = form.value.suffix || undefined;
+        payload.date_of_birth = form.value.date_of_birth;
+        payload.gender = form.value.gender;
+
+        if (selectedRoleName.value === "faculty") {
+          payload.specialization = form.value.specialization || undefined;
+        }
       }
+
+      await userService.create(payload);
     }
+
     closeModal();
     await fetchUsers(pagination.value.current_page);
   } catch (err) {
@@ -313,6 +455,7 @@ async function saveUser() {
   }
 }
 
+// ── Toggle active / Delete ────────────────────────────────────────────────────
 async function toggleActive(user) {
   try {
     if (user.is_active) {
