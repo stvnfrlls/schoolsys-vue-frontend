@@ -41,6 +41,11 @@ const routes = [
                 component: () => import('@/pages/admin/StudentsPage.vue'),
             },
             {
+                path: 'faculty',
+                name: 'Faculty',
+                component: () => import('@/pages/admin/TeachersPage.vue'),
+            },
+            {
                 path: 'enrollments',
                 name: 'Enrollments',
                 component: () => import('@/pages/admin/EnrollmentsPage.vue'),

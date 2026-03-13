@@ -1,6 +1,18 @@
 import api from './api'
 
 export const teacherService = {
+    getAll(page = 1) {
+        return api.get(`/teachers?page=${page}`)
+    },
+
+    getOne(id) {
+        return api.get(`/teachers/${id}`)
+    },
+
+    update(id, data) {
+        return api.put(`/teachers/${id}`, data)
+    },
+
     // GET /teacher/schedule
     mySchedule(filters = {}) {
         const params = new URLSearchParams()

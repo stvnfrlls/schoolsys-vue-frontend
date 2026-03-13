@@ -53,92 +53,224 @@
       </div>
     </div>
 
-    <!-- Table -->
-    <div class="card border-0 shadow-sm">
-      <div class="card-body p-0">
-        <div v-if="loading" class="text-center py-5 text-muted">Loading...</div>
-        <div v-else-if="error" class="text-center py-5 text-danger">
-          {{ error }}
+    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
+    <div v-if="loading">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <table class="table table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 40px">
+                  <div
+                    class="skeleton"
+                    style="width: 14px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 28px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 36px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 52px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 52px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 52px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 68px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 56px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 52px; height: 14px; border-radius: 3px"></div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="r in 8" :key="r">
+                <td>
+                  <div
+                    class="skeleton"
+                    style="width: 22px; height: 13px; border-radius: 3px"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    :style="`width:${50 + ((r * 7) % 26)}px;height:20px;border-radius:4px`"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    style="
+                      width: 120px;
+                      height: 13px;
+                      border-radius: 3px;
+                    "></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    :style="`width:${70 + ((r * 19) % 50)}px;height:14px;border-radius:3px`"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    :style="`width:${56 + ((r * 11) % 28)}px;height:14px;border-radius:3px`"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    :style="`width:${90 + ((r * 21) % 50)}px;height:14px;border-radius:3px`"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    style="width: 68px; height: 13px; border-radius: 3px"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    style="width: 28px; height: 13px; border-radius: 3px"></div>
+                </td>
+                <td>
+                  <div class="d-flex gap-1">
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 38px;
+                        height: 26px;
+                        border-radius: 4px;
+                      "></div>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 46px;
+                        height: 26px;
+                        border-radius: 4px;
+                      "></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table v-else class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>#</th>
-              <th>Day</th>
-              <th>Time</th>
-              <th>Subject</th>
-              <th>Section</th>
-              <th>Teacher</th>
-              <th>School Year</th>
-              <th>Semester</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="schedule in schedules" :key="schedule.id">
-              <td class="text-muted small">{{ schedule.id }}</td>
-              <td>
-                <span class="badge bg-light text-dark border text-capitalize">
-                  {{ schedule.day }}
-                </span>
-              </td>
-              <td class="text-muted small">
-                {{ formatTime(schedule.start_time) }} –
-                {{ formatTime(schedule.end_time) }}
-              </td>
-              <td>{{ schedule.subject?.name ?? "—" }}</td>
-              <td>{{ schedule.section?.name ?? "—" }}</td>
-              <td>{{ schedule.teacher?.name ?? "—" }}</td>
-              <td class="text-muted small">{{ schedule.school_year }}</td>
-              <td class="text-capitalize text-muted small">
-                {{ schedule.semester }}
-              </td>
-              <td>
-                <button
-                  class="btn btn-sm btn-outline-primary me-1"
-                  @click="openEdit(schedule)">
-                  Edit
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-danger"
-                  @click="confirmDelete(schedule)">
-                  Delete
-                </button>
-              </td>
-            </tr>
-            <tr v-if="schedules.length === 0">
-              <td colspan="9" class="text-center text-muted py-4">
-                No schedules found.
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div
-      class="d-flex justify-content-between align-items-center mt-3 small text-muted"
-      v-if="pagination.last_page > 1">
-      <span>
-        Showing {{ pagination.from }}–{{ pagination.to }} of
-        {{ pagination.total }}
-      </span>
-      <div class="d-flex gap-1">
-        <button
-          class="btn btn-sm btn-outline-secondary"
-          :disabled="pagination.current_page === 1"
-          @click="fetchSchedules(pagination.current_page - 1)">
-          Prev
-        </button>
-        <button
-          class="btn btn-sm btn-outline-secondary"
-          :disabled="pagination.current_page === pagination.last_page"
-          @click="fetchSchedules(pagination.current_page + 1)">
-          Next
-        </button>
+    <!-- ── Table ─────────────────────────────────────────────────────────── -->
+    <div v-else>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div v-if="error" class="text-center py-5 text-danger">
+            {{ error }}
+          </div>
+          <table v-else class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Subject</th>
+                <th>Section</th>
+                <th>Teacher</th>
+                <th>School Year</th>
+                <th>Semester</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="schedules.length === 0">
+                <td colspan="9" class="text-center text-muted py-5">
+                  No schedules found.
+                </td>
+              </tr>
+              <tr v-for="schedule in schedules" :key="schedule.id">
+                <td class="text-muted small">{{ schedule.id }}</td>
+                <td>
+                  <span class="badge bg-light text-dark border text-capitalize">
+                    {{ schedule.day }}
+                  </span>
+                </td>
+                <td class="text-muted small">
+                  {{ formatTime(schedule.start_time) }} –
+                  {{ formatTime(schedule.end_time) }}
+                </td>
+                <td>{{ schedule.subject?.name ?? "—" }}</td>
+                <td>{{ schedule.section?.name ?? "—" }}</td>
+                <td>
+                  {{
+                    schedule.teacher ? teacherFullName(schedule.teacher) : "—"
+                  }}
+                </td>
+                <td class="text-muted small">{{ schedule.school_year }}</td>
+                <td class="text-capitalize text-muted small">
+                  {{ schedule.semester }}
+                </td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-outline-primary me-1"
+                    @click="openEdit(schedule)">
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    @click="confirmDelete(schedule)">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+        v-if="pagination.last_page > 1">
+        <span
+          >Showing {{ pagination.from }}–{{ pagination.to }} of
+          {{ pagination.total }}</span
+        >
+        <div class="d-flex gap-1">
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            :disabled="pagination.current_page === 1"
+            @click="fetchSchedules(pagination.current_page - 1)">
+            Prev
+          </button>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            :disabled="pagination.current_page === pagination.last_page"
+            @click="fetchSchedules(pagination.current_page + 1)">
+            Next
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- ── Modals: outside v-if/v-else so they are never destroyed ───────── -->
 
     <!-- Create/Edit Modal -->
     <div class="modal fade" id="scheduleModal" tabindex="-1" ref="modalEl">
@@ -174,9 +306,9 @@
             <div class="mb-3">
               <label class="form-label">
                 Subject
-                <span v-if="!form.section_id" class="text-muted small">
-                  (select a section first)
-                </span>
+                <span v-if="!form.section_id" class="text-muted small"
+                  >(select a section first)</span
+                >
               </label>
               <select
                 v-model="form.subject_id"
@@ -184,8 +316,7 @@
                 :disabled="!form.section_id">
                 <option disabled value="">Select subject</option>
                 <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">
-                  {{ s.name }}
-                  <template v-if="s.code"> ({{ s.code }})</template>
+                  {{ s.name }}<template v-if="s.code"> ({{ s.code }})</template>
                 </option>
               </select>
               <div
@@ -210,13 +341,10 @@
               <label class="form-label">Teacher</label>
               <select v-model="form.teacher_id" class="form-select">
                 <option disabled value="">Select teacher</option>
-                <option v-for="t in faculty" :key="t.id" :value="t.id">
-                  {{ t.name }}
+                <option v-for="t in faculty" :key="t.id" :value="t.user_id">
+                  {{ teacherFullName(t) }}
                 </option>
               </select>
-              <div class="form-text text-muted">
-                Only users with the faculty role are shown.
-              </div>
             </div>
 
             <div class="mb-3">
@@ -322,13 +450,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { Modal } from "bootstrap";
 import { scheduleService, facultyService } from "@/services/schedule";
 import { sectionService } from "@/services/grade";
 import { subjectService } from "@/services/subject";
 
-// ── Data ──────────────────────────────────────────────────────────────────
 const schedules = ref([]);
 const sections = ref([]);
 const subjects = ref([]);
@@ -341,13 +468,11 @@ const isEditing = ref(false);
 const selectedSchedule = ref(null);
 const pagination = ref({});
 
-// ── Filters ───────────────────────────────────────────────────────────────
 const filterSectionId = ref("");
 const filterDay = ref("");
 const filterSemester = ref("");
 const filterSchoolYear = ref("");
 
-// ── Form ──────────────────────────────────────────────────────────────────
 const form = ref({
   section_id: "",
   subject_id: "",
@@ -359,13 +484,11 @@ const form = ref({
   semester: "",
 });
 
-// ── Modal refs ────────────────────────────────────────────────────────────
 const modalEl = ref(null);
 const deleteModalEl = ref(null);
 let modalInstance = null;
 let deleteModalInstance = null;
 
-// ── Constants ─────────────────────────────────────────────────────────────
 const days = [
   { value: "monday", label: "Monday" },
   { value: "tuesday", label: "Tuesday" },
@@ -374,7 +497,6 @@ const days = [
   { value: "friday", label: "Friday" },
 ];
 
-// ── Lifecycle ─────────────────────────────────────────────────────────────
 onMounted(async () => {
   modalInstance = new Modal(modalEl.value);
   deleteModalInstance = new Modal(deleteModalEl.value);
@@ -386,16 +508,10 @@ onMounted(async () => {
   ]);
 });
 
-// ── Computed ──────────────────────────────────────────────────────────────
-
-// Filter subjects by the selected section's grade level.
-// If no grade levels are assigned to any subjects yet, falls back to all subjects
-// and sets a warning flag so the user knows why unfiltered results are shown.
 const subjectFilterActive = computed(() => {
   if (!form.value.section_id) return false;
   const section = sections.value.find((s) => s.id === form.value.section_id);
   if (!section?.grade_level?.id) return false;
-  // Only activate filter if at least one subject has grade_levels assigned
   return subjects.value.some((sub) => sub.grade_levels?.length > 0);
 });
 
@@ -407,7 +523,6 @@ const filteredSubjects = computed(() => {
   );
 });
 
-// ── Fetch ─────────────────────────────────────────────────────────────────
 async function fetchSchedules(page = 1) {
   loading.value = true;
   error.value = "";
@@ -440,25 +555,15 @@ async function fetchSections() {
 }
 
 async function fetchSubjects() {
-  // Fetch all subjects without pagination for the form select.
-  // subjectService.getAll() is paginated — we pass a high per_page via
-  // a direct call since the service doesn't expose a getAll-unpaginated helper.
   const res = await subjectService.getAll(1);
-  // If the API returns paginated, take .data.data; otherwise fall back to .data
   subjects.value = res.data?.data ?? res.data;
 }
 
 async function fetchFaculty() {
-  // facultyService fetches users with per_page=200 and we filter client-side.
-  // If your API adds ?role=faculty support on GET /users, update schedule.js.
   const res = await facultyService.getAll();
-  const users = res.data?.data ?? res.data;
-  faculty.value = users.filter((u) =>
-    u.roles?.some((r) => r.name === "faculty"),
-  );
+  faculty.value = res.data?.data ?? res.data;
 }
 
-// ── Filter actions ────────────────────────────────────────────────────────
 function applyFilters() {
   fetchSchedules(1);
 }
@@ -471,8 +576,7 @@ function clearFilters() {
   fetchSchedules(1);
 }
 
-// ── Modal actions ─────────────────────────────────────────────────────────
-function openCreate() {
+async function openCreate() {
   isEditing.value = false;
   form.value = {
     section_id: "",
@@ -485,10 +589,11 @@ function openCreate() {
     semester: "",
   };
   formError.value = "";
+  await nextTick();
   modalInstance.show();
 }
 
-function openEdit(schedule) {
+async function openEdit(schedule) {
   isEditing.value = true;
   selectedSchedule.value = schedule;
   form.value = {
@@ -502,6 +607,7 @@ function openEdit(schedule) {
     semester: schedule.semester,
   };
   formError.value = "";
+  await nextTick();
   modalInstance.show();
 }
 
@@ -518,17 +624,12 @@ function closeDeleteModal() {
   deleteModalInstance.hide();
 }
 
-// ── Section change handler ────────────────────────────────────────────────
 function onSectionChange() {
-  // Reset subject when section changes so user picks a relevant one
   form.value.subject_id = "";
 }
 
-// ── Save / Delete ─────────────────────────────────────────────────────────
 async function saveSchedule() {
   formError.value = "";
-
-  // Client-side validation
   const required = [
     "section_id",
     "subject_id",
@@ -544,12 +645,10 @@ async function saveSchedule() {
     formError.value = "Please fill in all required fields.";
     return;
   }
-
   if (form.value.start_time >= form.value.end_time) {
     formError.value = "End time must be after start time.";
     return;
   }
-
   saving.value = true;
   try {
     if (isEditing.value) {
@@ -560,7 +659,6 @@ async function saveSchedule() {
     closeModal();
     await fetchSchedules(pagination.value.current_page || 1);
   } catch (err) {
-    // The API returns conflict errors as 422 with a message — display inline
     formError.value = err.response?.data?.message ?? "Something went wrong.";
   } finally {
     saving.value = false;
@@ -580,11 +678,6 @@ async function deleteSchedule() {
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────
-
-// Returns the current school year as "YYYY-YYYY+1".
-// School year starts in August (month 7, 0-indexed).
-// e.g. March 2026 → "2025-2026", September 2026 → "2026-2027"
 function currentSchoolYear() {
   const now = new Date();
   const year = now.getFullYear();
@@ -592,12 +685,38 @@ function currentSchoolYear() {
   return `${startYear}-${startYear + 1}`;
 }
 
+function teacherFullName(teacher) {
+  return [
+    teacher.first_name,
+    teacher.middle_name,
+    teacher.last_name,
+    teacher.suffix,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
 function formatTime(time) {
   if (!time) return "—";
-  // time is H:i (e.g. "08:00") — convert to 12h format
   const [h, m] = time.split(":").map(Number);
   const period = h >= 12 ? "PM" : "AM";
   const hour = h % 12 || 12;
   return `${hour}:${String(m).padStart(2, "0")} ${period}`;
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+</style>

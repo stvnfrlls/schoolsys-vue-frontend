@@ -44,9 +44,154 @@
 
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-          <div v-if="componentsLoading" class="text-center py-5 text-muted">
-            Loading...
+          <!-- ── Skeleton ── -->
+          <div v-if="componentsLoading">
+            <table class="table table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 40px">
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 40px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 36px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 64px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 44px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in 5" :key="r">
+                  <!-- # -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 22px;
+                        height: 13px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Name e.g. "Written Work" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${80 + ((r * 19) % 50)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- Code badge e.g. "WW" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 34px;
+                        height: 20px;
+                        border-radius: 12px;
+                      "></div>
+                  </td>
+                  <!-- Subject name -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${70 + ((r * 13) % 40)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- Weight e.g. "30%" bold -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 36px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Status badge -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 20px;
+                        border-radius: 12px;
+                      "></div>
+                  </td>
+                  <!-- Actions: Edit + Delete -->
+                  <td>
+                    <div class="d-flex gap-1">
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 38px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 46px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
           <div v-else-if="componentsError" class="text-center py-5 text-danger">
             {{ componentsError }}
           </div>
@@ -180,9 +325,113 @@
       </div>
 
       <div v-else>
-        <div v-if="gradesLoading" class="text-center py-5 text-muted">
-          Loading...
+        <!-- ── Skeleton for grade sheet ── -->
+        <div v-if="gradesLoading">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-bordered mb-0 table-sm">
+                  <thead class="table-light">
+                    <tr>
+                      <!-- Student column -->
+                      <th style="min-width: 140px">
+                        <div
+                          class="skeleton"
+                          style="
+                            width: 56px;
+                            height: 14px;
+                            border-radius: 3px;
+                          "></div>
+                      </th>
+                      <!-- 3 placeholder component columns -->
+                      <th
+                        v-for="c in 3"
+                        :key="c"
+                        class="text-center"
+                        style="min-width: 90px">
+                        <div
+                          class="skeleton mx-auto mb-1"
+                          style="
+                            width: 70px;
+                            height: 14px;
+                            border-radius: 3px;
+                          "></div>
+                        <div
+                          class="skeleton mx-auto"
+                          style="
+                            width: 28px;
+                            height: 11px;
+                            border-radius: 3px;
+                          "></div>
+                      </th>
+                      <!-- Final Grade -->
+                      <th class="text-center">
+                        <div
+                          class="skeleton mx-auto"
+                          style="
+                            width: 72px;
+                            height: 14px;
+                            border-radius: 3px;
+                          "></div>
+                      </th>
+                      <!-- Status -->
+                      <th class="text-center">
+                        <div
+                          class="skeleton mx-auto"
+                          style="
+                            width: 44px;
+                            height: 14px;
+                            border-radius: 3px;
+                          "></div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="r in 8" :key="r">
+                      <!-- Student name -->
+                      <td>
+                        <div
+                          class="skeleton"
+                          :style="`width:${100 + ((r * 21) % 60)}px;height:14px;border-radius:3px`"></div>
+                      </td>
+                      <!-- Score input placeholders -->
+                      <td v-for="c in 3" :key="c" class="text-center">
+                        <div
+                          class="skeleton mx-auto"
+                          style="
+                            width: 64px;
+                            height: 28px;
+                            border-radius: 4px;
+                          "></div>
+                      </td>
+                      <!-- Final grade -->
+                      <td class="text-center">
+                        <div
+                          class="skeleton mx-auto"
+                          style="
+                            width: 32px;
+                            height: 14px;
+                            border-radius: 3px;
+                          "></div>
+                      </td>
+                      <!-- Status badge -->
+                      <td class="text-center">
+                        <div
+                          class="skeleton mx-auto"
+                          style="
+                            width: 52px;
+                            height: 20px;
+                            border-radius: 12px;
+                          "></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div v-else-if="gradesError" class="text-center py-5 text-danger">
           {{ gradesError }}
         </div>
@@ -443,12 +692,12 @@ const gradeFilterSectionId = ref("");
 const gradeFilterSubjectId = ref("");
 const gradeFilterQuarter = ref("");
 
-const enrollments = ref([]); // enrollments for selected section
-const activeComponents = ref([]); // active grading components for selected subject
-const existingGrades = ref([]); // raw grades from API
+const enrollments = ref([]);
+const activeComponents = ref([]);
+const existingGrades = ref([]);
 const gradesLoading = ref(false);
 const gradesError = ref("");
-const savingCell = ref(""); // tracks which cell is saving: "enrollmentId-componentId"
+const savingCell = ref("");
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────
 onMounted(async () => {
@@ -458,25 +707,18 @@ onMounted(async () => {
 });
 
 // ── Computed ──────────────────────────────────────────────────────────────
-
-// Total weight of currently loaded components (for selected subject filter)
 const totalWeight = computed(() => {
   return components.value.reduce((sum, c) => sum + Number(c.weight), 0);
 });
 
-// Build the grade sheet rows: one row per enrolled student
 const gradeSheet = computed(() => {
   return enrollments.value.map((enrollment) => {
-    // Find all grades for this enrollment
     const enrollmentGrades = existingGrades.value.filter(
       (g) => g.enrollment_id === enrollment.id,
     );
-
-    // Final grade: take from any grade record (they're all kept in sync by the API)
     const anyGrade = enrollmentGrades.find((g) => g.final_grade !== null);
     const finalGrade = anyGrade?.final_grade ?? null;
     const isFailing = anyGrade?.is_failing ?? false;
-
     return { enrollment, grades: enrollmentGrades, finalGrade, isFailing };
   });
 });
@@ -518,7 +760,6 @@ async function onGradeSectionChange() {
 
   if (!gradeFilterSectionId.value) return;
 
-  // Load enrollments for this section (all pages — use large per_page)
   const res = await enrollmentService.getAll(1, {});
   const all = res.data?.data ?? res.data;
   enrollments.value = all.filter(
@@ -535,7 +776,6 @@ async function onGradeSubjectChange() {
 
   if (!gradeFilterSubjectId.value) return;
 
-  // Load active components for this subject
   const res = await gradingComponentService.getAll({
     subject_id: gradeFilterSubjectId.value,
     is_active: true,
@@ -554,13 +794,8 @@ async function loadGradeSheet() {
   gradesLoading.value = true;
   gradesError.value = "";
   try {
-    // Load all existing grade records for this subject + quarter
-    // We'll match to enrollments client-side
     const enrollmentIds = enrollments.value.map((e) => e.id);
     const allGrades = [];
-
-    // The API filters by enrollment_id individually — fetch for each enrollment
-    // to avoid missing records. Batch with Promise.all.
     const results = await Promise.all(
       enrollmentIds.map((eid) =>
         studentGradeService.getAll({
@@ -580,8 +815,6 @@ async function loadGradeSheet() {
 }
 
 // ── Grade sheet helpers ───────────────────────────────────────────────────
-
-// Get the current score for a student + component
 function getScore(row, componentId) {
   const grade = row.grades.find((g) => g.grading_component_id === componentId);
   return grade?.score ?? "";
@@ -591,14 +824,13 @@ function cellKey(enrollmentId, componentId) {
   return `${enrollmentId}-${componentId}`;
 }
 
-// Save score on input change
 async function onScoreChange(row, component, event) {
   const rawValue = event.target.value;
   if (rawValue === "" || rawValue === null) return;
 
   const score = parseFloat(rawValue);
   if (isNaN(score) || score < 0 || score > 100) {
-    event.target.value = getScore(row, component.id); // revert
+    event.target.value = getScore(row, component.id);
     return;
   }
 
@@ -613,13 +845,11 @@ async function onScoreChange(row, component, event) {
       quarter: Number(gradeFilterQuarter.value),
       score,
     });
-    // Reload grades for this enrollment to reflect updated final_grade
     const res = await studentGradeService.getAll({
       enrollment_id: row.enrollment.id,
       subject_id: gradeFilterSubjectId.value,
       quarter: gradeFilterQuarter.value,
     });
-    // Replace existing grades for this enrollment
     existingGrades.value = [
       ...existingGrades.value.filter(
         (g) => g.enrollment_id !== row.enrollment.id,
@@ -628,7 +858,7 @@ async function onScoreChange(row, component, event) {
     ];
   } catch (err) {
     alert(err.response?.data?.message ?? "Failed to save grade.");
-    event.target.value = getScore(row, component.id); // revert on error
+    event.target.value = getScore(row, component.id);
   } finally {
     savingCell.value = "";
   }
@@ -731,7 +961,6 @@ function fullName(student) {
     .join(" ");
 }
 
-// Returns the current total weight for a subject (excluding the selected component when editing)
 function weightForSubject(subjectId) {
   const relevant = components.value.filter((c) => {
     if (String(c.subject_id) !== String(subjectId)) return false;
@@ -742,3 +971,20 @@ function weightForSubject(subjectId) {
   return relevant.reduce((sum, c) => sum + Number(c.weight), 0);
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+</style>
