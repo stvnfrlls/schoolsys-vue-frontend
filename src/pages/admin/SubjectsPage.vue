@@ -8,110 +8,265 @@
       </button>
     </div>
 
-    <!-- Table -->
-    <div class="card border-0 shadow-sm">
-      <div class="card-body p-0">
-        <div v-if="loading" class="text-center py-5 text-muted">Loading...</div>
-        <div v-else-if="error" class="text-center py-5 text-danger">
-          {{ error }}
+    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
+    <div v-if="loading">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <table class="table table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 40px">
+                  <div
+                    class="skeleton"
+                    style="width: 14px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 40px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 36px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 74px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 80px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 44px; height: 14px; border-radius: 3px"></div>
+                </th>
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 52px; height: 14px; border-radius: 3px"></div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="r in 7" :key="r">
+                <td>
+                  <div
+                    class="skeleton"
+                    style="width: 22px; height: 13px; border-radius: 3px"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    :style="`width:${80 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    style="
+                      width: 38px;
+                      height: 20px;
+                      border-radius: 12px;
+                    "></div>
+                </td>
+                <td>
+                  <div
+                    v-if="r % 3 !== 0"
+                    class="skeleton"
+                    :style="`width:${100 + ((r * 17) % 80)}px;height:13px;border-radius:3px`"></div>
+                  <div
+                    v-else
+                    class="skeleton"
+                    style="width: 16px; height: 13px; border-radius: 3px"></div>
+                </td>
+                <td>
+                  <div class="d-flex gap-1 flex-wrap">
+                    <div
+                      class="skeleton"
+                      :style="`width:${44 + ((r * 11) % 24)}px;height:20px;border-radius:4px`"></div>
+                    <div
+                      v-if="r % 2 === 0"
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 20px;
+                        border-radius: 4px;
+                      "></div>
+                  </div>
+                </td>
+                <td>
+                  <div
+                    class="skeleton"
+                    style="
+                      width: 52px;
+                      height: 20px;
+                      border-radius: 12px;
+                    "></div>
+                </td>
+                <td>
+                  <div class="d-flex gap-1 flex-wrap">
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 38px;
+                        height: 26px;
+                        border-radius: 4px;
+                      "></div>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 50px;
+                        height: 26px;
+                        border-radius: 4px;
+                      "></div>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 74px;
+                        height: 26px;
+                        border-radius: 4px;
+                      "></div>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 46px;
+                        height: 26px;
+                        border-radius: 4px;
+                      "></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table v-else class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Code</th>
-              <th>Description</th>
-              <th>Grade Levels</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="subject in subjects" :key="subject.id">
-              <td class="text-muted small">{{ subject.id }}</td>
-              <td>{{ subject.name }}</td>
-              <td>
-                <span class="badge bg-secondary">{{ subject.code }}</span>
-              </td>
-              <td class="text-muted small">{{ subject.description ?? "—" }}</td>
-              <td>
-                <span
-                  v-for="gl in subject.grade_levels"
-                  :key="gl.id"
-                  class="badge bg-light text-dark border me-1"
-                  >{{ gl.name }}</span
-                >
-                <span
-                  v-if="subject.grade_levels.length === 0"
-                  class="text-muted small"
-                  >None</span
-                >
-              </td>
-              <td>
-                <span
-                  :class="
-                    subject.is_active ? 'badge bg-success' : 'badge bg-danger'
-                  ">
-                  {{ subject.is_active ? "Active" : "Inactive" }}
-                </span>
-              </td>
-              <td>
-                <button
-                  class="btn btn-sm btn-outline-primary me-1"
-                  @click="openEdit(subject)">
-                  Edit
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-secondary me-1"
-                  @click="openAssign(subject)">
-                  Assign
-                </button>
-                <button
-                  class="btn btn-sm me-1"
-                  :class="
-                    subject.is_active
-                      ? 'btn-outline-warning'
-                      : 'btn-outline-success'
-                  "
-                  @click="toggleActive(subject)">
-                  {{ subject.is_active ? "Deactivate" : "Activate" }}
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-danger"
-                  @click="confirmDelete(subject)">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div
-      class="d-flex justify-content-between align-items-center mt-3 small text-muted"
-      v-if="pagination.last_page > 1">
-      <span
-        >Showing {{ pagination.from }}–{{ pagination.to }} of
-        {{ pagination.total }}</span
-      >
-      <div class="d-flex gap-1">
-        <button
-          class="btn btn-sm btn-outline-secondary"
-          :disabled="pagination.current_page === 1"
-          @click="fetchSubjects(pagination.current_page - 1)">
-          Prev
-        </button>
-        <button
-          class="btn btn-sm btn-outline-secondary"
-          :disabled="pagination.current_page === pagination.last_page"
-          @click="fetchSubjects(pagination.current_page + 1)">
-          Next
-        </button>
+    <!-- ── Table ─────────────────────────────────────────────────────────── -->
+    <div v-else>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div v-if="error" class="text-center py-5 text-danger">
+            {{ error }}
+          </div>
+          <table v-else class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Grade Levels</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="subjects.length === 0">
+                <td colspan="7" class="text-center text-muted py-5">
+                  <div class="mb-2" style="font-size: 1.5rem">📚</div>
+                  No subjects yet.
+                  <a
+                    href="#"
+                    class="ms-1 text-primary text-decoration-none"
+                    @click.prevent="openCreate"
+                    >Add one</a
+                  >.
+                </td>
+              </tr>
+              <tr v-for="subject in subjects" :key="subject.id">
+                <td class="text-muted small">{{ subject.id }}</td>
+                <td>{{ subject.name }}</td>
+                <td>
+                  <span class="badge bg-secondary">{{ subject.code }}</span>
+                </td>
+                <td class="text-muted small">
+                  {{ subject.description ?? "—" }}
+                </td>
+                <td>
+                  <span
+                    v-for="gl in subject.grade_levels"
+                    :key="gl.id"
+                    class="badge bg-light text-dark border me-1"
+                    >{{ gl.name }}</span
+                  >
+                  <span
+                    v-if="subject.grade_levels.length === 0"
+                    class="text-muted small"
+                    >None</span
+                  >
+                </td>
+                <td>
+                  <span
+                    :class="
+                      subject.is_active ? 'badge bg-success' : 'badge bg-danger'
+                    ">
+                    {{ subject.is_active ? "Active" : "Inactive" }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-outline-primary me-1"
+                    @click="openEdit(subject)">
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-secondary me-1"
+                    @click="openAssign(subject)">
+                    Assign
+                  </button>
+                  <button
+                    class="btn btn-sm me-1"
+                    :class="
+                      subject.is_active
+                        ? 'btn-outline-warning'
+                        : 'btn-outline-success'
+                    "
+                    @click="toggleActive(subject)">
+                    {{ subject.is_active ? "Deactivate" : "Activate" }}
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    @click="confirmDelete(subject)">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+        v-if="pagination.last_page > 1">
+        <span
+          >Showing {{ pagination.from }}–{{ pagination.to }} of
+          {{ pagination.total }}</span
+        >
+        <div class="d-flex gap-1">
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            :disabled="pagination.current_page === 1"
+            @click="fetchSubjects(pagination.current_page - 1)">
+            Prev
+          </button>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            :disabled="pagination.current_page === pagination.last_page"
+            @click="fetchSubjects(pagination.current_page + 1)">
+            Next
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- ── Modals: outside v-if/v-else so they are never destroyed ───────── -->
 
     <!-- Create/Edit Modal -->
     <div class="modal fade" id="subjectModal" tabindex="-1" ref="modalEl">
@@ -147,10 +302,9 @@
                 placeholder="e.g. MAT" />
             </div>
             <div class="mb-3">
-              <label class="form-label"
-                >Description
-                <span class="text-muted small">(optional)</span></label
-              >
+              <label class="form-label">
+                Description <span class="text-muted small">(optional)</span>
+              </label>
               <textarea
                 v-model="form.description"
                 class="form-control"
@@ -193,68 +347,74 @@
               {{ assignError }}
             </div>
 
-            <!-- Currently assigned -->
-            <p class="small fw-semibold mb-2">Currently Assigned</p>
-            <div class="mb-3">
-              <div
-                v-if="selectedSubject?.grade_levels.length === 0"
-                class="text-muted small">
-                None assigned yet.
-              </div>
-              <div
-                v-for="gl in selectedSubject?.grade_levels"
-                :key="gl.id"
-                class="d-flex align-items-center justify-content-between border rounded px-3 py-2 mb-2">
-                <div>
-                  <span class="fw-semibold small">{{ gl.name }}</span>
-                  <span class="text-muted small ms-2"
-                    >{{ gl.pivot.units }} units ·
-                    {{ gl.pivot.hours_per_week }} hrs/week</span
-                  >
+            <!-- Loading spinner -->
+            <div v-if="assignLoading" class="text-center py-4 text-muted">
+              <div class="spinner-border spinner-border-sm me-2"></div>
+              Loading...
+            </div>
+
+            <template v-else>
+              <p class="small fw-semibold mb-2">Currently Assigned</p>
+              <div class="mb-3">
+                <div
+                  v-if="selectedSubject?.grade_levels.length === 0"
+                  class="text-muted small">
+                  None assigned yet.
                 </div>
-                <button
-                  class="btn btn-sm btn-outline-danger"
-                  @click="removeGradeLevel(gl.id)">
-                  Remove
-                </button>
+                <div
+                  v-for="gl in selectedSubject?.grade_levels"
+                  :key="gl.id"
+                  class="d-flex align-items-center justify-content-between border rounded px-3 py-2 mb-2">
+                  <div>
+                    <span class="fw-semibold small">{{ gl.name }}</span>
+                    <span class="text-muted small ms-2">
+                      {{ gl.pivot.units }} units ·
+                      {{ gl.pivot.hours_per_week }} hrs/week
+                    </span>
+                  </div>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    @click="removeGradeLevel(gl.id)">
+                    Remove
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <hr />
+              <hr />
 
-            <!-- Add new -->
-            <p class="small fw-semibold mb-2">Add Grade Level</p>
-            <div class="mb-3">
-              <label class="form-label">Grade Level</label>
-              <select v-model="assignForm.grade_level_id" class="form-select">
-                <option disabled value="">Select grade level</option>
-                <option
-                  v-for="g in availableGradeLevels"
-                  :key="g.id"
-                  :value="g.id">
-                  {{ g.name }}
-                </option>
-              </select>
-            </div>
-            <div class="row">
-              <div class="col">
-                <label class="form-label">Units</label>
-                <input
-                  v-model.number="assignForm.units"
-                  type="number"
-                  step="0.5"
-                  class="form-control"
-                  placeholder="e.g. 1.0" />
+              <p class="small fw-semibold mb-2">Add Grade Level</p>
+              <div class="mb-3">
+                <label class="form-label">Grade Level</label>
+                <select v-model="assignForm.grade_level_id" class="form-select">
+                  <option disabled value="">Select grade level</option>
+                  <option
+                    v-for="g in availableGradeLevels"
+                    :key="g.id"
+                    :value="g.id">
+                    {{ g.name }}
+                  </option>
+                </select>
               </div>
-              <div class="col">
-                <label class="form-label">Hours/Week</label>
-                <input
-                  v-model.number="assignForm.hours_per_week"
-                  type="number"
-                  class="form-control"
-                  placeholder="e.g. 3" />
+              <div class="row">
+                <div class="col">
+                  <label class="form-label">Units</label>
+                  <input
+                    v-model.number="assignForm.units"
+                    type="number"
+                    step="0.5"
+                    class="form-control"
+                    placeholder="e.g. 1.0" />
+                </div>
+                <div class="col">
+                  <label class="form-label">Hours/Week</label>
+                  <input
+                    v-model.number="assignForm.hours_per_week"
+                    type="number"
+                    class="form-control"
+                    placeholder="e.g. 3" />
+                </div>
               </div>
-            </div>
+            </template>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeAssignModal">
@@ -262,7 +422,7 @@
             </button>
             <button
               class="btn btn-primary btn-sm"
-              :disabled="assignSaving"
+              :disabled="assignSaving || assignLoading"
               @click="addGradeLevel">
               <span
                 v-if="assignSaving"
@@ -305,7 +465,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { Modal } from "bootstrap";
 import { subjectService } from "@/services/subject";
 import { gradeLevelService } from "@/services/grade";
@@ -315,6 +475,7 @@ const allGradeLevels = ref([]);
 const loading = ref(false);
 const saving = ref(false);
 const assignSaving = ref(false);
+const assignLoading = ref(false);
 const error = ref("");
 const formError = ref("");
 const assignError = ref("");
@@ -371,14 +532,15 @@ async function fetchGradeLevels() {
   allGradeLevels.value = res.data;
 }
 
-function openCreate() {
+async function openCreate() {
   isEditing.value = false;
   form.value = { name: "", code: "", description: "" };
   formError.value = "";
+  await nextTick();
   modalInstance.show();
 }
 
-function openEdit(subject) {
+async function openEdit(subject) {
   isEditing.value = true;
   selectedSubject.value = subject;
   form.value = {
@@ -387,6 +549,7 @@ function openEdit(subject) {
     description: subject.description ?? "",
   };
   formError.value = "";
+  await nextTick();
   modalInstance.show();
 }
 
@@ -417,11 +580,19 @@ async function saveSubject() {
 }
 
 async function openAssign(subject) {
-  const res = await subjectService.getOne(subject.id);
-  selectedSubject.value = res.data;
+  selectedSubject.value = null;
   assignForm.value = { grade_level_id: "", units: "", hours_per_week: "" };
   assignError.value = "";
+  assignLoading.value = true;
   assignModalInstance.show();
+  try {
+    const res = await subjectService.getOne(subject.id);
+    selectedSubject.value = res.data;
+  } catch {
+    assignError.value = "Failed to load subject details.";
+  } finally {
+    assignLoading.value = false;
+  }
 }
 
 function closeAssignModal() {
@@ -500,3 +671,19 @@ async function deleteSubject() {
   }
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+</style>

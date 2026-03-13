@@ -43,6 +43,6 @@ export const scheduleService = {
 // If your API adds a role filter to GET /users, update the query param here.
 export const facultyService = {
     getAll() {
-        return api.get('/users?per_page=200')
+        return api.get('/teachers?per_page=200')
     }
 }

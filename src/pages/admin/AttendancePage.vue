@@ -74,9 +74,155 @@
       </div>
 
       <div v-else>
-        <div v-if="sheetLoading" class="text-center py-5 text-muted">
-          Loading...
+        <!-- ── Skeleton for attendance sheet ── -->
+        <div v-if="sheetLoading">
+          <!-- Bulk action bar skeleton -->
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div
+              class="skeleton"
+              style="width: 76px; height: 13px; border-radius: 3px"></div>
+            <div
+              class="skeleton"
+              style="width: 62px; height: 28px; border-radius: 4px"></div>
+            <div
+              class="skeleton"
+              style="width: 54px; height: 28px; border-radius: 4px"></div>
+            <div
+              class="skeleton"
+              style="width: 46px; height: 28px; border-radius: 4px"></div>
+            <div
+              class="skeleton ms-auto"
+              style="width: 180px; height: 13px; border-radius: 3px"></div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+              <table class="table table-sm mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <!-- Student -->
+                    <th>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 52px;
+                          height: 14px;
+                          border-radius: 3px;
+                        "></div>
+                    </th>
+                    <!-- LRN -->
+                    <th>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 32px;
+                          height: 14px;
+                          border-radius: 3px;
+                        "></div>
+                    </th>
+                    <!-- Status -->
+                    <th>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 44px;
+                          height: 14px;
+                          border-radius: 3px;
+                        "></div>
+                    </th>
+                    <!-- Remarks -->
+                    <th>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 56px;
+                          height: 14px;
+                          border-radius: 3px;
+                        "></div>
+                    </th>
+                    <!-- Save -->
+                    <th class="text-center">
+                      <div
+                        class="skeleton mx-auto"
+                        style="
+                          width: 34px;
+                          height: 14px;
+                          border-radius: 3px;
+                        "></div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="r in 8" :key="r">
+                    <!-- Student full name -->
+                    <td>
+                      <div
+                        class="skeleton"
+                        :style="`width:${100 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
+                    </td>
+                    <!-- LRN -->
+                    <td>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 66px;
+                          height: 13px;
+                          border-radius: 3px;
+                        "></div>
+                    </td>
+                    <!-- Status buttons: 3 toggle buttons -->
+                    <td>
+                      <div class="d-flex gap-1">
+                        <div
+                          class="skeleton"
+                          style="
+                            width: 60px;
+                            height: 26px;
+                            border-radius: 4px;
+                          "></div>
+                        <div
+                          class="skeleton"
+                          style="
+                            width: 54px;
+                            height: 26px;
+                            border-radius: 4px;
+                          "></div>
+                        <div
+                          class="skeleton"
+                          style="
+                            width: 44px;
+                            height: 26px;
+                            border-radius: 4px;
+                          "></div>
+                      </div>
+                    </td>
+                    <!-- Remarks input -->
+                    <td>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 160px;
+                          height: 28px;
+                          border-radius: 4px;
+                        "></div>
+                    </td>
+                    <!-- Save button -->
+                    <td class="text-center">
+                      <div
+                        class="skeleton mx-auto"
+                        style="
+                          width: 46px;
+                          height: 28px;
+                          border-radius: 4px;
+                        "></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+
         <div v-else-if="sheetError" class="text-center py-5 text-danger">
           {{ sheetError }}
         </div>
@@ -219,12 +365,100 @@
         </button>
       </div>
 
-      <div v-if="flaggedLoading" class="text-center py-5 text-muted">
-        Loading...
+      <!-- ── Skeleton for flagged list ── -->
+      <div v-if="flaggedLoading">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <!-- Student -->
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <!-- LRN -->
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 32px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <!-- Section -->
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <!-- Absences -->
+                  <th class="text-center">
+                    <div
+                      class="skeleton mx-auto"
+                      style="
+                        width: 56px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in 5" :key="r">
+                  <!-- Student full name -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${100 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- LRN -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 66px;
+                        height: 13px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Section e.g. "Grade 7 — Section A" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${100 + ((r * 15) % 40)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- Absence count badge -->
+                  <td class="text-center">
+                    <div
+                      class="skeleton mx-auto"
+                      style="
+                        width: 24px;
+                        height: 20px;
+                        border-radius: 12px;
+                      "></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
       <div v-else-if="flaggedError" class="text-center py-5 text-danger">
         {{ flaggedError }}
       </div>
+
       <div v-else>
         <div class="card border-0 shadow-sm">
           <div class="card-body p-0">
@@ -257,8 +491,8 @@
                   </td>
                 </tr>
                 <tr v-if="flaggedStudents.length === 0">
-                  <td colspan="4" class="text-center text-muted py-4">
-                    No flagged students.
+                  <td colspan="4" class="text-center text-muted py-5">
+                    No flagged students. Everyone's attendance is on track.
                   </td>
                 </tr>
               </tbody>
@@ -277,35 +511,30 @@ import { sectionService } from "@/services/grade";
 import { subjectService } from "@/services/subject";
 import { enrollmentService } from "@/services/enrollment";
 
-// ── Tab ───────────────────────────────────────────────────────────────────
 const tab = ref("take");
 
-// ── Shared data ───────────────────────────────────────────────────────────
 const sections = ref([]);
 const subjects = ref([]);
 
-// ── Take Attendance ───────────────────────────────────────────────────────
 const filterSectionId = ref("");
 const filterSubjectId = ref("");
 const filterDate = ref(todayDate());
 
 const enrollments = ref([]);
-const attendanceSheet = ref([]); // [{ enrollment, status, remarks }]
+const attendanceSheet = ref([]);
 const sheetLoaded = ref(false);
 const sheetLoading = ref(false);
 const sheetError = ref("");
 const savingRow = ref(null);
 const savingAll = ref(false);
 
-// ── Flagged ───────────────────────────────────────────────────────────────
 const flaggedStudents = ref([]);
 const flaggedLoading = ref(false);
 const flaggedError = ref("");
-const absenceThreshold = 5; // mirrors Attendance::ABSENCE_THRESHOLD
+const absenceThreshold = 5;
 
 const flaggedCount = computed(() => flaggedStudents.value.length);
 
-// ── Constants ─────────────────────────────────────────────────────────────
 const statuses = [
   {
     value: "present",
@@ -327,12 +556,10 @@ const statuses = [
   },
 ];
 
-// ── Lifecycle ─────────────────────────────────────────────────────────────
 onMounted(async () => {
   await Promise.all([fetchSections(), fetchSubjects()]);
 });
 
-// ── Fetch ─────────────────────────────────────────────────────────────────
 async function fetchSections() {
   const res = await sectionService.getAll();
   sections.value = res.data;
@@ -351,7 +578,6 @@ async function loadAttendanceSheet() {
   sheetError.value = "";
 
   try {
-    // 1. Load active enrollments for this section
     const res = await enrollmentService.getAll(1, {});
     const all = res.data?.data ?? res.data;
     enrollments.value = all.filter(
@@ -360,19 +586,17 @@ async function loadAttendanceSheet() {
         e.status === "active",
     );
 
-    // 2. Load existing attendance records for this date (+ optional subject)
     const filters = { date: filterDate.value };
     if (filterSubjectId.value) filters.subject_id = filterSubjectId.value;
     const attRes = await attendanceService.getAll(filters);
     const existing = attRes.data;
 
-    // 3. Build sheet rows — merge enrollments with any existing records
     attendanceSheet.value = enrollments.value.map((enrollment) => {
       const record = existing.find((a) => a.enrollment_id === enrollment.id);
       return {
         enrollment,
         attendanceId: record?.id ?? null,
-        status: record?.status ?? "present", // default to present
+        status: record?.status ?? "present",
         remarks: record?.remarks ?? "",
       };
     });
@@ -390,7 +614,6 @@ async function fetchFlagged() {
     const res = await attendanceService.flagged();
     flaggedStudents.value = res.data;
   } catch (err) {
-    // Surface a helpful message if the route isn't registered yet
     if (err.response?.status === 404) {
       flaggedError.value =
         "The /attendance/flagged route is not registered. Add it to routes/api.php.";
@@ -402,14 +625,12 @@ async function fetchFlagged() {
   }
 }
 
-// ── Section change ─────────────────────────────────────────────────────────
 function onSectionChange() {
   filterSubjectId.value = "";
   sheetLoaded.value = false;
   attendanceSheet.value = [];
 }
 
-// ── Attendance actions ────────────────────────────────────────────────────
 function markAll(status) {
   attendanceSheet.value.forEach((row) => (row.status = status));
 }
@@ -424,7 +645,6 @@ async function saveRow(row) {
       status: row.status,
       remarks: row.remarks || null,
     });
-    // Mark row as saved so buttons switch to filled color
     row.attendanceId = res.data.id;
   } catch (err) {
     alert(err.response?.data?.message ?? "Failed to save attendance.");
@@ -445,7 +665,6 @@ async function saveAll() {
           status: row.status,
           remarks: row.remarks || null,
         });
-        // Mark each row as saved so buttons switch to filled color
         row.attendanceId = res.data.id;
       }),
     );
@@ -458,7 +677,6 @@ async function saveAll() {
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────
 function todayDate() {
   return new Date().toISOString().split("T")[0];
 }
@@ -485,3 +703,19 @@ function rowClass(status) {
   return "";
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+</style>

@@ -37,6 +37,11 @@
           </RouterLink>
         </li>
         <li class="nav-item">
+          <RouterLink to="/admin/faculty" class="nav-link text-white">
+            Faculty
+          </RouterLink>
+        </li>
+        <li class="nav-item">
           <RouterLink to="/admin/enrollments" class="nav-link text-white">
             Enrollments
           </RouterLink>

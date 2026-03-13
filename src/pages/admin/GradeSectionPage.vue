@@ -31,9 +31,146 @@
 
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-          <div v-if="gradesLoading" class="text-center py-5 text-muted">
-            Loading...
+          <!-- ── Skeleton ── -->
+          <div v-if="gradesLoading">
+            <table class="table table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 40px">
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 40px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 36px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 56px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 44px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in 6" :key="r">
+                  <!-- # -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 22px;
+                        height: 13px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Name e.g. "Grade 7" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${52 + ((r * 11) % 30)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- Level e.g. "7" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 16px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Sections count -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 16px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Status badge -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 20px;
+                        border-radius: 12px;
+                      "></div>
+                  </td>
+                  <!-- Actions -->
+                  <td>
+                    <div class="d-flex gap-1">
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 38px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 74px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 46px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
           <div v-else-if="gradesError" class="text-center py-5 text-danger">
             {{ gradesError }}
           </div>
@@ -112,9 +249,157 @@
 
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-          <div v-if="sectionsLoading" class="text-center py-5 text-muted">
-            Loading...
+          <!-- ── Skeleton ── -->
+          <div v-if="sectionsLoading">
+            <table class="table table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 40px">
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 80px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 36px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 56px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 44px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                  <th>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in 6" :key="r">
+                  <!-- # -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 22px;
+                        height: 13px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Section name e.g. "Section A" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${64 + ((r * 13) % 36)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- Grade Level e.g. "Grade 7" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${56 + ((r * 9) % 28)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- Room e.g. "Room 101" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      :style="`width:${60 + ((r * 7) % 24)}px;height:14px;border-radius:3px`"></div>
+                  </td>
+                  <!-- Capacity e.g. "40" -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 24px;
+                        height: 14px;
+                        border-radius: 3px;
+                      "></div>
+                  </td>
+                  <!-- Status badge -->
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 52px;
+                        height: 20px;
+                        border-radius: 12px;
+                      "></div>
+                  </td>
+                  <!-- Actions -->
+                  <td>
+                    <div class="d-flex gap-1">
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 38px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 74px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                      <div
+                        class="skeleton"
+                        style="
+                          width: 46px;
+                          height: 26px;
+                          border-radius: 4px;
+                        "></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
           <div v-else-if="sectionsError" class="text-center py-5 text-danger">
             {{ sectionsError }}
           </div>
@@ -574,3 +859,20 @@ async function executeDelete() {
   }
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+</style>

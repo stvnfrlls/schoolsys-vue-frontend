@@ -1,38 +1,80 @@
 <template>
   <div>
-    <!-- Stat cards -->
-    <div class="row g-3 mb-4">
-      <div
-        class="col-sm-6 col-lg-3"
-        v-for="card in statCards"
-        :key="card.label">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="text-muted small mb-1">{{ card.label }}</div>
-            <div class="fs-4 fw-bold">
-              <span v-if="loading">—</span>
-              <span v-else>{{ card.value }}</span>
-            </div>
-            <div v-if="card.sub" class="text-muted small mt-1">
-              {{ card.sub }}
+    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
+    <div v-if="loading">
+      <!-- Mirrors: 4 stat cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3" v-for="n in 4" :key="n">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <!-- Mirrors: .text-muted.small label -->
+              <div
+                class="skeleton mb-2"
+                style="width: 110px; height: 13px; border-radius: 4px"></div>
+              <!-- Mirrors: .fs-4.fw-bold value -->
+              <div
+                class="skeleton mb-2"
+                style="width: 56px; height: 32px; border-radius: 4px"></div>
+              <!-- Mirrors: .text-muted.small sub (cards 2 & 3 have it, mimicking real layout) -->
+              <div
+                v-if="n === 2"
+                class="skeleton"
+                style="width: 80px; height: 13px; border-radius: 4px"></div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Mirrors: welcome card -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <!-- Mirrors: h6.fw-semibold -->
+          <div
+            class="skeleton mb-2"
+            style="width: 180px; height: 18px; border-radius: 4px"></div>
+          <!-- Mirrors: p.text-muted.small -->
+          <div
+            class="skeleton"
+            style="width: 220px; height: 13px; border-radius: 4px"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Error -->
-    <div v-if="error" class="alert alert-warning small py-2">
-      {{ error }}
-    </div>
+    <div v-else>
+      <!-- Stat cards -->
+      <div class="row g-3 mb-4">
+        <div
+          class="col-sm-6 col-lg-3"
+          v-for="card in statCards"
+          :key="card.label">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-muted small mb-1">{{ card.label }}</div>
+              <div class="fs-4 fw-bold">
+                <span v-if="loading">—</span>
+                <span v-else>{{ card.value }}</span>
+              </div>
+              <div v-if="card.sub" class="text-muted small mt-1">
+                {{ card.sub }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Welcome -->
-    <div class="card border-0 shadow-sm">
-      <div class="card-body">
-        <h6 class="fw-semibold mb-1">Welcome back, {{ auth.user?.name }}</h6>
-        <p class="text-muted small mb-0">
-          {{ currentSchoolYear() }} · Admin Dashboard
-        </p>
+      <!-- Error -->
+      <div v-if="error" class="alert alert-warning small py-2">
+        {{ error }}
+      </div>
+
+      <!-- Welcome -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="fw-semibold mb-1">Welcome back, {{ auth.user?.name }}</h6>
+          <p class="text-muted small mb-0">
+            {{ currentSchoolYear() }} · Admin Dashboard
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -71,7 +113,7 @@ onMounted(async () => {
     const [studentsRes, usersRes, sectionsRes, subjectsRes] =
       await Promise.allSettled([
         studentService.getAll(1),
-        userService.getAll(1), // we fetch page 1 and use total for students/subjects
+        userService.getAll(1),
         sectionService.getAll(),
         subjectService.getAll(1),
       ]);
@@ -81,8 +123,6 @@ onMounted(async () => {
     }
 
     if (usersRes.status === "fulfilled") {
-      // No dedicated /teachers endpoint — filter faculty from users
-      // userService.getAll returns paginated; use per_page=200 via direct call
       const users = usersRes.value.data?.data ?? [];
       totalTeachers.value = users.filter((u) =>
         u.roles?.some(
@@ -112,3 +152,20 @@ function currentSchoolYear() {
   return `${startYear}-${startYear + 1}`;
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+</style>

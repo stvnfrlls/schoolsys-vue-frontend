@@ -20,13 +20,94 @@
         </select>
       </div>
       <div class="col-sm-auto">
-        <button class="btn btn-sm btn-outline-secondary" @click="fetchSchedule">Filter</button>
-        <button class="btn btn-sm btn-link text-muted ms-1" @click="clearFilters">Clear</button>
+        <button class="btn btn-sm btn-outline-secondary" @click="fetchSchedule">
+          Filter
+        </button>
+        <button
+          class="btn btn-sm btn-link text-muted ms-1"
+          @click="clearFilters">
+          Clear
+        </button>
       </div>
     </div>
 
-    <div v-if="loading" class="text-center py-5 text-muted">Loading...</div>
-    <div v-else-if="error" class="text-center py-5 text-danger">{{ error }}</div>
+    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
+    <div v-if="loading">
+      <div v-for="n in 1" :key="n" class="mb-4">
+        <!-- Day label skeleton -->
+        <div
+          class="skeleton mb-2"
+          style="width: 90px; height: 16px; border-radius: 4px"></div>
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th v-for="c in 5" :key="c">
+                    <div
+                      class="skeleton"
+                      style="height: 12px; border-radius: 4px"></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in 3" :key="r">
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 100px;
+                        height: 12px;
+                        border-radius: 4px;
+                      "></div>
+                  </td>
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 110px;
+                        height: 12px;
+                        border-radius: 4px;
+                      "></div>
+                  </td>
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 120px;
+                        height: 12px;
+                        border-radius: 4px;
+                      "></div>
+                  </td>
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 70px;
+                        height: 12px;
+                        border-radius: 4px;
+                      "></div>
+                  </td>
+                  <td>
+                    <div
+                      class="skeleton"
+                      style="
+                        width: 40px;
+                        height: 12px;
+                        border-radius: 4px;
+                      "></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="error" class="text-center py-5 text-danger">
+      {{ error }}
+    </div>
 
     <div v-else>
       <div v-if="schedules.length === 0" class="text-center text-muted py-5">
@@ -51,12 +132,15 @@
               <tbody>
                 <tr v-for="s in byDay(day)" :key="s.id">
                   <td class="text-nowrap">
-                    {{ formatTime(s.start_time) }} – {{ formatTime(s.end_time) }}
+                    {{ formatTime(s.start_time) }} –
+                    {{ formatTime(s.end_time) }}
                   </td>
-                  <td>{{ s.subject?.name ?? '—' }}</td>
-                  <td>{{ s.teacher?.name ?? '—' }}</td>
+                  <td>{{ s.subject?.name ?? "—" }}</td>
+                  <td>{{ s.teacher ? teacherFullName(s.teacher) : "—" }}</td>
                   <td class="text-muted small">{{ s.school_year }}</td>
-                  <td class="text-muted small text-capitalize">{{ s.semester }}</td>
+                  <td class="text-muted small text-capitalize">
+                    {{ s.semester }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -68,52 +152,80 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { studentService } from '@/services/student'
+import { ref, computed, onMounted } from "vue";
+import { studentService } from "@/services/student";
 
-const schedules = ref([])
-const loading = ref(false)
-const error = ref('')
-const filterSchoolYear = ref('')
-const filterSemester = ref('')
+const schedules = ref([]);
+const loading = ref(false);
+const error = ref("");
+const filterSchoolYear = ref("");
+const filterSemester = ref("");
 
-const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+const dayOrder = ["monday", "tuesday", "wednesday", "thursday", "friday"];
 const activeDays = computed(() =>
-  dayOrder.filter((d) => schedules.value.some((s) => s.day === d))
-)
+  dayOrder.filter((d) => schedules.value.some((s) => s.day === d)),
+);
 function byDay(day) {
-  return schedules.value.filter((s) => s.day === day)
+  return schedules.value.filter((s) => s.day === day);
 }
 
-onMounted(fetchSchedule)
+onMounted(fetchSchedule);
 
 async function fetchSchedule() {
-  loading.value = true
-  error.value = ''
+  loading.value = true;
+  error.value = "";
   try {
     const res = await studentService.mySchedule({
       school_year: filterSchoolYear.value || undefined,
       semester: filterSemester.value || undefined,
-    })
-    schedules.value = res.data
+    });
+    schedules.value = res.data;
   } catch (err) {
-    error.value = err.response?.data?.message ?? 'Failed to load schedule.'
+    error.value = err.response?.data?.message ?? "Failed to load schedule.";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
+function teacherFullName(teacher) {
+  return [
+    teacher.first_name,
+    teacher.middle_name,
+    teacher.last_name,
+    teacher.suffix,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
 function clearFilters() {
-  filterSchoolYear.value = ''
-  filterSemester.value = ''
-  fetchSchedule()
+  filterSchoolYear.value = "";
+  filterSemester.value = "";
+  fetchSchedule();
 }
 
 function formatTime(time) {
-  if (!time) return '—'
-  const [h, m] = time.split(':').map(Number)
-  const period = h >= 12 ? 'PM' : 'AM'
-  const hour = h % 12 || 12
-  return `${hour}:${String(m).padStart(2, '0')} ${period}`
+  if (!time) return "—";
+  const [h, m] = time.split(":").map(Number);
+  const period = h >= 12 ? "PM" : "AM";
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2, "0")} ${period}`;
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+</style>

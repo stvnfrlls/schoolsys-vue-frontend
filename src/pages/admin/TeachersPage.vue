@@ -2,9 +2,9 @@
   <div>
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h5 class="fw-bold mb-0">Students</h5>
+      <h5 class="fw-bold mb-0">Teachers</h5>
       <button class="btn btn-primary btn-sm" @click="addModal.open()">
-        + Add Student
+        + Add Teacher
       </button>
     </div>
 
@@ -15,11 +15,11 @@
           <table class="table table-sm mb-0">
             <thead class="table-light">
               <tr>
-                <!-- LRN -->
+                <!-- Employee No. -->
                 <th>
                   <div
                     class="skeleton"
-                    style="width: 32px; height: 14px; border-radius: 3px"></div>
+                    style="width: 76px; height: 14px; border-radius: 3px"></div>
                 </th>
                 <!-- Name -->
                 <th>
@@ -27,17 +27,23 @@
                     class="skeleton"
                     style="width: 40px; height: 14px; border-radius: 3px"></div>
                 </th>
+                <!-- Date of Birth -->
+                <th>
+                  <div
+                    class="skeleton"
+                    style="width: 76px; height: 14px; border-radius: 3px"></div>
+                </th>
                 <!-- Gender -->
                 <th>
                   <div
                     class="skeleton"
                     style="width: 46px; height: 14px; border-radius: 3px"></div>
                 </th>
-                <!-- Date of Birth -->
+                <!-- Specialization -->
                 <th>
                   <div
                     class="skeleton"
-                    style="width: 76px; height: 14px; border-radius: 3px"></div>
+                    style="width: 84px; height: 14px; border-radius: 3px"></div>
                 </th>
                 <!-- Email -->
                 <th>
@@ -60,30 +66,41 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="r in 8" :key="r">
-                <!-- LRN e.g. "STU-0012" -->
+              <tr v-for="r in 7" :key="r">
+                <!-- Employee No. e.g. "EMP-0003" -->
                 <td>
                   <div
                     class="skeleton"
                     :style="`width:${64 + ((r * 7) % 20)}px;height:13px;border-radius:3px`"></div>
                 </td>
-                <!-- Full name e.g. "Juan dela Cruz" -->
+                <!-- Full name -->
                 <td>
                   <div
                     class="skeleton"
                     :style="`width:${100 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
                 </td>
-                <!-- Gender e.g. "Male" -->
+                <!-- Date of Birth -->
+                <td>
+                  <div
+                    class="skeleton"
+                    style="width: 80px; height: 13px; border-radius: 3px"></div>
+                </td>
+                <!-- Gender -->
                 <td>
                   <div
                     class="skeleton"
                     :style="`width:${28 + ((r * 5) % 16)}px;height:14px;border-radius:3px`"></div>
                 </td>
-                <!-- Date e.g. "Jan 1, 2005" -->
+                <!-- Specialization — some have "—" dash -->
                 <td>
                   <div
+                    v-if="r % 4 !== 0"
                     class="skeleton"
-                    style="width: 80px; height: 13px; border-radius: 3px"></div>
+                    :style="`width:${70 + ((r * 19) % 50)}px;height:14px;border-radius:3px`"></div>
+                  <div
+                    v-else
+                    class="skeleton"
+                    style="width: 10px; height: 14px; border-radius: 3px"></div>
                 </td>
                 <!-- Email -->
                 <td>
@@ -137,46 +154,48 @@
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
               <tr>
-                <th>LRN</th>
+                <th>Employee No.</th>
                 <th>Name</th>
-                <th>Gender</th>
                 <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Specialization</th>
                 <th>Email</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-if="students.length === 0">
-                <td colspan="7" class="text-center text-muted py-5">
-                  No students yet.
+              <tr v-if="teachers.length === 0">
+                <td colspan="8" class="text-center text-muted py-5">
+                  No teachers yet.
                 </td>
               </tr>
-              <tr v-for="student in students" :key="student.id">
-                <td class="text-muted small">{{ student.student_number }}</td>
-                <td>{{ fullName(student) }}</td>
-                <td class="text-capitalize">{{ student.gender }}</td>
-                <td>{{ formatDate(student.date_of_birth) }}</td>
-                <td class="text-muted small">{{ student.user.email }}</td>
+              <tr v-for="teacher in teachers" :key="teacher.id">
+                <td class="text-muted small">{{ teacher.employee_number }}</td>
+                <td>{{ fullName(teacher) }}</td>
+                <td>{{ formatDate(teacher.date_of_birth) }}</td>
+                <td class="text-capitalize">{{ teacher.gender }}</td>
+                <td>{{ teacher.specialization ?? "—" }}</td>
+                <td class="text-muted small">{{ teacher.user.email }}</td>
                 <td>
                   <span
                     :class="
-                      student.user.is_active
+                      teacher.user.is_active
                         ? 'badge bg-success'
                         : 'badge bg-danger'
                     ">
-                    {{ student.user.is_active ? "Active" : "Inactive" }}
+                    {{ teacher.user.is_active ? "Active" : "Inactive" }}
                   </span>
                 </td>
                 <td>
                   <button
                     class="btn btn-sm btn-outline-primary me-1"
-                    @click="openEdit(student)">
+                    @click="openEdit(teacher)">
                     Edit
                   </button>
                   <button
                     class="btn btn-sm btn-outline-secondary"
-                    @click="openView(student)">
+                    @click="openView(teacher)">
                     View
                   </button>
                 </td>
@@ -198,31 +217,31 @@
           <button
             class="btn btn-sm btn-outline-secondary"
             :disabled="pagination.current_page === 1"
-            @click="fetchStudents(pagination.current_page - 1)">
+            @click="fetchTeachers(pagination.current_page - 1)">
             Prev
           </button>
           <button
             class="btn btn-sm btn-outline-secondary"
             :disabled="pagination.current_page === pagination.last_page"
-            @click="fetchStudents(pagination.current_page + 1)">
+            @click="fetchTeachers(pagination.current_page + 1)">
             Next
           </button>
         </div>
       </div>
 
-      <!-- Add Student Modal -->
-      <AddUserModal ref="addModal" role="student" @created="fetchStudents()" />
+      <!-- Add Teacher Modal -->
+      <AddUserModal ref="addModal" role="faculty" @created="fetchTeachers()" />
 
       <!-- Edit Modal -->
       <div
         class="modal fade"
-        id="editStudentModal"
+        id="editTeacherModal"
         tabindex="-1"
         ref="editModalEl">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h6 class="modal-title fw-bold">Edit Student</h6>
+              <h6 class="modal-title fw-bold">Edit Teacher</h6>
               <button
                 type="button"
                 class="btn-close"
@@ -250,20 +269,20 @@
               </div>
               <div class="row mb-3">
                 <div class="col">
-                  <label class="form-label"
-                    >Middle Name
-                    <span class="text-muted small">(optional)</span></label
-                  >
+                  <label class="form-label">
+                    Middle Name
+                    <span class="text-muted small">(optional)</span>
+                  </label>
                   <input
                     v-model="form.middle_name"
                     type="text"
                     class="form-control" />
                 </div>
                 <div class="col">
-                  <label class="form-label"
-                    >Suffix
-                    <span class="text-muted small">(optional)</span></label
-                  >
+                  <label class="form-label">
+                    Suffix
+                    <span class="text-muted small">(optional)</span>
+                  </label>
                   <input
                     v-model="form.suffix"
                     type="text"
@@ -288,6 +307,16 @@
                   </select>
                 </div>
               </div>
+              <div class="mb-3">
+                <label class="form-label">
+                  Specialization
+                  <span class="text-muted small">(optional)</span>
+                </label>
+                <input
+                  v-model="form.specialization"
+                  type="text"
+                  class="form-control" />
+              </div>
             </div>
             <div class="modal-footer">
               <button class="btn btn-secondary btn-sm" @click="closeEditModal">
@@ -296,7 +325,7 @@
               <button
                 class="btn btn-primary btn-sm"
                 :disabled="saving"
-                @click="saveStudent">
+                @click="saveTeacher">
                 <span
                   v-if="saving"
                   class="spinner-border spinner-border-sm me-1"></span>
@@ -310,81 +339,56 @@
       <!-- View Modal -->
       <div
         class="modal fade"
-        id="viewStudentModal"
+        id="viewTeacherModal"
         tabindex="-1"
         ref="viewModalEl">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h6 class="modal-title fw-bold">Student Profile</h6>
+              <h6 class="modal-title fw-bold">Teacher Profile</h6>
               <button
                 type="button"
                 class="btn-close"
                 @click="closeViewModal"></button>
             </div>
-            <div class="modal-body" v-if="viewStudent">
+            <div class="modal-body" v-if="viewTeacher">
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <p class="text-muted small mb-1">Student Number</p>
-                  <p class="fw-semibold">{{ viewStudent.student_number }}</p>
+                  <p class="text-muted small mb-1">Employee Number</p>
+                  <p class="fw-semibold">{{ viewTeacher.employee_number }}</p>
                 </div>
                 <div class="col-md-6">
                   <p class="text-muted small mb-1">Full Name</p>
-                  <p class="fw-semibold">{{ fullName(viewStudent) }}</p>
+                  <p class="fw-semibold">{{ fullName(viewTeacher) }}</p>
                 </div>
                 <div class="col-md-6">
                   <p class="text-muted small mb-1">Gender</p>
-                  <p class="text-capitalize">{{ viewStudent.gender }}</p>
+                  <p class="text-capitalize">{{ viewTeacher.gender }}</p>
                 </div>
                 <div class="col-md-6">
                   <p class="text-muted small mb-1">Date of Birth</p>
-                  <p>{{ formatDate(viewStudent.date_of_birth) }}</p>
+                  <p>{{ formatDate(viewTeacher.date_of_birth) }}</p>
+                </div>
+                <div class="col-md-6">
+                  <p class="text-muted small mb-1">Specialization</p>
+                  <p>{{ viewTeacher.specialization ?? "—" }}</p>
                 </div>
                 <div class="col-md-6">
                   <p class="text-muted small mb-1">Email</p>
-                  <p>{{ viewStudent.user.email }}</p>
+                  <p>{{ viewTeacher.user.email }}</p>
                 </div>
                 <div class="col-md-6">
                   <p class="text-muted small mb-1">Account Status</p>
                   <span
                     :class="
-                      viewStudent.user.is_active
+                      viewTeacher.user.is_active
                         ? 'badge bg-success'
                         : 'badge bg-danger'
                     ">
-                    {{ viewStudent.user.is_active ? "Active" : "Inactive" }}
+                    {{ viewTeacher.user.is_active ? "Active" : "Inactive" }}
                   </span>
                 </div>
               </div>
-
-              <hr />
-
-              <p class="fw-semibold small mb-2">Enrollments</p>
-              <div
-                v-if="viewStudent.enrollments?.length === 0"
-                class="text-muted small">
-                No enrollment records found.
-              </div>
-              <table v-else class="table table-sm table-bordered">
-                <thead class="table-light">
-                  <tr>
-                    <th>School Year</th>
-                    <th>Grade</th>
-                    <th>Section</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="enrollment in viewStudent.enrollments"
-                    :key="enrollment.id">
-                    <td>{{ enrollment.school_year }}</td>
-                    <td>{{ enrollment.grade_level?.name ?? "—" }}</td>
-                    <td>{{ enrollment.section?.name ?? "—" }}</td>
-                    <td>{{ enrollment.status }}</td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
             <div class="modal-footer">
               <button class="btn btn-secondary btn-sm" @click="closeViewModal">
@@ -401,17 +405,17 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { Modal } from "bootstrap";
-import { studentService } from "@/services/student";
+import { teacherService } from "@/services/teacher";
 import AddUserModal from "@/components/AddUserModal.vue";
 
-const students = ref([]);
+const teachers = ref([]);
 const loading = ref(false);
 const saving = ref(false);
 const error = ref("");
 const formError = ref("");
 const pagination = ref({});
-const selectedStudent = ref(null);
-const viewStudent = ref(null);
+const selectedTeacher = ref(null);
+const viewTeacher = ref(null);
 const addModal = ref(null);
 
 const form = ref({
@@ -421,6 +425,7 @@ const form = ref({
   suffix: "",
   date_of_birth: "",
   gender: "",
+  specialization: "",
 });
 
 const editModalEl = ref(null);
@@ -431,15 +436,15 @@ let viewModal = null;
 onMounted(async () => {
   editModal = new Modal(editModalEl.value);
   viewModal = new Modal(viewModalEl.value);
-  await fetchStudents();
+  await fetchTeachers();
 });
 
-async function fetchStudents(page = 1) {
+async function fetchTeachers(page = 1) {
   loading.value = true;
   error.value = "";
   try {
-    const res = await studentService.getAll(page);
-    students.value = res.data.data;
+    const res = await teacherService.getAll(page);
+    teachers.value = res.data.data;
     pagination.value = {
       current_page: res.data.current_page,
       last_page: res.data.last_page,
@@ -448,18 +453,18 @@ async function fetchStudents(page = 1) {
       total: res.data.total,
     };
   } catch {
-    error.value = "Failed to load students.";
+    error.value = "Failed to load teachers.";
   } finally {
     loading.value = false;
   }
 }
 
-function fullName(student) {
+function fullName(teacher) {
   const parts = [
-    student.first_name,
-    student.middle_name,
-    student.last_name,
-    student.suffix,
+    teacher.first_name,
+    teacher.middle_name,
+    teacher.last_name,
+    teacher.suffix,
   ];
   return parts.filter(Boolean).join(" ");
 }
@@ -473,15 +478,16 @@ function formatDate(date) {
   });
 }
 
-function openEdit(student) {
-  selectedStudent.value = student;
+function openEdit(teacher) {
+  selectedTeacher.value = teacher;
   form.value = {
-    first_name: student.first_name,
-    last_name: student.last_name,
-    middle_name: student.middle_name ?? "",
-    suffix: student.suffix ?? "",
-    date_of_birth: student.date_of_birth,
-    gender: student.gender,
+    first_name: teacher.first_name,
+    last_name: teacher.last_name,
+    middle_name: teacher.middle_name ?? "",
+    suffix: teacher.suffix ?? "",
+    date_of_birth: teacher.date_of_birth,
+    gender: teacher.gender,
+    specialization: teacher.specialization ?? "",
   };
   formError.value = "";
   editModal.show();
@@ -491,7 +497,7 @@ function closeEditModal() {
   editModal.hide();
 }
 
-async function saveStudent() {
+async function saveTeacher() {
   formError.value = "";
   if (!form.value.first_name || !form.value.last_name) {
     formError.value = "First name and last name are required.";
@@ -499,9 +505,9 @@ async function saveStudent() {
   }
   saving.value = true;
   try {
-    await studentService.update(selectedStudent.value.id, form.value);
+    await teacherService.update(selectedTeacher.value.id, form.value);
     closeEditModal();
-    await fetchStudents(pagination.value.current_page);
+    await fetchTeachers(pagination.value.current_page);
   } catch (err) {
     formError.value = err.response?.data?.message ?? "Something went wrong.";
   } finally {
@@ -509,9 +515,9 @@ async function saveStudent() {
   }
 }
 
-async function openView(student) {
-  const res = await studentService.getOne(student.id);
-  viewStudent.value = res.data;
+async function openView(teacher) {
+  const res = await teacherService.getOne(teacher.id);
+  viewTeacher.value = res.data;
   viewModal.show();
 }
 

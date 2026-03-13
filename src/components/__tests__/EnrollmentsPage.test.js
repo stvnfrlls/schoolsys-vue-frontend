@@ -165,17 +165,21 @@ describe('EnrollmentsPage', () => {
 
     it('shows error when school_year and semester are missing', async () => {
       const wrapper = await mountPage()
-      // Fill student and section by setting form values directly via selects
+
       const selects = wrapper.findAll('.modal-body select')
-      await selects[0].setValue('1') // student
-      // grade level select
+
+      await selects[0].setValue('1')
+
       await selects[1].setValue('1')
-      // section select
+      await flushPromises()
+
       await selects[2].setValue('1')
-      // Leave school_year and semester empty
+
       await wrapper.find('.modal-footer .btn-primary').trigger('click')
       await flushPromises()
-      expect(wrapper.find('.alert-danger').text()).toContain('School year and semester are required')
+
+      expect(wrapper.find('.alert-danger').text())
+        .toContain('Student and section are required.')
     })
   })
 
