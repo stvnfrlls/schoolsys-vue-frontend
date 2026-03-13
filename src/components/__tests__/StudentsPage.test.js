@@ -133,37 +133,57 @@ describe('StudentsPage', () => {
   // 4. Edit form validation ──────────────────────────────────────────────────
   describe('edit form validation', () => {
     async function openEdit(wrapper) {
-      const editBtn = wrapper.findAll('button').find(b => b.text() === 'Edit')
+      // Find the Edit button in the table row for Jane Doe (first student)
+      const editBtn = wrapper.findAll('tbody tr').at(0).find('button.btn-outline-primary')
+      expect(editBtn.exists()).toBe(true)
+      expect(editBtn.text()).toContain('Edit')
       await editBtn.trigger('click')
+      await flushPromises()
     }
 
     it('shows error when first name is cleared', async () => {
       const wrapper = await mountPage()
       await openEdit(wrapper)
-      // Clear first name
-      const textInputs = wrapper.findAll('#editStudentModal input[type="text"]')
-      await textInputs[0].setValue('')
-      await wrapper.find('.modal-footer .btn-primary').trigger('click')
+      
+      // Clear first name - it's the first text input in the edit modal
+      const firstNameInput = wrapper.find('#editStudentModal input[type="text"]')
+      expect(firstNameInput.exists()).toBe(true)
+      await firstNameInput.setValue('')
+      
+      await wrapper.find('#editStudentModal .modal-footer .btn-primary').trigger('click')
       await flushPromises()
-      expect(wrapper.find('.alert-danger').text()).toContain('First name and last name are required')
+      
+      const alert = wrapper.find('#editStudentModal .alert-danger')
+      expect(alert.exists()).toBe(true)
+      expect(alert.text()).toContain('First name and last name are required')
     })
 
     it('shows error when last name is cleared', async () => {
       const wrapper = await mountPage()
       await openEdit(wrapper)
+      
+      // Last name is the second text input
       const textInputs = wrapper.findAll('#editStudentModal input[type="text"]')
+      expect(textInputs.length).toBeGreaterThan(1)
       await textInputs[1].setValue('')
-      await wrapper.find('.modal-footer .btn-primary').trigger('click')
+      
+      await wrapper.find('#editStudentModal .modal-footer .btn-primary').trigger('click')
       await flushPromises()
-      expect(wrapper.find('.alert-danger').text()).toContain('First name and last name are required')
+      
+      const alert = wrapper.find('#editStudentModal .alert-danger')
+      expect(alert.exists()).toBe(true)
+      expect(alert.text()).toContain('First name and last name are required')
     })
 
     it('calls studentService.update with correct data', async () => {
       mockUpdate.mockResolvedValue({ data: {} })
       const wrapper = await mountPage()
       await openEdit(wrapper)
-      await wrapper.find('.modal-footer .btn-primary').trigger('click')
+      
+      // Click the Update button in the edit modal
+      await wrapper.find('#editStudentModal .modal-footer .btn-primary').trigger('click')
       await flushPromises()
+      
       expect(mockUpdate).toHaveBeenCalledWith(
         1,
         expect.objectContaining({ first_name: 'Jane', last_name: 'Doe' })
@@ -175,7 +195,9 @@ describe('StudentsPage', () => {
   describe('view modal', () => {
     it('opens view modal and shows student profile', async () => {
       const wrapper = await mountPage()
-      const viewBtn = wrapper.findAll('button').find(b => b.text() === 'View')
+      const viewBtn = wrapper.findAll('tbody tr').at(0).find('button.btn-outline-secondary')
+      expect(viewBtn.exists()).toBe(true)
+      expect(viewBtn.text()).toContain('View')
       await viewBtn.trigger('click')
       await flushPromises()
       expect(wrapper.text()).toContain('Student Profile')
