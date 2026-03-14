@@ -8,13 +8,35 @@ const mockUpdate = vi.hoisted(() => vi.fn())
 
 vi.mock('bootstrap', () => ({
   Modal: class {
-    show() {}
-    hide() {}
+    show() { }
+    hide() { }
+  },
+}))
+
+// AddUserModal is imported by StudentsPage. Without this mock VTU will try to
+// mount the real component, which pulls in its own dependencies and can throw.
+vi.mock('@/components/AddUserModal.vue', () => ({
+  default: {
+    name: 'AddUserModal',
+    template: '<div />',
+    methods: { open() { } },
   },
 }))
 
 vi.mock('@/services/student', () => ({
   studentService: {
+    // fetchStudents does:
+    //   students.value = res.data.data
+    //   pagination.value = { current_page: res.data.meta.current_page, ... }
+    //
+    // The old mock had pagination fields flat on data (current_page, last_page…)
+    // with no meta key. So res.data.meta was undefined, .current_page threw,
+    // the catch block fired, and "Failed to load students." was rendered —
+    // causing every single test to fail.
+    //
+    // The real API uses Laravel's resource collection format:
+    //   { data: [...], links: {...}, meta: { current_page, last_page, ... } }
+    // The mock must mirror that shape exactly.
     getAll: vi.fn().mockResolvedValue({
       data: {
         data: [
@@ -41,11 +63,13 @@ vi.mock('@/services/student', () => ({
             user: { email: 'bob@example.com', is_active: false },
           },
         ],
-        current_page: 1,
-        last_page: 1,
-        from: 1,
-        to: 2,
-        total: 2,
+        meta: {
+          current_page: 1,
+          last_page: 1,
+          from: 1,
+          to: 2,
+          total: 2,
+        },
       },
     }),
     update: mockUpdate,

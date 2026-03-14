@@ -18,6 +18,8 @@ vi.mock('bootstrap', () => ({
 
 vi.mock('@/services/schedule', () => ({
   scheduleService: {
+    // fetchSchedules reads res.data.data + res.data.current_page (flat, no meta).
+    // This shape is already correct — do not add a meta wrapper here.
     getAll: vi.fn().mockResolvedValue({
       data: {
         data: [
@@ -48,12 +50,37 @@ vi.mock('@/services/schedule', () => ({
     delete: vi.fn().mockResolvedValue({}),
   },
   facultyService: {
+    // The real API returns teachers in Laravel resource collection format:
+    //   { data: [...teachers...], meta: { current_page, ... } }
+    // Each teacher record has a nested user object: { id, email, is_active, ... }
+    //
+    // The old mock had user_id (flat) and no nested user object.
+    // The component template does: :value="t.user.id" — so t.user must exist.
+    // With the old mock t.user was undefined, .id threw TypeError, crashing
+    // the render and cascading failures into every single test.
     getAll: vi.fn().mockResolvedValue({
       data: {
         data: [
-          { id: 1, user_id: 1, first_name: 'Mr.', last_name: 'Cruz', roles: [{ name: 'faculty' }] },
-          { id: 2, user_id: 2, first_name: 'Ms.', last_name: 'Reyes', roles: [{ name: 'admin' }] },
+          {
+            id: 1,
+            first_name: 'Mr.',
+            last_name: 'Cruz',
+            user: { id: 1, email: 'cruz@example.com', is_active: true },
+          },
+          {
+            id: 2,
+            first_name: 'Ms.',
+            last_name: 'Reyes',
+            user: { id: 2, email: 'reyes@example.com', is_active: true },
+          },
         ],
+        meta: {
+          current_page: 1,
+          last_page: 1,
+          from: 1,
+          to: 2,
+          total: 2,
+        },
       },
     }),
   },
@@ -152,8 +179,7 @@ describe('SchedulingPage', () => {
       expect(modalSelects.length).toBeGreaterThan(2)
       const teacherSelect = modalSelects[2]
       const optionTexts = teacherSelect.findAll('option').map(o => o.text())
-      // Mr. Cruz (faculty role) should appear; Ms. Reyes (admin role) should not
-      // Note: Component doesn't filter by role, so we check the mock data structure
+      // Mr. Cruz and Ms. Reyes are both in the mock
       expect(optionTexts.some(t => t.includes('Mr. Cruz'))).toBe(true)
       expect(optionTexts.some(t => t.includes('Ms. Reyes'))).toBe(true)
     })

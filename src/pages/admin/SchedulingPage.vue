@@ -641,7 +641,6 @@ async function saveSchedule() {
     "semester",
   ];
   const missing = required.filter((f) => !form.value[f]);
-console.log(missing);
 
   if (missing.length) {
     formError.value = "Please fill in all required fields.";
