@@ -186,7 +186,7 @@ const subjectsForSection = computed(() => {
   const seen = new Set()
   const result = []
   schedules.value
-    .filter((s) => String(s.section_id) === String(filterSectionId.value))
+    .filter((s) => String(s.section.id) === String(filterSectionId.value))
     .forEach((s) => {
       if (s.subject && !seen.has(s.subject.id)) {
         seen.add(s.subject.id)
@@ -217,7 +217,7 @@ async function loadSheet() {
     const all = enrRes.data?.data ?? enrRes.data
     const enrollments = all.filter(
       (e) =>
-        String(e.section_id) === String(filterSectionId.value) &&
+        String(e.section?.id) === String(filterSectionId.value) &&
         e.status === 'active'
     )
 
@@ -227,7 +227,7 @@ async function loadSheet() {
     const existing = attRes.data
 
     attendanceSheet.value = enrollments.map((enrollment) => {
-      const record = existing.find((a) => a.enrollment_id === enrollment.id)
+      const record = existing.find((a) => a.enrollment?.id === enrollment.id)
       return {
         enrollment,
         attendanceId: record?.id ?? null,

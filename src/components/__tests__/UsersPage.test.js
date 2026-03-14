@@ -25,23 +25,23 @@ vi.mock('bootstrap', () => ({
 
 vi.mock('@/services/user', () => ({
   userService: {
+    // fetchUsers does: users.value = res.data
+    // The real API returns a flat array directly (not paginated), so the mock
+    // must mirror that — data: [...] NOT data: { data: [...], current_page, ... }.
+    // The old paginated shape caused users.value to be set to a plain object,
+    // which made v-for iterate over its property values instead of user objects.
+    // The first "user" was the array itself (no .roles), so user.roles[0] threw,
+    // crashing the entire render and cascading failures into every test.
     getAll: vi.fn().mockResolvedValue({
-      data: {
-        data: [
-          {
-            id: 1,
-            name: 'John Doe',
-            email: 'john@example.com',
-            roles: [{ id: 1, name: 'admin' }],
-            is_active: true,
-          },
-        ],
-        current_page: 1,
-        last_page: 1,
-        from: 1,
-        to: 1,
-        total: 1,
-      },
+      data: [
+        {
+          id: 1,
+          name: 'John Doe',
+          email: 'john@example.com',
+          roles: [{ id: 1, name: 'admin' }],
+          is_active: true,
+        },
+      ],
     }),
     create: mockCreate,
     update: mockUpdate,

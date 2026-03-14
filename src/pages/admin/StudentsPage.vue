@@ -185,212 +185,212 @@
           </table>
         </div>
       </div>
+    </div>
 
-      <!-- Pagination -->
-      <div
-        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
-        v-if="pagination.last_page > 1">
-        <span
-          >Showing {{ pagination.from }}–{{ pagination.to }} of
-          {{ pagination.total }}</span
-        >
-        <div class="d-flex gap-1">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === 1"
-            @click="fetchStudents(pagination.current_page - 1)">
-            Prev
-          </button>
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === pagination.last_page"
-            @click="fetchStudents(pagination.current_page + 1)">
-            Next
-          </button>
-        </div>
+    <!-- Pagination -->
+    <div
+      class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+      v-if="pagination.last_page > 1">
+      <span
+        >Showing {{ pagination.from }}–{{ pagination.to }} of
+        {{ pagination.total }}</span
+      >
+      <div class="d-flex gap-1">
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === 1"
+          @click="fetchStudents(pagination.current_page - 1)">
+          Prev
+        </button>
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === pagination.last_page"
+          @click="fetchStudents(pagination.current_page + 1)">
+          Next
+        </button>
       </div>
+    </div>
 
-      <!-- Add Student Modal -->
-      <AddUserModal ref="addModal" role="student" @created="fetchStudents()" />
+    <!-- Add Student Modal -->
+    <AddUserModal ref="addModal" role="student" @created="fetchStudents()" />
 
-      <!-- Edit Modal -->
-      <div
-        class="modal fade"
-        id="editStudentModal"
-        tabindex="-1"
-        ref="editModalEl">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title fw-bold">Edit Student</h6>
-              <button
-                type="button"
-                class="btn-close"
-                @click="closeEditModal"></button>
+    <!-- Edit Modal -->
+    <div
+      class="modal fade"
+      id="editStudentModal"
+      tabindex="-1"
+      ref="editModalEl">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title fw-bold">Edit Student</h6>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeEditModal"></button>
+          </div>
+          <div class="modal-body">
+            <div v-if="formError" class="alert alert-danger py-2 small">
+              {{ formError }}
             </div>
-            <div class="modal-body">
-              <div v-if="formError" class="alert alert-danger py-2 small">
-                {{ formError }}
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">First Name</label>
+                <input
+                  v-model="form.first_name"
+                  type="text"
+                  class="form-control" />
               </div>
-              <div class="row mb-3">
-                <div class="col">
-                  <label class="form-label">First Name</label>
-                  <input
-                    v-model="form.first_name"
-                    type="text"
-                    class="form-control" />
-                </div>
-                <div class="col">
-                  <label class="form-label">Last Name</label>
-                  <input
-                    v-model="form.last_name"
-                    type="text"
-                    class="form-control" />
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col">
-                  <label class="form-label"
-                    >Middle Name
-                    <span class="text-muted small">(optional)</span></label
-                  >
-                  <input
-                    v-model="form.middle_name"
-                    type="text"
-                    class="form-control" />
-                </div>
-                <div class="col">
-                  <label class="form-label"
-                    >Suffix
-                    <span class="text-muted small">(optional)</span></label
-                  >
-                  <input
-                    v-model="form.suffix"
-                    type="text"
-                    class="form-control"
-                    placeholder="e.g. Jr." />
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col">
-                  <label class="form-label">Date of Birth</label>
-                  <input
-                    v-model="form.date_of_birth"
-                    type="date"
-                    class="form-control" />
-                </div>
-                <div class="col">
-                  <label class="form-label">Gender</label>
-                  <select v-model="form.gender" class="form-select">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
+              <div class="col">
+                <label class="form-label">Last Name</label>
+                <input
+                  v-model="form.last_name"
+                  type="text"
+                  class="form-control" />
               </div>
             </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary btn-sm" @click="closeEditModal">
-                Cancel
-              </button>
-              <button
-                class="btn btn-primary btn-sm"
-                :disabled="saving"
-                @click="saveStudent">
-                <span
-                  v-if="saving"
-                  class="spinner-border spinner-border-sm me-1"></span>
-                Update
-              </button>
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label"
+                  >Middle Name
+                  <span class="text-muted small">(optional)</span></label
+                >
+                <input
+                  v-model="form.middle_name"
+                  type="text"
+                  class="form-control" />
+              </div>
+              <div class="col">
+                <label class="form-label"
+                  >Suffix
+                  <span class="text-muted small">(optional)</span></label
+                >
+                <input
+                  v-model="form.suffix"
+                  type="text"
+                  class="form-control"
+                  placeholder="e.g. Jr." />
+              </div>
             </div>
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">Date of Birth</label>
+                <input
+                  v-model="form.date_of_birth"
+                  type="date"
+                  class="form-control" />
+              </div>
+              <div class="col">
+                <label class="form-label">Gender</label>
+                <select v-model="form.gender" class="form-select">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" @click="closeEditModal">
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary btn-sm"
+              :disabled="saving"
+              @click="saveStudent">
+              <span
+                v-if="saving"
+                class="spinner-border spinner-border-sm me-1"></span>
+              Update
+            </button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- View Modal -->
-      <div
-        class="modal fade"
-        id="viewStudentModal"
-        tabindex="-1"
-        ref="viewModalEl">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title fw-bold">Student Profile</h6>
-              <button
-                type="button"
-                class="btn-close"
-                @click="closeViewModal"></button>
-            </div>
-            <div class="modal-body" v-if="viewStudent">
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Student Number</p>
-                  <p class="fw-semibold">{{ viewStudent.student_number }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Full Name</p>
-                  <p class="fw-semibold">{{ fullName(viewStudent) }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Gender</p>
-                  <p class="text-capitalize">{{ viewStudent.gender }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Date of Birth</p>
-                  <p>{{ formatDate(viewStudent.date_of_birth) }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Email</p>
-                  <p>{{ viewStudent.user.email }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Account Status</p>
-                  <span
-                    :class="
-                      viewStudent.user.is_active
-                        ? 'badge bg-success'
-                        : 'badge bg-danger'
-                    ">
-                    {{ viewStudent.user.is_active ? "Active" : "Inactive" }}
-                  </span>
-                </div>
+    <!-- View Modal -->
+    <div
+      class="modal fade"
+      id="viewStudentModal"
+      tabindex="-1"
+      ref="viewModalEl">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title fw-bold">Student Profile</h6>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeViewModal"></button>
+          </div>
+          <div class="modal-body" v-if="viewStudent">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Student Number</p>
+                <p class="fw-semibold">{{ viewStudent.student_number }}</p>
               </div>
-
-              <hr />
-
-              <p class="fw-semibold small mb-2">Enrollments</p>
-              <div
-                v-if="viewStudent.enrollments?.length === 0"
-                class="text-muted small">
-                No enrollment records found.
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Full Name</p>
+                <p class="fw-semibold">{{ fullName(viewStudent) }}</p>
               </div>
-              <table v-else class="table table-sm table-bordered">
-                <thead class="table-light">
-                  <tr>
-                    <th>School Year</th>
-                    <th>Grade</th>
-                    <th>Section</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="enrollment in viewStudent.enrollments"
-                    :key="enrollment.id">
-                    <td>{{ enrollment.school_year }}</td>
-                    <td>{{ enrollment.grade_level?.name ?? "—" }}</td>
-                    <td>{{ enrollment.section?.name ?? "—" }}</td>
-                    <td>{{ enrollment.status }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Gender</p>
+                <p class="text-capitalize">{{ viewStudent.gender }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Date of Birth</p>
+                <p>{{ formatDate(viewStudent.date_of_birth) }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Email</p>
+                <p>{{ viewStudent.user.email }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Account Status</p>
+                <span
+                  :class="
+                    viewStudent.user.is_active
+                      ? 'badge bg-success'
+                      : 'badge bg-danger'
+                  ">
+                  {{ viewStudent.user.is_active ? "Active" : "Inactive" }}
+                </span>
+              </div>
             </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary btn-sm" @click="closeViewModal">
-                Close
-              </button>
+
+            <hr />
+
+            <p class="fw-semibold small mb-2">Enrollments</p>
+            <div
+              v-if="viewStudent.enrollments?.length === 0"
+              class="text-muted small">
+              No enrollment records found.
             </div>
+            <table v-else class="table table-sm table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>School Year</th>
+                  <th>Grade</th>
+                  <th>Section</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="enrollment in viewStudent.enrollments"
+                  :key="enrollment.id">
+                  <td>{{ enrollment.school_year }}</td>
+                  <td>{{ enrollment.grade_level?.name ?? "—" }}</td>
+                  <td>{{ enrollment.section?.name ?? "—" }}</td>
+                  <td>{{ enrollment.status }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" @click="closeViewModal">
+              Close
+            </button>
           </div>
         </div>
       </div>
@@ -441,11 +441,11 @@ async function fetchStudents(page = 1) {
     const res = await studentService.getAll(page);
     students.value = res.data.data;
     pagination.value = {
-      current_page: res.data.current_page,
-      last_page: res.data.last_page,
-      from: res.data.from,
-      to: res.data.to,
-      total: res.data.total,
+      current_page: res.data.meta.current_page,
+      last_page: res.data.meta.last_page,
+      from: res.data.meta.from,
+      to: res.data.meta.to,
+      total: res.data.meta.total,
     };
   } catch {
     error.value = "Failed to load students.";

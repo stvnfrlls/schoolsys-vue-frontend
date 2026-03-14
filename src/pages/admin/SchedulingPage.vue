@@ -341,7 +341,7 @@
               <label class="form-label">Teacher</label>
               <select v-model="form.teacher_id" class="form-select">
                 <option disabled value="">Select teacher</option>
-                <option v-for="t in faculty" :key="t.id" :value="t.user_id">
+                <option v-for="t in faculty" :key="t.id" :value="t.user.id">
                   {{ teacherFullName(t) }}
                 </option>
               </select>
@@ -597,9 +597,9 @@ async function openEdit(schedule) {
   isEditing.value = true;
   selectedSchedule.value = schedule;
   form.value = {
-    section_id: schedule.section_id,
-    subject_id: schedule.subject_id,
-    teacher_id: schedule.teacher_id,
+    section_id: schedule.section.id,
+    subject_id: schedule.subject.id,
+    teacher_id: schedule.teacher.user_id,
     day: schedule.day,
     start_time: schedule.start_time,
     end_time: schedule.end_time,
@@ -641,6 +641,7 @@ async function saveSchedule() {
     "semester",
   ];
   const missing = required.filter((f) => !form.value[f]);
+
   if (missing.length) {
     formError.value = "Please fill in all required fields.";
     return;

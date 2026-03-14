@@ -4,14 +4,14 @@ import AttendancePage from '../../pages/admin/AttendancePage.vue'
 
 // ── Mocks ──────────────────────────────────────────────────────────────────
 
-const mockSave    = vi.hoisted(() => vi.fn())
+const mockSave = vi.hoisted(() => vi.fn())
 const mockFlagged = vi.hoisted(() => vi.fn())
 
 vi.mock('@/services/attendance', () => ({
   attendanceService: {
-    getAll:   vi.fn().mockResolvedValue({ data: [] }),
-    save:     mockSave,
-    flagged:  mockFlagged,
+    getAll: vi.fn().mockResolvedValue({ data: [] }),
+    save: mockSave,
+    flagged: mockFlagged,
   },
 }))
 
@@ -38,7 +38,13 @@ vi.mock('@/services/enrollment', () => ({
         data: [
           {
             id: 10,
-            section_id: '1',
+            // loadAttendanceSheet filters by: String(e.section?.id) === String(filterSectionId.value)
+            // The old mock had section_id: '1' (flat) with no nested section object.
+            // So e.section was undefined, e.section?.id was undefined, the filter
+            // returned nothing, attendanceSheet stayed empty, and Jane Doe never
+            // appeared — causing all 3 sheet tests to fail.
+            // Fix: use a nested section object to match what the component reads.
+            section: { id: '1', name: 'Section A' },
             status: 'active',
             student: {
               id: 1,
@@ -132,7 +138,6 @@ describe('AttendancePage', () => {
       // Select section
       await wrapper.find('select').setValue('1')
       // Date is pre-filled with today — just click Load
-      // Find the Load button specifically
       const loadBtn = wrapper.findAll('button').find(b => b.text() === 'Load')
       await loadBtn.trigger('click')
       await flushPromises()
