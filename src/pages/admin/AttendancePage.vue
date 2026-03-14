@@ -481,7 +481,7 @@
                     {{ item.student?.student_number ?? "—" }}
                   </td>
                   <td>
-                    {{ item.section?.grade_level?.name ?? "—" }} —
+                    {{ item.grade_level?.name ?? "—" }} —
                     {{ item.section?.name ?? "—" }}
                   </td>
                   <td class="text-center">
@@ -582,7 +582,7 @@ async function loadAttendanceSheet() {
     const all = res.data?.data ?? res.data;
     enrollments.value = all.filter(
       (e) =>
-        String(e.section_id) === String(filterSectionId.value) &&
+        String(e.section?.id) === String(filterSectionId.value) &&
         e.status === "active",
     );
 
@@ -592,7 +592,7 @@ async function loadAttendanceSheet() {
     const existing = attRes.data;
 
     attendanceSheet.value = enrollments.value.map((enrollment) => {
-      const record = existing.find((a) => a.enrollment_id === enrollment.id);
+      const record = existing.find((a) => a.enrollment?.id === enrollment.id);
       return {
         enrollment,
         attendanceId: record?.id ?? null,

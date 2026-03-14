@@ -248,7 +248,7 @@ const allSections = ref([]);
 
 const filteredSections = computed(() =>
   allSections.value.filter(
-    (s) => s.grade_level_id === form.value.grade_level_id,
+    (s) => s.grade_level.id === form.value.grade_level_id,
   ),
 );
 

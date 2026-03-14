@@ -779,7 +779,7 @@ function openEditSection(section) {
   isEditingSection.value = true;
   selectedSection.value = section;
   sectionForm.value = {
-    grade_level_id: section.grade_level_id,
+    grade_level_id: section.id,
     name: section.name,
     room: section.room,
     capacity: section.capacity,

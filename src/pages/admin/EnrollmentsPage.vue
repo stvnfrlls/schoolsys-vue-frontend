@@ -232,170 +232,165 @@
           </table>
         </div>
       </div>
+    </div>
 
-      <!-- Pagination -->
-      <div
-        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
-        v-if="pagination.last_page > 1">
-        <span
-          >Showing {{ pagination.from }}–{{ pagination.to }} of
-          {{ pagination.total }}</span
-        >
-        <div class="d-flex gap-1">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === 1"
-            @click="fetchEnrollments(pagination.current_page - 1)">
-            Prev
-          </button>
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === pagination.last_page"
-            @click="fetchEnrollments(pagination.current_page + 1)">
-            Next
-          </button>
-        </div>
+    <!-- Pagination -->
+    <div
+      class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+      v-if="pagination.last_page > 1">
+      <span
+        >Showing {{ pagination.from }}–{{ pagination.to }} of
+        {{ pagination.total }}</span
+      >
+      <div class="d-flex gap-1">
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === 1"
+          @click="fetchEnrollments(pagination.current_page - 1)">
+          Prev
+        </button>
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === pagination.last_page"
+          @click="fetchEnrollments(pagination.current_page + 1)">
+          Next
+        </button>
       </div>
+    </div>
 
-      <!-- Create/Edit Modal -->
-      <div class="modal fade" id="enrollmentModal" tabindex="-1" ref="modalEl">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title fw-bold">
-                {{ isEditing ? "Edit Enrollment" : "Enroll Student" }}
-              </h6>
-              <button
-                type="button"
-                class="btn-close"
-                @click="closeModal"></button>
+    <!-- Create/Edit Modal -->
+    <div class="modal fade" id="enrollmentModal" tabindex="-1" ref="modalEl">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title fw-bold">
+              {{ isEditing ? "Edit Enrollment" : "Enroll Student" }}
+            </h6>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeModal"></button>
+          </div>
+          <div class="modal-body">
+            <div v-if="formError" class="alert alert-danger py-2 small">
+              {{ formError }}
             </div>
-            <div class="modal-body">
-              <div v-if="formError" class="alert alert-danger py-2 small">
-                {{ formError }}
-              </div>
 
-              <div class="mb-3" v-if="!isEditing">
-                <label class="form-label">Student</label>
-                <select v-model="form.student_id" class="form-select">
-                  <option disabled value="">Select student</option>
-                  <option
-                    v-for="s in availableStudents"
-                    :key="s.id"
-                    :value="s.id">
-                    {{ fullName(s) }} — {{ s.student_number }}
-                  </option>
-                </select>
-                <div
-                  v-if="availableStudents.length === 0"
-                  class="form-text text-muted">
-                  All students are currently enrolled.
-                </div>
-              </div>
-
-              <div class="mb-3" v-if="!isEditing">
-                <label class="form-label">Grade Level</label>
-                <select
-                  v-model="form.grade_level_id"
-                  class="form-select"
-                  @change="form.section_id = ''">
-                  <option disabled value="">Select grade level</option>
-                  <option v-for="g in gradeLevels" :key="g.id" :value="g.id">
-                    {{ g.name }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="mb-3" v-if="!isEditing">
-                <label class="form-label">Section</label>
-                <select
-                  v-model="form.section_id"
-                  class="form-select"
-                  :disabled="!form.grade_level_id">
-                  <option disabled value="">Select section</option>
-                  <option
-                    v-for="s in filteredSections"
-                    :key="s.id"
-                    :value="s.id">
-                    {{ s.name }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">School Year</label>
-                <input
-                  v-model="form.school_year"
-                  type="text"
-                  class="form-control"
-                  placeholder="e.g. 2025-2026" />
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Semester</label>
-                <select v-model="form.semester" class="form-select">
-                  <option disabled value="">Select semester</option>
-                  <option value="1st">1st</option>
-                  <option value="2nd">2nd</option>
-                  <option value="Summer">Summer</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Status</label>
-                <select v-model="form.status" class="form-select">
-                  <option value="active">Active</option>
-                  <option value="dropped">Dropped</option>
-                  <option value="completed">Completed</option>
-                </select>
+            <div class="mb-3" v-if="!isEditing">
+              <label class="form-label">Student</label>
+              <select v-model="form.student_id" class="form-select">
+                <option disabled value="">Select student</option>
+                <option
+                  v-for="s in availableStudents"
+                  :key="s.id"
+                  :value="s.id">
+                  {{ fullName(s) }} — {{ s.student_number }}
+                </option>
+              </select>
+              <div
+                v-if="availableStudents.length === 0"
+                class="form-text text-muted">
+                All students are currently enrolled.
               </div>
             </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary btn-sm" @click="closeModal">
-                Cancel
-              </button>
-              <button
-                class="btn btn-primary btn-sm"
-                :disabled="saving"
-                @click="saveEnrollment">
-                <span
-                  v-if="saving"
-                  class="spinner-border spinner-border-sm me-1"></span>
-                {{ isEditing ? "Update" : "Enroll" }}
-              </button>
+
+            <div class="mb-3" v-if="!isEditing">
+              <label class="form-label">Grade Level</label>
+              <select
+                v-model="form.grade_level_id"
+                class="form-select"
+                @change="form.section_id = ''">
+                <option disabled value="">Select grade level</option>
+                <option v-for="g in gradeLevels" :key="g.id" :value="g.id">
+                  {{ g.name }}
+                </option>
+              </select>
             </div>
+
+            <div class="mb-3" v-if="!isEditing">
+              <label class="form-label">Section</label>
+              <select
+                v-model="form.section_id"
+                class="form-select"
+                :disabled="!form.grade_level_id">
+                <option disabled value="">Select section</option>
+                <option v-for="s in filteredSections" :key="s.id" :value="s.id">
+                  {{ s.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">School Year</label>
+              <input
+                v-model="form.school_year"
+                type="text"
+                class="form-control"
+                placeholder="e.g. 2025-2026" />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Semester</label>
+              <select v-model="form.semester" class="form-select">
+                <option disabled value="">Select semester</option>
+                <option value="1st">1st</option>
+                <option value="2nd">2nd</option>
+                <option value="Summer">Summer</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <select v-model="form.status" class="form-select">
+                <option value="active">Active</option>
+                <option value="dropped">Dropped</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" @click="closeModal">
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary btn-sm"
+              :disabled="saving"
+              @click="saveEnrollment">
+              <span
+                v-if="saving"
+                class="spinner-border spinner-border-sm me-1"></span>
+              {{ isEditing ? "Update" : "Enroll" }}
+            </button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Delete Confirm Modal -->
-      <div
-        class="modal fade"
-        id="deleteEnrollmentModal"
-        tabindex="-1"
-        ref="deleteModalEl">
-        <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-            <div class="modal-body text-center py-4">
-              <p class="mb-1 fw-semibold">Delete enrollment?</p>
-              <p class="text-muted small mb-3">
-                {{ fullName(selectedEnrollment?.student) }}
-              </p>
-              <button
-                class="btn btn-danger btn-sm me-2"
-                :disabled="saving"
-                @click="deleteEnrollment">
-                <span
-                  v-if="saving"
-                  class="spinner-border spinner-border-sm me-1"></span>
-                Delete
-              </button>
-              <button
-                class="btn btn-secondary btn-sm"
-                @click="closeDeleteModal">
-                Cancel
-              </button>
-            </div>
+    <!-- Delete Confirm Modal -->
+    <div
+      class="modal fade"
+      id="deleteEnrollmentModal"
+      tabindex="-1"
+      ref="deleteModalEl">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body text-center py-4">
+            <p class="mb-1 fw-semibold">Delete enrollment?</p>
+            <p class="text-muted small mb-3">
+              {{ fullName(selectedEnrollment?.student) }}
+            </p>
+            <button
+              class="btn btn-danger btn-sm me-2"
+              :disabled="saving"
+              @click="deleteEnrollment">
+              <span
+                v-if="saving"
+                class="spinner-border spinner-border-sm me-1"></span>
+              Delete
+            </button>
+            <button class="btn btn-secondary btn-sm" @click="closeDeleteModal">
+              Cancel
+            </button>
           </div>
         </div>
       </div>

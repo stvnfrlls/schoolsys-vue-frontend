@@ -714,7 +714,7 @@ const totalWeight = computed(() => {
 const gradeSheet = computed(() => {
   return enrollments.value.map((enrollment) => {
     const enrollmentGrades = existingGrades.value.filter(
-      (g) => g.enrollment_id === enrollment.id,
+      (g) => g.enrollment?.id === enrollment.id,
     );
     const anyGrade = enrollmentGrades.find((g) => g.final_grade !== null);
     const finalGrade = anyGrade?.final_grade ?? null;
@@ -764,7 +764,7 @@ async function onGradeSectionChange() {
   const all = res.data?.data ?? res.data;
   enrollments.value = all.filter(
     (e) =>
-      String(e.section_id) === String(gradeFilterSectionId.value) &&
+      String(e.section?.id) === String(gradeFilterSectionId.value) &&
       e.status === "active",
   );
 }
@@ -816,7 +816,7 @@ async function loadGradeSheet() {
 
 // ── Grade sheet helpers ───────────────────────────────────────────────────
 function getScore(row, componentId) {
-  const grade = row.grades.find((g) => g.grading_component_id === componentId);
+  const grade = row.grades.find((g) => g.grading_component?.id === componentId);
   return grade?.score ?? "";
 }
 
@@ -852,7 +852,7 @@ async function onScoreChange(row, component, event) {
     });
     existingGrades.value = [
       ...existingGrades.value.filter(
-        (g) => g.enrollment_id !== row.enrollment.id,
+        (g) => g.enrollment?.id !== row.enrollment.id,
       ),
       ...res.data,
     ];
@@ -881,7 +881,7 @@ function openEditComponent(comp) {
   isEditingComponent.value = true;
   selectedComponent.value = comp;
   componentForm.value = {
-    subject_id: comp.subject_id,
+    subject_id: comp.id,
     name: comp.name,
     code: comp.code,
     weight: comp.weight,

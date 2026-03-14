@@ -204,197 +204,197 @@
           </table>
         </div>
       </div>
+    </div>
 
-      <!-- Pagination -->
-      <div
-        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
-        v-if="pagination.last_page > 1">
-        <span
-          >Showing {{ pagination.from }}–{{ pagination.to }} of
-          {{ pagination.total }}</span
-        >
-        <div class="d-flex gap-1">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === 1"
-            @click="fetchTeachers(pagination.current_page - 1)">
-            Prev
-          </button>
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === pagination.last_page"
-            @click="fetchTeachers(pagination.current_page + 1)">
-            Next
-          </button>
-        </div>
+    <!-- Pagination -->
+    <div
+      class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+      v-if="pagination.last_page > 1">
+      <span
+        >Showing {{ pagination.from }}–{{ pagination.to }} of
+        {{ pagination.total }}</span
+      >
+      <div class="d-flex gap-1">
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === 1"
+          @click="fetchTeachers(pagination.current_page - 1)">
+          Prev
+        </button>
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === pagination.last_page"
+          @click="fetchTeachers(pagination.current_page + 1)">
+          Next
+        </button>
       </div>
+    </div>
 
-      <!-- Add Teacher Modal -->
-      <AddUserModal ref="addModal" role="faculty" @created="fetchTeachers()" />
+    <!-- Add Teacher Modal -->
+    <AddUserModal ref="addModal" role="faculty" @created="fetchTeachers()" />
 
-      <!-- Edit Modal -->
-      <div
-        class="modal fade"
-        id="editTeacherModal"
-        tabindex="-1"
-        ref="editModalEl">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title fw-bold">Edit Teacher</h6>
-              <button
-                type="button"
-                class="btn-close"
-                @click="closeEditModal"></button>
+    <!-- Edit Modal -->
+    <div
+      class="modal fade"
+      id="editTeacherModal"
+      tabindex="-1"
+      ref="editModalEl">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title fw-bold">Edit Teacher</h6>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeEditModal"></button>
+          </div>
+          <div class="modal-body">
+            <div v-if="formError" class="alert alert-danger py-2 small">
+              {{ formError }}
             </div>
-            <div class="modal-body">
-              <div v-if="formError" class="alert alert-danger py-2 small">
-                {{ formError }}
-              </div>
-              <div class="row mb-3">
-                <div class="col">
-                  <label class="form-label">First Name</label>
-                  <input
-                    v-model="form.first_name"
-                    type="text"
-                    class="form-control" />
-                </div>
-                <div class="col">
-                  <label class="form-label">Last Name</label>
-                  <input
-                    v-model="form.last_name"
-                    type="text"
-                    class="form-control" />
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col">
-                  <label class="form-label">
-                    Middle Name
-                    <span class="text-muted small">(optional)</span>
-                  </label>
-                  <input
-                    v-model="form.middle_name"
-                    type="text"
-                    class="form-control" />
-                </div>
-                <div class="col">
-                  <label class="form-label">
-                    Suffix
-                    <span class="text-muted small">(optional)</span>
-                  </label>
-                  <input
-                    v-model="form.suffix"
-                    type="text"
-                    class="form-control"
-                    placeholder="e.g. Jr." />
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col">
-                  <label class="form-label">Date of Birth</label>
-                  <input
-                    v-model="form.date_of_birth"
-                    type="date"
-                    class="form-control" />
-                </div>
-                <div class="col">
-                  <label class="form-label">Gender</label>
-                  <select v-model="form.gender" class="form-select">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">
-                  Specialization
-                  <span class="text-muted small">(optional)</span>
-                </label>
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">First Name</label>
                 <input
-                  v-model="form.specialization"
+                  v-model="form.first_name"
+                  type="text"
+                  class="form-control" />
+              </div>
+              <div class="col">
+                <label class="form-label">Last Name</label>
+                <input
+                  v-model="form.last_name"
                   type="text"
                   class="form-control" />
               </div>
             </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary btn-sm" @click="closeEditModal">
-                Cancel
-              </button>
-              <button
-                class="btn btn-primary btn-sm"
-                :disabled="saving"
-                @click="saveTeacher">
-                <span
-                  v-if="saving"
-                  class="spinner-border spinner-border-sm me-1"></span>
-                Update
-              </button>
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">
+                  Middle Name
+                  <span class="text-muted small">(optional)</span>
+                </label>
+                <input
+                  v-model="form.middle_name"
+                  type="text"
+                  class="form-control" />
+              </div>
+              <div class="col">
+                <label class="form-label">
+                  Suffix
+                  <span class="text-muted small">(optional)</span>
+                </label>
+                <input
+                  v-model="form.suffix"
+                  type="text"
+                  class="form-control"
+                  placeholder="e.g. Jr." />
+              </div>
             </div>
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">Date of Birth</label>
+                <input
+                  v-model="form.date_of_birth"
+                  type="date"
+                  class="form-control" />
+              </div>
+              <div class="col">
+                <label class="form-label">Gender</label>
+                <select v-model="form.gender" class="form-select">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">
+                Specialization
+                <span class="text-muted small">(optional)</span>
+              </label>
+              <input
+                v-model="form.specialization"
+                type="text"
+                class="form-control" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" @click="closeEditModal">
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary btn-sm"
+              :disabled="saving"
+              @click="saveTeacher">
+              <span
+                v-if="saving"
+                class="spinner-border spinner-border-sm me-1"></span>
+              Update
+            </button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- View Modal -->
-      <div
-        class="modal fade"
-        id="viewTeacherModal"
-        tabindex="-1"
-        ref="viewModalEl">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title fw-bold">Teacher Profile</h6>
-              <button
-                type="button"
-                class="btn-close"
-                @click="closeViewModal"></button>
-            </div>
-            <div class="modal-body" v-if="viewTeacher">
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Employee Number</p>
-                  <p class="fw-semibold">{{ viewTeacher.employee_number }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Full Name</p>
-                  <p class="fw-semibold">{{ fullName(viewTeacher) }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Gender</p>
-                  <p class="text-capitalize">{{ viewTeacher.gender }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Date of Birth</p>
-                  <p>{{ formatDate(viewTeacher.date_of_birth) }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Specialization</p>
-                  <p>{{ viewTeacher.specialization ?? "—" }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Email</p>
-                  <p>{{ viewTeacher.user.email }}</p>
-                </div>
-                <div class="col-md-6">
-                  <p class="text-muted small mb-1">Account Status</p>
-                  <span
-                    :class="
-                      viewTeacher.user.is_active
-                        ? 'badge bg-success'
-                        : 'badge bg-danger'
-                    ">
-                    {{ viewTeacher.user.is_active ? "Active" : "Inactive" }}
-                  </span>
-                </div>
+    <!-- View Modal -->
+    <div
+      class="modal fade"
+      id="viewTeacherModal"
+      tabindex="-1"
+      ref="viewModalEl">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title fw-bold">Teacher Profile</h6>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeViewModal"></button>
+          </div>
+          <div class="modal-body" v-if="viewTeacher">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Employee Number</p>
+                <p class="fw-semibold">{{ viewTeacher.employee_number }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Full Name</p>
+                <p class="fw-semibold">{{ fullName(viewTeacher) }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Gender</p>
+                <p class="text-capitalize">{{ viewTeacher.gender }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Date of Birth</p>
+                <p>{{ formatDate(viewTeacher.date_of_birth) }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Specialization</p>
+                <p>{{ viewTeacher.specialization ?? "—" }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Email</p>
+                <p>{{ viewTeacher.user.email }}</p>
+              </div>
+              <div class="col-md-6">
+                <p class="text-muted small mb-1">Account Status</p>
+                <span
+                  :class="
+                    viewTeacher.user.is_active
+                      ? 'badge bg-success'
+                      : 'badge bg-danger'
+                  ">
+                  {{ viewTeacher.user.is_active ? "Active" : "Inactive" }}
+                </span>
               </div>
             </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary btn-sm" @click="closeViewModal">
-                Close
-              </button>
-            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" @click="closeViewModal">
+              Close
+            </button>
           </div>
         </div>
       </div>

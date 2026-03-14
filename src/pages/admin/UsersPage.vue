@@ -189,211 +189,205 @@
           </table>
         </div>
       </div>
+    </div>
 
-      <!-- Pagination -->
-      <div
-        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
-        v-if="pagination.last_page > 1">
-        <span
-          >Showing {{ pagination.from }}–{{ pagination.to }} of
-          {{ pagination.total }}</span
-        >
-        <div class="d-flex gap-1">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === 1"
-            @click="fetchUsers(pagination.current_page - 1)">
-            Prev
-          </button>
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === pagination.last_page"
-            @click="fetchUsers(pagination.current_page + 1)">
-            Next
-          </button>
-        </div>
+    <!-- Pagination -->
+    <div
+      class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+      v-if="pagination.last_page > 1">
+      <span
+        >Showing {{ pagination.from }}–{{ pagination.to }} of
+        {{ pagination.total }}</span
+      >
+      <div class="d-flex gap-1">
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === 1"
+          @click="fetchUsers(pagination.current_page - 1)">
+          Prev
+        </button>
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          :disabled="pagination.current_page === pagination.last_page"
+          @click="fetchUsers(pagination.current_page + 1)">
+          Next
+        </button>
       </div>
+    </div>
 
-      <!-- Create/Edit Modal -->
-      <div class="modal fade" id="userModal" tabindex="-1" ref="modalEl">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h6 class="modal-title fw-bold">
-                {{ isEditing ? "Edit User" : "Add User" }}
-              </h6>
-              <button
-                type="button"
-                class="btn-close"
-                @click="closeModal"></button>
+    <!-- Create/Edit Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" ref="modalEl">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title fw-bold">
+              {{ isEditing ? "Edit User" : "Add User" }}
+            </h6>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeModal"></button>
+          </div>
+          <div class="modal-body">
+            <div v-if="formError" class="alert alert-danger py-2 small">
+              {{ formError }}
             </div>
-            <div class="modal-body">
-              <div v-if="formError" class="alert alert-danger py-2 small">
-                {{ formError }}
-              </div>
 
-              <!-- Account Fields -->
-              <div class="mb-3" v-if="!isProfileRole">
-                <label class="form-label">Name</label>
-                <input v-model="form.name" type="text" class="form-control" />
+            <!-- Account Fields -->
+            <div class="mb-3" v-if="!isProfileRole">
+              <label class="form-label">Name</label>
+              <input v-model="form.name" type="text" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input v-model="form.email" type="email" class="form-control" />
+            </div>
+            <div class="mb-3" v-if="!isEditing">
+              <label class="form-label">Password</label>
+              <input
+                v-model="form.password"
+                type="password"
+                class="form-control" />
+            </div>
+            <div class="mb-3" v-if="isEditing">
+              <label class="form-label">New Password</label>
+              <input
+                v-model="form.password"
+                type="password"
+                class="form-control"
+                placeholder="Leave blank to keep current password" />
+              <div class="form-text text-muted">
+                Only fill this in if you want to change the password.
               </div>
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input v-model="form.email" type="email" class="form-control" />
-              </div>
-              <div class="mb-3" v-if="!isEditing">
-                <label class="form-label">Password</label>
-                <input
-                  v-model="form.password"
-                  type="password"
-                  class="form-control" />
-              </div>
-              <div class="mb-3" v-if="isEditing">
-                <label class="form-label">New Password</label>
-                <input
-                  v-model="form.password"
-                  type="password"
-                  class="form-control"
-                  placeholder="Leave blank to keep current password" />
-                <div class="form-text text-muted">
-                  Only fill this in if you want to change the password.
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Role</label>
-                <select v-model="form.role_id" class="form-select">
-                  <option disabled value="">Select a role</option>
-                  <option v-for="role in roles" :key="role.id" :value="role.id">
-                    {{ role.name }}
-                  </option>
-                </select>
-              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <select v-model="form.role_id" class="form-select">
+                <option disabled value="">Select a role</option>
+                <option v-for="role in roles" :key="role.id" :value="role.id">
+                  {{ role.name }}
+                </option>
+              </select>
+            </div>
 
-              <!-- Profile Fields: shown only for student or faculty -->
-              <template v-if="isProfileRole && !isEditing">
-                <hr class="my-3" />
-                <p class="small text-muted fw-semibold mb-3 text-uppercase">
-                  {{ selectedRoleName }} Profile
-                </p>
+            <!-- Profile Fields: shown only for student or faculty -->
+            <template v-if="isProfileRole && !isEditing">
+              <hr class="my-3" />
+              <p class="small text-muted fw-semibold mb-3 text-uppercase">
+                {{ selectedRoleName }} Profile
+              </p>
 
-                <div class="row g-2 mb-3">
-                  <div class="col">
-                    <label class="form-label"
-                      >First Name <span class="text-danger">*</span></label
-                    >
-                    <input
-                      v-model="form.first_name"
-                      type="text"
-                      class="form-control" />
-                  </div>
-                  <div class="col">
-                    <label class="form-label"
-                      >Last Name <span class="text-danger">*</span></label
-                    >
-                    <input
-                      v-model="form.last_name"
-                      type="text"
-                      class="form-control" />
-                  </div>
-                </div>
-
-                <div class="row g-2 mb-3">
-                  <div class="col">
-                    <label class="form-label">Middle Name</label>
-                    <input
-                      v-model="form.middle_name"
-                      type="text"
-                      class="form-control" />
-                  </div>
-                  <div class="col">
-                    <label class="form-label">Suffix</label>
-                    <input
-                      v-model="form.suffix"
-                      type="text"
-                      class="form-control"
-                      placeholder="Jr., Sr., III…" />
-                  </div>
-                </div>
-
-                <div class="row g-2 mb-3">
-                  <div class="col">
-                    <label class="form-label"
-                      >Date of Birth <span class="text-danger">*</span></label
-                    >
-                    <input
-                      v-model="form.date_of_birth"
-                      type="date"
-                      class="form-control" />
-                  </div>
-                  <div class="col">
-                    <label class="form-label"
-                      >Gender <span class="text-danger">*</span></label
-                    >
-                    <select v-model="form.gender" class="form-select">
-                      <option disabled value="">Select</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Faculty only -->
-                <div class="mb-3" v-if="selectedRoleName === 'faculty'">
-                  <label class="form-label">Specialization</label>
+              <div class="row g-2 mb-3">
+                <div class="col">
+                  <label class="form-label"
+                    >First Name <span class="text-danger">*</span></label
+                  >
                   <input
-                    v-model="form.specialization"
+                    v-model="form.first_name"
                     type="text"
                     class="form-control" />
                 </div>
-              </template>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary btn-sm" @click="closeModal">
-                Cancel
-              </button>
-              <button
-                class="btn btn-primary btn-sm"
-                :disabled="saving"
-                @click="saveUser">
-                <span
-                  v-if="saving"
-                  class="spinner-border spinner-border-sm me-1"></span>
-                {{ isEditing ? "Update" : "Create" }}
-              </button>
-            </div>
+                <div class="col">
+                  <label class="form-label"
+                    >Last Name <span class="text-danger">*</span></label
+                  >
+                  <input
+                    v-model="form.last_name"
+                    type="text"
+                    class="form-control" />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col">
+                  <label class="form-label">Middle Name</label>
+                  <input
+                    v-model="form.middle_name"
+                    type="text"
+                    class="form-control" />
+                </div>
+                <div class="col">
+                  <label class="form-label">Suffix</label>
+                  <input
+                    v-model="form.suffix"
+                    type="text"
+                    class="form-control"
+                    placeholder="Jr., Sr., III…" />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col">
+                  <label class="form-label"
+                    >Date of Birth <span class="text-danger">*</span></label
+                  >
+                  <input
+                    v-model="form.date_of_birth"
+                    type="date"
+                    class="form-control" />
+                </div>
+                <div class="col">
+                  <label class="form-label"
+                    >Gender <span class="text-danger">*</span></label
+                  >
+                  <select v-model="form.gender" class="form-select">
+                    <option disabled value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Faculty only -->
+              <div class="mb-3" v-if="selectedRoleName === 'faculty'">
+                <label class="form-label">Specialization</label>
+                <input
+                  v-model="form.specialization"
+                  type="text"
+                  class="form-control" />
+              </div>
+            </template>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary btn-sm" @click="closeModal">
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary btn-sm"
+              :disabled="saving"
+              @click="saveUser">
+              <span
+                v-if="saving"
+                class="spinner-border spinner-border-sm me-1"></span>
+              {{ isEditing ? "Update" : "Create" }}
+            </button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Delete Confirm Modal -->
-      <div
-        class="modal fade"
-        id="deleteModal"
-        tabindex="-1"
-        ref="deleteModalEl">
-        <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-            <div class="modal-body text-center py-4">
-              <p class="mb-1 fw-semibold">Delete user?</p>
-              <p class="text-muted small mb-3">
-                {{ displayName(selectedUser) }}
-              </p>
-              <button
-                class="btn btn-danger btn-sm me-2"
-                :disabled="saving"
-                @click="deleteUser">
-                <span
-                  v-if="saving"
-                  class="spinner-border spinner-border-sm me-1"></span>
-                Delete
-              </button>
-              <button
-                class="btn btn-secondary btn-sm"
-                @click="closeDeleteModal">
-                Cancel
-              </button>
-            </div>
+    <!-- Delete Confirm Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" ref="deleteModalEl">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body text-center py-4">
+            <p class="mb-1 fw-semibold">Delete user?</p>
+            <p class="text-muted small mb-3">
+              {{ displayName(selectedUser) }}
+            </p>
+            <button
+              class="btn btn-danger btn-sm me-2"
+              :disabled="saving"
+              @click="deleteUser">
+              <span
+                v-if="saving"
+                class="spinner-border spinner-border-sm me-1"></span>
+              Delete
+            </button>
+            <button class="btn btn-secondary btn-sm" @click="closeDeleteModal">
+              Cancel
+            </button>
           </div>
         </div>
       </div>
@@ -483,19 +477,13 @@ onMounted(async () => {
 });
 
 // ── Data fetching ─────────────────────────────────────────────────────────────
-async function fetchUsers(page = 1) {
+async function fetchUsers() {
   loading.value = true;
   error.value = "";
   try {
-    const res = await userService.getAll(page);
-    users.value = res.data.data;
-    pagination.value = {
-      current_page: res.data.current_page,
-      last_page: res.data.last_page,
-      from: res.data.from,
-      to: res.data.to,
-      total: res.data.total,
-    };
+    const res = await userService.getAll();
+    users.value = res.data;
+    pagination.value = {};
   } catch {
     error.value = "Failed to load users.";
   } finally {
