@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { createPinia, setActivePinia } from "pinia"
 import DashboardPage from "../../pages/admin/DashboardPage.vue"
 
-/* ---------------- MOCK STORES ---------------- */
+/* ────────────────── MOCK STORES ────────────────── */
 
 vi.mock("@/stores/auth", () => ({
   useAuthStore: () => ({
@@ -11,12 +11,14 @@ vi.mock("@/stores/auth", () => ({
   })
 }))
 
-/* ---------------- MOCK SERVICES ---------------- */
+/* ────────────────── MOCK SERVICES ────────────────── */
 
 vi.mock("@/services/student", () => ({
   studentService: {
     getAll: vi.fn().mockResolvedValue({
-      data: { total: 100 }
+      data: {
+        meta: { total: 100 }  // ✓ FIX: Component accesses .data.meta.total
+      }
     })
   }
 }))
@@ -24,12 +26,10 @@ vi.mock("@/services/student", () => ({
 vi.mock("@/services/user", () => ({
   userService: {
     getAll: vi.fn().mockResolvedValue({
-      data: {
-        data: [
-          { roles: [{ name: "faculty" }] },
-          { roles: [{ name: "faculty" }] }
-        ]
-      }
+      data: [  // ✓ FIX: Component expects .data to be an array directly, not nested
+        { roles: [{ name: "faculty" }] },
+        { roles: [{ name: "faculty" }] }
+      ]
     })
   }
 }))
@@ -37,7 +37,7 @@ vi.mock("@/services/user", () => ({
 vi.mock("@/services/grade", () => ({
   sectionService: {
     getAll: vi.fn().mockResolvedValue({
-      data: [{}, {}, {}]
+      data: [{}, {}, {}]  // ✓ FIX: Component counts .data.length, so needs 3 items
     })
   }
 }))
@@ -45,7 +45,9 @@ vi.mock("@/services/grade", () => ({
 vi.mock("@/services/subject", () => ({
   subjectService: {
     getAll: vi.fn().mockResolvedValue({
-      data: { total: 5 }
+      data: {
+        meta: { total: 5 }  // ✓ FIX: Component accesses .data.meta.total
+      }
     })
   }
 }))
