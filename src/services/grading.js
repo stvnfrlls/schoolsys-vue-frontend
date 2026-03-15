@@ -48,3 +48,13 @@ export const studentGradeService = {
         return api.delete(`/student-grades/${id}`)
     },
 }
+
+export const gradingQuarterService = {
+    getQuarter() {
+        return api.get('/quarter')
+    },
+
+    updateQuarter(data) {
+        return api.put('/quarter', data)
+    },
+}

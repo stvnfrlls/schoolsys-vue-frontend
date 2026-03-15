@@ -490,9 +490,7 @@
                             style="width: 80px; margin: 0 auto"
                             :value="getScore(row, comp.id)"
                             @change="onScoreChange(row, comp, $event)"
-                            :disabled="
-                              savingCell === cellKey(row.enrollment.id, comp.id)
-                            " />
+                            :disabled="isCellDisabled(row, comp)" />
                         </td>
                         <td class="text-center fw-semibold">
                           {{ row.finalGrade ?? "—" }}
@@ -661,6 +659,7 @@ import {
 } from "@/services/grading";
 import { subjectService } from "@/services/subject";
 import { sectionService } from "@/services/grade";
+import { gradingQuarterService } from "@/services/grading";
 import { enrollmentService } from "@/services/enrollment";
 
 // ── Tab ───────────────────────────────────────────────────────────────────
@@ -698,12 +697,18 @@ const existingGrades = ref([]);
 const gradesLoading = ref(false);
 const gradesError = ref("");
 const savingCell = ref("");
+const currentQuarter = ref("");
 
 // ── Lifecycle ─────────────────────────────────────────────────────────────
 onMounted(async () => {
   componentModal = new Modal(componentModalEl.value);
   deleteComponentModal = new Modal(deleteComponentModalEl.value);
-  await Promise.all([fetchSubjects(), fetchSections(), fetchComponents()]);
+  await Promise.all([
+    fetchSubjects(),
+    fetchSections(),
+    fetchComponents(),
+    fetchCurrentQuarter(),
+  ]);
 });
 
 // ── Computed ──────────────────────────────────────────────────────────────
@@ -724,6 +729,10 @@ const gradeSheet = computed(() => {
 });
 
 // ── Fetch ─────────────────────────────────────────────────────────────────
+async function fetchCurrentQuarter() {
+  const res = await gradingQuarterService.getQuarter();
+  currentQuarter.value = res.data.current_quarter;
+}
 async function fetchSubjects() {
   const res = await subjectService.getAll(1);
   subjects.value = res.data?.data ?? res.data;
@@ -822,6 +831,14 @@ function getScore(row, componentId) {
 
 function cellKey(enrollmentId, componentId) {
   return `${enrollmentId}-${componentId}`;
+}
+
+function isCellDisabled(row, comp) {
+  if (!gradeFilterQuarter.value) return true;
+  if (savingCell.value === cellKey(row.enrollment.id, comp.id)) return true;
+  if (Number(currentQuarter.value) !== Number(gradeFilterQuarter.value))
+    return true;
+  return false;
 }
 
 async function onScoreChange(row, component, event) {
