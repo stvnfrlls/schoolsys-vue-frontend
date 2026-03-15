@@ -11,25 +11,25 @@
         <span class="badge bg-info text-dark mt-1">Teacher</span>
       </div>
 
-      <ul class="nav nav-pills flex-column gap-1">
+      <ul class="nav nav-pills flex-column gap-2">
         <li class="nav-item">
           <RouterLink to="/teacher/dashboard" class="nav-link text-white">
-            Dashboard
+            <i class="bi bi-speedometer2 me-2"></i>Dashboard
           </RouterLink>
         </li>
         <li class="nav-item">
           <RouterLink to="/teacher/schedule" class="nav-link text-white">
-            My Schedule
+            <i class="bi bi-calendar-week me-2"></i>My Schedule
           </RouterLink>
         </li>
         <li class="nav-item">
           <RouterLink to="/teacher/subjects" class="nav-link text-white">
-            My Subjects
+            <i class="bi bi-book me-2"></i>My Subjects
           </RouterLink>
         </li>
         <li class="nav-item">
           <RouterLink to="/teacher/attendance" class="nav-link text-white">
-            Attendance
+            <i class="bi bi-check-circle me-2"></i>Attendance
           </RouterLink>
         </li>
       </ul>
@@ -75,3 +75,20 @@ async function handleLogout() {
   router.push("/login");
 }
 </script>
+
+<style scoped>
+/* Hover effect for nav links */
+.nav-link {
+  transition: all 0.2s ease;
+  border-radius: 0.375rem;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.router-link-active {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+</style>

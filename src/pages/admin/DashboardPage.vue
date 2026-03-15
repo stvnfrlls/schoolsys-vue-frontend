@@ -118,12 +118,16 @@ onMounted(async () => {
         subjectService.getAll(1),
       ]);
 
+    console.log("Students:", studentsRes.value);
+    console.log("Users:", usersRes.value);
+    console.log("Subjects:", subjectsRes.value);
+
     if (studentsRes.status === "fulfilled") {
-      totalStudents.value = studentsRes.value.data.total;
+      totalStudents.value = studentsRes.value.data.meta.total;
     }
 
     if (usersRes.status === "fulfilled") {
-      const users = usersRes.value.data?.data ?? [];
+      const users = usersRes.value.data ?? [];
       totalTeachers.value = users.filter((u) =>
         u.roles?.some(
           (r) => (typeof r === "string" ? r : r.name) === "faculty",
@@ -136,7 +140,7 @@ onMounted(async () => {
     }
 
     if (subjectsRes.status === "fulfilled") {
-      totalSubjects.value = subjectsRes.value.data.total;
+      totalSubjects.value = subjectsRes.value.data.meta.total;
     }
   } catch {
     error.value = "Some stats could not be loaded.";
