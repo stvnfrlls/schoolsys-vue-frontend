@@ -68,12 +68,36 @@
       </div>
 
       <!-- Welcome -->
-      <div class="card border-0 shadow-sm">
+      <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h6 class="fw-semibold mb-1">Welcome back, {{ auth.user?.name }}</h6>
           <p class="text-muted small mb-0">
             {{ currentSchoolYear() }} · Admin Dashboard
           </p>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-muted small mb-1">Current Quarter</div>
+              <div class="fs-4 fw-bold">
+                <span v-if="loading">—</span>
+                <span v-else>{{ quarterLabels[currentQuarter] }}</span>
+              </div>
+              <button
+                v-for="q in 4"
+                :key="q"
+                class="btn btn-sm me-2"
+                :disabled="updatingQuarter"
+                :value="q"
+                :class="currentQuarter == q ? 'btn-primary' : 'btn-secondary'"
+                @click="updateQuarter">
+                {{ quarterLabels[q] }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -87,6 +111,7 @@ import { studentService } from "@/services/student";
 import { sectionService } from "@/services/grade";
 import { subjectService } from "@/services/subject";
 import { userService } from "@/services/user";
+import { gradingQuarterService } from "@/services/grading";
 
 const auth = useAuthStore();
 const loading = ref(true);
@@ -96,6 +121,15 @@ const totalStudents = ref(null);
 const totalTeachers = ref(null);
 const totalSections = ref(null);
 const totalSubjects = ref(null);
+const currentQuarter = ref(null);
+const updatingQuarter = ref(false);
+
+const quarterLabels = {
+  1: "1st",
+  2: "2nd",
+  3: "3rd",
+  4: "4th",
+};
 
 const statCards = computed(() => [
   { label: "Total Students", value: totalStudents.value ?? "—" },
@@ -110,17 +144,14 @@ const statCards = computed(() => [
 
 onMounted(async () => {
   try {
-    const [studentsRes, usersRes, sectionsRes, subjectsRes] =
+    const [studentsRes, usersRes, sectionsRes, subjectsRes, quarter] =
       await Promise.allSettled([
         studentService.getAll(1),
         userService.getAll(1),
         sectionService.getAll(),
         subjectService.getAll(1),
+        gradingQuarterService.getQuarter(),
       ]);
-
-    console.log("Students:", studentsRes.value);
-    console.log("Users:", usersRes.value);
-    console.log("Subjects:", subjectsRes.value);
 
     if (studentsRes.status === "fulfilled") {
       totalStudents.value = studentsRes.value.data.meta.total;
@@ -142,6 +173,10 @@ onMounted(async () => {
     if (subjectsRes.status === "fulfilled") {
       totalSubjects.value = subjectsRes.value.data.meta.total;
     }
+
+    if (quarter.status === "fulfilled") {
+      currentQuarter.value = quarter.value.data.current_quarter;
+    }
   } catch {
     error.value = "Some stats could not be loaded.";
   } finally {
@@ -154,6 +189,31 @@ function currentSchoolYear() {
   const year = now.getFullYear();
   const startYear = now.getMonth() >= 7 ? year : year - 1;
   return `${startYear}-${startYear + 1}`;
+}
+
+async function updateQuarter(event) {
+  if (updatingQuarter.value) return;
+
+  const quarterValue = String(event.target.value);
+
+  if (!Object.keys(quarterLabels).includes(String(quarterValue))) {
+    console.error("Invalid quarter value:", quarterValue);
+    return;
+  }
+
+  updatingQuarter.value = true;
+
+  currentQuarter.value = quarterValue;
+
+  try {
+    await gradingQuarterService.updateQuarter({
+      current_quarter: quarterValue,
+    });
+  } catch (error) {
+    console.error(error);
+  } finally {
+    updatingQuarter.value = false;
+  }
 }
 </script>
 

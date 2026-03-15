@@ -304,9 +304,7 @@
                           style="width: 80px; margin: 0 auto"
                           :value="getScore(row, comp.id)"
                           @change="onScoreChange(row, comp, $event)"
-                          :disabled="
-                            savingCell === cellKey(row.enrollment.id, comp.id)
-                          " />
+                          :disabled="isCellDisabled(row, comp)" />
                       </td>
                       <td class="text-center fw-semibold">
                         {{ row.finalGrade ?? "—" }}
@@ -355,6 +353,7 @@ import { teacherService } from "@/services/teacher";
 import {
   gradingComponentService,
   studentGradeService,
+  gradingQuarterService,
 } from "@/services/grading";
 import { enrollmentService } from "@/services/enrollment";
 
@@ -372,6 +371,7 @@ const existingGrades = ref([]);
 const gradeLoading = ref(false);
 const gradeError = ref("");
 const savingCell = ref("");
+const currentQuarter = ref("");
 
 const gradeModalEl = ref(null);
 let gradeModal = null;
@@ -379,6 +379,7 @@ let gradeModal = null;
 onMounted(async () => {
   gradeModal = new Modal(gradeModalEl.value);
   await fetchSubjects();
+  await fetchCurrentQuarter();
 });
 
 async function fetchSubjects() {
@@ -439,6 +440,11 @@ async function loadGrades() {
   } finally {
     gradeLoading.value = false;
   }
+}
+
+async function fetchCurrentQuarter() {
+  const res = await gradingQuarterService.getQuarter();
+  currentQuarter.value = res.data.current_quarter;
 }
 
 const gradeSheet = computed(() =>
@@ -515,6 +521,15 @@ function fullName(student) {
   ]
     .filter(Boolean)
     .join(" ");
+}
+
+
+function isCellDisabled(row, comp) {
+  if (!activeQuarter.value) return true;
+  if (savingCell.value === cellKey(row.enrollment.id, comp.id)) return true;
+  if (Number(currentQuarter.value) !== Number(activeQuarter.value))
+    return true;
+  return false;
 }
 </script>
 

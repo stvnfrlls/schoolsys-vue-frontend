@@ -16,9 +16,7 @@ vi.mock("@/stores/auth", () => ({
 vi.mock("@/services/student", () => ({
   studentService: {
     getAll: vi.fn().mockResolvedValue({
-      data: {
-        meta: { total: 100 }  // ✓ FIX: Component accesses .data.meta.total
-      }
+      data: { meta: { total: 100 } }
     })
   }
 }))
@@ -26,7 +24,7 @@ vi.mock("@/services/student", () => ({
 vi.mock("@/services/user", () => ({
   userService: {
     getAll: vi.fn().mockResolvedValue({
-      data: [  // ✓ FIX: Component expects .data to be an array directly, not nested
+      data: [
         { roles: [{ name: "faculty" }] },
         { roles: [{ name: "faculty" }] }
       ]
@@ -37,7 +35,7 @@ vi.mock("@/services/user", () => ({
 vi.mock("@/services/grade", () => ({
   sectionService: {
     getAll: vi.fn().mockResolvedValue({
-      data: [{}, {}, {}]  // ✓ FIX: Component counts .data.length, so needs 3 items
+      data: [{}, {}, {}]
     })
   }
 }))
@@ -45,10 +43,17 @@ vi.mock("@/services/grade", () => ({
 vi.mock("@/services/subject", () => ({
   subjectService: {
     getAll: vi.fn().mockResolvedValue({
-      data: {
-        meta: { total: 5 }  // ✓ FIX: Component accesses .data.meta.total
-      }
+      data: { meta: { total: 5 } }
     })
+  }
+}))
+
+vi.mock("@/services/grading", () => ({
+  gradingQuarterService: {
+    getQuarter: vi.fn().mockResolvedValue({
+      data: { current_quarter: 1 }
+    }),
+    updateQuarter: vi.fn().mockResolvedValue({})
   }
 }))
 
@@ -69,7 +74,11 @@ describe("DashboardPage", () => {
 
   it("renders all 4 stat cards", async () => {
     const wrapper = await mountComponent()
-    expect(wrapper.findAll(".col-sm-6").length).toBe(4)
+    expect(wrapper.findAll(".col-sm-6.col-lg-3").length).toBe(5)
+    expect(wrapper.text()).toContain("Total Students")
+    expect(wrapper.text()).toContain("Total Teachers")
+    expect(wrapper.text()).toContain("Sections")
+    expect(wrapper.text()).toContain("Subjects")
   })
 
   it("renders correct stat card labels", async () => {
