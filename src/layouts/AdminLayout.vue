@@ -65,6 +65,13 @@
                   Grading
                 </RouterLink>
               </li>
+              <li class="nav-item">
+                <RouterLink
+                  to="/admin/assignment"
+                  class="nav-link text-white-50 small">
+                  Assignment
+                </RouterLink>
+              </li>
             </ul>
           </Transition>
         </li>
