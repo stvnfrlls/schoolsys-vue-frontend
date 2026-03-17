@@ -719,8 +719,7 @@ async function saveAssignment(isEdit = false) {
       closeAddModal();
     }
     await fetchAssignments();
-  } catch (e) {
-    console.error(e);
+  } catch {
     alert(`Failed to ${isEdit ? "update" : "create"} assignment.`);
   } finally {
     setSaving.value = false;
@@ -739,7 +738,7 @@ async function deleteAssignment(assignment) {
   try {
     await assignmentService.delete(assignment.id);
     await fetchAssignments();
-  } catch (e) {
+  } catch {
     alert("Failed to delete assignment.");
   } finally {
     deletingId.value = null;
@@ -784,7 +783,9 @@ function openEditModal(assignment) {
   let instructions = [];
   try {
     instructions = details.instructions ? JSON.parse(details.instructions) : [];
-  } catch { }
+  } catch {
+    instructions = [];
+  }
 
   // Keep as number to match the sections data type
   const sectionId = assignment.section_id || "";
