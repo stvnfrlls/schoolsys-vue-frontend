@@ -780,12 +780,7 @@ function closeViewModal() {
 
 function openEditModal(assignment) {
   const details = assignment.details || {};
-  let instructions = [];
-  try {
-    instructions = details.instructions ? JSON.parse(details.instructions) : [];
-  } catch {
-    instructions = [];
-  }
+  let instructions = details.instructions ? JSON.parse(details.instructions) : [];
 
   // Keep as number to match the sections data type
   const sectionId = assignment.section_id || "";
