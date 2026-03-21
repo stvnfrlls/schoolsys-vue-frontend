@@ -2,68 +2,43 @@
   <div>
     <h5 class="fw-bold mb-4">My Grades</h5>
 
-    <!-- Quarter filter -->
     <div class="d-flex align-items-center gap-2 mb-4">
       <span class="small text-muted">Quarter:</span>
       <div class="d-flex gap-1">
-        <button
-          class="btn btn-sm"
-          :class="
-            filterQuarter === null ? 'btn-primary' : 'btn-outline-secondary'
-          "
-          @click="setQuarter(null)">
+        <button class="btn btn-sm" :class="filterQuarter === null ? 'btn-primary' : 'btn-outline-secondary'
+          " @click="setQuarter(null)">
           All
         </button>
-        <button
-          v-for="q in [1, 2, 3, 4]"
-          :key="q"
-          class="btn btn-sm"
-          :class="filterQuarter === q ? 'btn-primary' : 'btn-outline-secondary'"
-          @click="setQuarter(q)">
+        <button v-for="q in [1, 2, 3, 4]" :key="q" class="btn btn-sm"
+          :class="filterQuarter === q ? 'btn-primary' : 'btn-outline-secondary'" @click="setQuarter(q)">
           Q{{ q }}
         </button>
       </div>
     </div>
 
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <div
-        v-for="n in 1"
-        :key="n"
-        class="card border-0 shadow-sm mb-4 overflow-hidden">
-        <!-- Skeleton header -->
-        <div
-          class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+      <div v-for="n in 1" :key="n" class="card border-0 shadow-sm mb-4 overflow-hidden">
+        <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
           <div class="d-flex align-items-center gap-2">
-            <div
-              class="skeleton"
-              style="width: 160px; height: 16px; border-radius: 4px"></div>
-            <div
-              class="skeleton"
-              style="width: 40px; height: 18px; border-radius: 4px"></div>
+            <div class="skeleton" style="width: 160px; height: 16px; border-radius: 4px"></div>
+            <div class="skeleton" style="width: 40px; height: 18px; border-radius: 4px"></div>
           </div>
-          <div
-            class="skeleton"
-            style="width: 20px; height: 16px; border-radius: 4px"></div>
+          <div class="skeleton" style="width: 20px; height: 16px; border-radius: 4px"></div>
         </div>
-        <!-- Skeleton table rows -->
         <div class="card-body p-0">
           <table class="table table-sm mb-0">
             <thead class="table-light">
               <tr>
                 <th v-for="c in 5" :key="c">
-                  <div
-                    class="skeleton"
-                    style="height: 12px; border-radius: 4px"></div>
+                  <div class="skeleton" style="height: 12px; border-radius: 4px"></div>
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="r in 3" :key="r">
                 <td v-for="c in 5" :key="c">
-                  <div
-                    class="skeleton"
-                    :style="`height: 12px; border-radius: 4px; width: ${c === 1 ? '80%' : '50%'}`"></div>
+                  <div class="skeleton" :style="`height: 12px; border-radius: 4px; width: ${c === 1 ? '80%' : '50%'}`">
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -81,39 +56,24 @@
         No grades found.
       </div>
 
-      <!-- One card per subject -->
-      <div
-        v-for="item in grades"
-        :key="item.subject.id"
-        class="card border-0 shadow-sm mb-4">
-        <!-- Card header — clickable to collapse -->
-        <div
-          class="card-header bg-white d-flex align-items-center justify-content-between py-3"
-          style="cursor: pointer"
+      <div v-for="item in grades" :key="item.subject.id" class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between py-3" style="cursor: pointer"
           @click="toggleSubject(item.subject.id)">
           <div class="d-flex align-items-center gap-2">
             <span class="fw-semibold">{{ item.subject.name }}</span>
             <span class="badge bg-secondary">{{ item.subject.code }}</span>
-            <!-- Quarter grade badges in header when collapsed -->
-            <template
-              v-if="isCollapsed(item.subject.id) && filterQuarter === null">
-              <span
-                v-for="q in availableQuarters(item)"
-                :key="q"
-                class="badge"
+            <template v-if="isCollapsed(item.subject.id) && filterQuarter === null">
+              <span v-for="q in availableQuarters(item)" :key="q" class="badge"
                 :class="quarterFailing(item, q) ? 'bg-danger' : 'bg-success'">
                 Q{{ q }}: {{ quarterGrade(item, q) }}
               </span>
             </template>
-            <template
-              v-if="
-                isCollapsed(item.subject.id) &&
-                filterQuarter !== null &&
-                item.grades.length > 0
-              ">
-              <span
-                class="badge"
-                :class="item.grades[0].is_failing ? 'bg-danger' : 'bg-success'">
+            <template v-if="
+              isCollapsed(item.subject.id) &&
+              filterQuarter !== null &&
+              item.grades.length > 0
+            ">
+              <span class="badge" :class="item.grades[0].is_failing ? 'bg-danger' : 'bg-success'">
                 {{ item.grades[0].final_grade }}
               </span>
             </template>
@@ -123,9 +83,7 @@
           </span>
         </div>
 
-        <!-- Collapsible body -->
         <div v-show="!isCollapsed(item.subject.id)" class="card-body p-0">
-          <!-- ── ALL QUARTERS: pivot table ─────────────────────────────── -->
           <template v-if="filterQuarter === null">
             <table class="table table-sm mb-0">
               <thead class="table-light">
@@ -138,14 +96,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="component in uniqueComponents(item)"
-                  :key="component.id">
+                <tr v-for="component in uniqueComponents(item)" :key="component.id">
                   <td>
                     {{ component.name }}
-                    <span class="text-muted small ms-1"
-                      >({{ component.weight }}%)</span
-                    >
+                    <span class="text-muted small ms-1">({{ component.weight }}%)</span>
                   </td>
                   <td v-for="q in [1, 2, 3, 4]" :key="q" class="text-center">
                     {{ weightedScoreFor(item, component.id, q) }}
@@ -157,18 +111,13 @@
                   <td>Quarter Grade</td>
                   <td v-for="q in [1, 2, 3, 4]" :key="q" class="text-center">
                     <template v-if="quarterGrade(item, q) !== null">
-                      <span
-                        :class="
-                          quarterFailing(item, q)
-                            ? 'text-danger'
-                            : 'text-success'
+                      <span :class="quarterFailing(item, q)
+                        ? 'text-danger'
+                        : 'text-success'
                         ">
                         {{ quarterGrade(item, q) }}
                       </span>
-                      <span
-                        class="badge ms-1"
-                        :class="
-                          quarterFailing(item, q) ? 'bg-danger' : 'bg-success'
+                      <span class="badge ms-1" :class="quarterFailing(item, q) ? 'bg-danger' : 'bg-success'
                         ">
                         {{ quarterFailing(item, q) ? "F" : "P" }}
                       </span>
@@ -180,7 +129,6 @@
             </table>
           </template>
 
-          <!-- ── SINGLE QUARTER: simple breakdown ──────────────────────── -->
           <template v-else>
             <table class="table table-sm mb-0">
               <thead class="table-light">
@@ -205,18 +153,13 @@
                 <tr class="table-light fw-semibold">
                   <td colspan="3">Quarter Grade</td>
                   <td class="text-center">
-                    <span
-                      :class="
-                        item.grades[0].is_failing
-                          ? 'text-danger'
-                          : 'text-success'
+                    <span :class="item.grades[0].is_failing
+                      ? 'text-danger'
+                      : 'text-success'
                       ">
                       {{ item.grades[0].final_grade }}
                     </span>
-                    <span
-                      class="badge ms-1"
-                      :class="
-                        item.grades[0].is_failing ? 'bg-danger' : 'bg-success'
+                    <span class="badge ms-1" :class="item.grades[0].is_failing ? 'bg-danger' : 'bg-success'
                       ">
                       {{ item.grades[0].is_failing ? "Failing" : "Passing" }}
                     </span>
@@ -240,7 +183,6 @@ const loading = ref(false);
 const error = ref("");
 const filterQuarter = ref(null);
 
-// Tracks which subject IDs are collapsed — all start expanded
 const collapsedSubjects = ref(new Set());
 
 onMounted(fetchGrades);
@@ -265,14 +207,12 @@ function setQuarter(q) {
   fetchGrades();
 }
 
-// ── Collapse helpers ──────────────────────────────────────────────────────────
 function toggleSubject(subjectId) {
   if (collapsedSubjects.value.has(subjectId)) {
     collapsedSubjects.value.delete(subjectId);
   } else {
     collapsedSubjects.value.add(subjectId);
   }
-  // Trigger reactivity — Set mutations aren't tracked by Vue automatically
   collapsedSubjects.value = new Set(collapsedSubjects.value);
 }
 
@@ -280,7 +220,6 @@ function isCollapsed(subjectId) {
   return collapsedSubjects.value.has(subjectId);
 }
 
-// ── Pivot helpers ─────────────────────────────────────────────────────────────
 function uniqueComponents(item) {
   const seen = new Map();
   for (const grade of item.grades) {
@@ -307,18 +246,17 @@ function quarterFailing(item, quarter) {
   return grade?.is_failing ?? false;
 }
 
-// Returns quarters that have at least one grade entry
 function availableQuarters(item) {
   return [...new Set(item.grades.map((g) => g.quarter))].sort();
 }
 </script>
 
 <style scoped>
-/* Skeleton shimmer animation */
 @keyframes shimmer {
   0% {
     background-position: -600px 0;
   }
+
   100% {
     background-position: 600px 0;
   }

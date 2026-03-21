@@ -1,26 +1,18 @@
 <template>
   <div>
-    <!-- Tabs -->
     <ul class="nav nav-tabs mb-4">
       <li class="nav-item">
-        <button
-          class="nav-link"
-          :class="{ active: tab === 'grades' }"
-          @click="tab = 'grades'">
+        <button class="nav-link" :class="{ active: tab === 'grades' }" @click="tab = 'grades'">
           Grade Levels
         </button>
       </li>
       <li class="nav-item">
-        <button
-          class="nav-link"
-          :class="{ active: tab === 'sections' }"
-          @click="tab = 'sections'">
+        <button class="nav-link" :class="{ active: tab === 'sections' }" @click="tab = 'sections'">
           Sections
         </button>
       </li>
     </ul>
 
-    <!-- Grade Levels Tab -->
     <div v-if="tab === 'grades'">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h6 class="fw-bold mb-0">Grade Levels</h6>
@@ -31,144 +23,9 @@
 
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-          <!-- ── Skeleton ── -->
           <div v-if="gradesLoading">
-            <table class="table table-sm mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th style="width: 40px">
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 14px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 40px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 36px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 56px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 44px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="r in 6" :key="r">
-                  <!-- # -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 22px;
-                        height: 13px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Name e.g. "Grade 7" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${52 + ((r * 11) % 30)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- Level e.g. "7" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 16px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Sections count -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 16px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Status badge -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 20px;
-                        border-radius: 12px;
-                      "></div>
-                  </td>
-                  <!-- Actions -->
-                  <td>
-                    <div class="d-flex gap-1">
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 38px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 74px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 46px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <LoadingTable :headers="['#', 'Name', 'Level', 'Sections', 'Status', 'Actions']"
+              loading-text="Loading grade levels..." />
           </div>
 
           <div v-else-if="gradesError" class="text-center py-5 text-danger">
@@ -176,7 +33,7 @@
           </div>
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
-              <tr>
+              <tr class="text-center">
                 <th>#</th>
                 <th>Name</th>
                 <th>Level</th>
@@ -186,38 +43,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="grade in grades" :key="grade.id">
+              <tr v-for="grade in grades" :key="grade.id" class="text-center">
                 <td class="text-muted small">{{ grade.id }}</td>
                 <td>{{ grade.name }}</td>
                 <td>{{ grade.level }}</td>
                 <td>{{ grade.sections_count }}</td>
                 <td>
-                  <span
-                    :class="
-                      grade.is_active ? 'badge bg-success' : 'badge bg-danger'
+                  <span :class="grade.is_active ? 'badge bg-success' : 'badge bg-danger'
                     ">
                     {{ grade.is_active ? "Active" : "Inactive" }}
                   </span>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    @click="openEditGrade(grade)">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="openEditGrade(grade)">
                     Edit
                   </button>
-                  <button
-                    class="btn btn-sm me-1"
-                    :class="
-                      grade.is_active
-                        ? 'btn-outline-warning'
-                        : 'btn-outline-success'
-                    "
-                    @click="toggleGrade(grade)">
+                  <button class="btn btn-sm me-1" :class="grade.is_active
+                    ? 'btn-outline-warning'
+                    : 'btn-outline-success'
+                    " @click="toggleGrade(grade)">
                     {{ grade.is_active ? "Deactivate" : "Activate" }}
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="confirmDeleteGrade(grade)">
+                  <button class="btn btn-sm btn-outline-danger" @click="confirmDeleteGrade(grade)">
                     Delete
                   </button>
                 </td>
@@ -237,7 +84,6 @@
         </button>
       </div>
 
-      <!-- Filter by grade -->
       <div class="mb-3" style="max-width: 250px">
         <select v-model="filterGradeId" class="form-select form-select-sm">
           <option value="">All Grade Levels</option>
@@ -249,155 +95,9 @@
 
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-          <!-- ── Skeleton ── -->
           <div v-if="sectionsLoading">
-            <table class="table table-sm mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th style="width: 40px">
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 14px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 80px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 36px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 56px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 44px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="r in 6" :key="r">
-                  <!-- # -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 22px;
-                        height: 13px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Section name e.g. "Section A" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${64 + ((r * 13) % 36)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- Grade Level e.g. "Grade 7" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${56 + ((r * 9) % 28)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- Room e.g. "Room 101" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${60 + ((r * 7) % 24)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- Capacity e.g. "40" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 24px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Status badge -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 20px;
-                        border-radius: 12px;
-                      "></div>
-                  </td>
-                  <!-- Actions -->
-                  <td>
-                    <div class="d-flex gap-1">
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 38px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 74px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 46px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <LoadingTable :headers="['#', 'Section', 'Grade Level', 'Room', 'Capacity', 'Status', 'Actions']"
+              loading-text="Loading sections..." />
           </div>
 
           <div v-else-if="sectionsError" class="text-center py-5 text-danger">
@@ -405,7 +105,7 @@
           </div>
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
-              <tr>
+              <tr class="text-center">
                 <th>#</th>
                 <th>Section</th>
                 <th>Grade Level</th>
@@ -416,39 +116,29 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="section in filteredSections" :key="section.id">
+              <tr v-for="section in filteredSections" :key="section.id" class="text-center">
                 <td class="text-muted small">{{ section.id }}</td>
                 <td>{{ section.name }}</td>
                 <td>{{ section.grade_level.name }}</td>
                 <td>{{ section.room }}</td>
                 <td>{{ section.capacity }}</td>
                 <td>
-                  <span
-                    :class="
-                      section.is_active ? 'badge bg-success' : 'badge bg-danger'
+                  <span :class="section.is_active ? 'badge bg-success' : 'badge bg-danger'
                     ">
                     {{ section.is_active ? "Active" : "Inactive" }}
                   </span>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    @click="openEditSection(section)">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="openEditSection(section)">
                     Edit
                   </button>
-                  <button
-                    class="btn btn-sm me-1"
-                    :class="
-                      section.is_active
-                        ? 'btn-outline-warning'
-                        : 'btn-outline-success'
-                    "
-                    @click="toggleSection(section)">
+                  <button class="btn btn-sm me-1" :class="section.is_active
+                    ? 'btn-outline-warning'
+                    : 'btn-outline-success'
+                    " @click="toggleSection(section)">
                     {{ section.is_active ? "Deactivate" : "Activate" }}
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="confirmDeleteSection(section)">
+                  <button class="btn btn-sm btn-outline-danger" @click="confirmDeleteSection(section)">
                     Delete
                   </button>
                 </td>
@@ -464,7 +154,6 @@
       </div>
     </div>
 
-    <!-- Grade Modal -->
     <div class="modal fade" id="gradeModal" tabindex="-1" ref="gradeModalEl">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -472,10 +161,7 @@
             <h6 class="modal-title fw-bold">
               {{ isEditingGrade ? "Edit Grade Level" : "Add Grade Level" }}
             </h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeGradeModal"></button>
+            <button type="button" class="btn-close" @click="closeGradeModal"></button>
           </div>
           <div class="modal-body">
             <div v-if="gradeFormError" class="alert alert-danger py-2 small">
@@ -483,32 +169,19 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Name</label>
-              <input
-                v-model="gradeForm.name"
-                type="text"
-                class="form-control"
-                placeholder="e.g. Grade 7" />
+              <input v-model="gradeForm.name" type="text" class="form-control" placeholder="e.g. Grade 7" />
             </div>
             <div class="mb-3">
               <label class="form-label">Level</label>
-              <input
-                v-model.number="gradeForm.level"
-                type="number"
-                class="form-control"
-                placeholder="e.g. 7" />
+              <input v-model.number="gradeForm.level" type="number" class="form-control" placeholder="e.g. 7" />
             </div>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeGradeModal">
               Cancel
             </button>
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="gradeSaving"
-              @click="saveGrade">
-              <span
-                v-if="gradeSaving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-primary btn-sm" :disabled="gradeSaving" @click="saveGrade">
+              <span v-if="gradeSaving" class="spinner-border spinner-border-sm me-1"></span>
               {{ isEditingGrade ? "Update" : "Create" }}
             </button>
           </div>
@@ -516,22 +189,14 @@
       </div>
     </div>
 
-    <!-- Section Modal -->
-    <div
-      class="modal fade"
-      id="sectionModal"
-      tabindex="-1"
-      ref="sectionModalEl">
+    <div class="modal fade" id="sectionModal" tabindex="-1" ref="sectionModalEl">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h6 class="modal-title fw-bold">
               {{ isEditingSection ? "Edit Section" : "Add Section" }}
             </h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeSectionModal"></button>
+            <button type="button" class="btn-close" @click="closeSectionModal"></button>
           </div>
           <div class="modal-body">
             <div v-if="sectionFormError" class="alert alert-danger py-2 small">
@@ -548,40 +213,23 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Section Name</label>
-              <input
-                v-model="sectionForm.name"
-                type="text"
-                class="form-control"
-                placeholder="e.g. Section A" />
+              <input v-model="sectionForm.name" type="text" class="form-control" placeholder="e.g. Section A" />
             </div>
             <div class="mb-3">
               <label class="form-label">Room</label>
-              <input
-                v-model="sectionForm.room"
-                type="text"
-                class="form-control"
-                placeholder="e.g. Room 101" />
+              <input v-model="sectionForm.room" type="text" class="form-control" placeholder="e.g. Room 101" />
             </div>
             <div class="mb-3">
               <label class="form-label">Capacity</label>
-              <input
-                v-model.number="sectionForm.capacity"
-                type="number"
-                class="form-control"
-                placeholder="e.g. 40" />
+              <input v-model.number="sectionForm.capacity" type="number" class="form-control" placeholder="e.g. 40" />
             </div>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeSectionModal">
               Cancel
             </button>
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="sectionSaving"
-              @click="saveSection">
-              <span
-                v-if="sectionSaving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-primary btn-sm" :disabled="sectionSaving" @click="saveSection">
+              <span v-if="sectionSaving" class="spinner-border spinner-border-sm me-1"></span>
               {{ isEditingSection ? "Update" : "Create" }}
             </button>
           </div>
@@ -589,20 +237,14 @@
       </div>
     </div>
 
-    <!-- Delete Confirm Modal -->
     <div class="modal fade" id="deletGSModal" tabindex="-1" ref="deleteModalEl">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-body text-center py-4">
             <p class="mb-1 fw-semibold">Delete {{ deleteTarget?.type }}?</p>
             <p class="text-muted small mb-3">{{ deleteTarget?.name }}</p>
-            <button
-              class="btn btn-danger btn-sm me-2"
-              :disabled="deleteSaving"
-              @click="executeDelete">
-              <span
-                v-if="deleteSaving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-danger btn-sm me-2" :disabled="deleteSaving" @click="executeDelete">
+              <span v-if="deleteSaving" class="spinner-border spinner-border-sm me-1"></span>
               Delete
             </button>
             <button class="btn btn-secondary btn-sm" @click="closeDeleteModal">
@@ -617,30 +259,24 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
 import { gradeLevelService, sectionService } from "@/services/grade";
 
 const tab = ref("grades");
 
-// --- Data ---
 const grades = ref([]);
 const sections = ref([]);
 const filterGradeId = ref("");
-
-// --- Loading/Error ---
 const gradesLoading = ref(false);
 const sectionsLoading = ref(false);
 const gradesError = ref("");
 const sectionsError = ref("");
-
-// --- Grade form ---
 const isEditingGrade = ref(false);
 const selectedGrade = ref(null);
 const gradeForm = ref({ name: "", level: "" });
 const gradeFormError = ref("");
 const gradeSaving = ref(false);
-
-// --- Section form ---
 const isEditingSection = ref(false);
 const selectedSection = ref(null);
 const sectionForm = ref({
@@ -651,12 +287,8 @@ const sectionForm = ref({
 });
 const sectionFormError = ref("");
 const sectionSaving = ref(false);
-
-// --- Delete ---
 const deleteTarget = ref(null);
 const deleteSaving = ref(false);
-
-// --- Modal refs ---
 const gradeModalEl = ref(null);
 const sectionModalEl = ref(null);
 const deleteModalEl = ref(null);
@@ -703,7 +335,6 @@ async function fetchSections() {
   }
 }
 
-// --- Grade actions ---
 function openCreateGrade() {
   isEditingGrade.value = false;
   gradeForm.value = { name: "", level: "" };
@@ -767,7 +398,6 @@ function confirmDeleteGrade(grade) {
   deleteModal.show();
 }
 
-// --- Section actions ---
 function openCreateSection() {
   isEditingSection.value = false;
   sectionForm.value = { grade_level_id: "", name: "", room: "", capacity: "" };
@@ -836,7 +466,6 @@ function confirmDeleteSection(section) {
   deleteModal.show();
 }
 
-// --- Shared delete ---
 function closeDeleteModal() {
   deleteModal.hide();
 }
@@ -859,20 +488,3 @@ async function executeDelete() {
   }
 }
 </script>
-
-<style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-  100% {
-    background-position: 600px 0;
-  }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-}
-</style>

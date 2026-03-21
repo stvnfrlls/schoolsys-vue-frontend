@@ -1,26 +1,18 @@
 <template>
   <div>
-    <!-- Tabs -->
     <ul class="nav nav-tabs mb-4">
       <li class="nav-item">
-        <button
-          class="nav-link"
-          :class="{ active: tab === 'components' }"
-          @click="tab = 'components'">
+        <button class="nav-link" :class="{ active: tab === 'components' }" @click="tab = 'components'">
           Grading Components
         </button>
       </li>
       <li class="nav-item">
-        <button
-          class="nav-link"
-          :class="{ active: tab === 'grades' }"
-          @click="tab = 'grades'">
+        <button class="nav-link" :class="{ active: tab === 'grades' }" @click="tab = 'grades'">
           Student Grades
         </button>
       </li>
     </ul>
 
-    <!-- ── Tab: Grading Components ──────────────────────────────────────── -->
     <div v-if="tab === 'components'">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h6 class="fw-bold mb-0">Grading Components</h6>
@@ -28,13 +20,8 @@
           + Add Component
         </button>
       </div>
-
-      <!-- Filter by subject -->
       <div class="mb-3" style="max-width: 280px">
-        <select
-          v-model="filterComponentSubjectId"
-          class="form-select form-select-sm"
-          @change="fetchComponents">
+        <select v-model="filterComponentSubjectId" class="form-select form-select-sm" @change="fetchComponents">
           <option value="">All Subjects</option>
           <option v-for="s in subjects" :key="s.id" :value="s.id">
             {{ s.name }}
@@ -44,152 +31,9 @@
 
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-          <!-- ── Skeleton ── -->
           <div v-if="componentsLoading">
-            <table class="table table-sm mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th style="width: 40px">
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 14px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 40px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 36px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 64px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 44px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="r in 5" :key="r">
-                  <!-- # -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 22px;
-                        height: 13px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Name e.g. "Written Work" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${80 + ((r * 19) % 50)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- Code badge e.g. "WW" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 34px;
-                        height: 20px;
-                        border-radius: 12px;
-                      "></div>
-                  </td>
-                  <!-- Subject name -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${70 + ((r * 13) % 40)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- Weight e.g. "30%" bold -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 36px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Status badge -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 20px;
-                        border-radius: 12px;
-                      "></div>
-                  </td>
-                  <!-- Actions: Edit + Delete -->
-                  <td>
-                    <div class="d-flex gap-1">
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 38px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 46px;
-                          height: 26px;
-                          border-radius: 4px;
-                        "></div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <LoadingTable :headers="['#', 'Name', 'Code', 'Subject', 'Weight (%)', 'Status', 'Actions']"
+              loading-text="Loading grading components..." />
           </div>
 
           <div v-else-if="componentsError" class="text-center py-5 text-danger">
@@ -197,7 +41,7 @@
           </div>
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
-              <tr>
+              <tr class="text-center">
                 <th>#</th>
                 <th>Name</th>
                 <th>Code</th>
@@ -208,7 +52,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="comp in components" :key="comp.id">
+              <tr v-for="comp in components" :key="comp.id" class="text-center">
                 <td class="text-muted small">{{ comp.id }}</td>
                 <td>{{ comp.name }}</td>
                 <td>
@@ -219,22 +63,16 @@
                   <span class="fw-semibold">{{ comp.weight }}%</span>
                 </td>
                 <td>
-                  <span
-                    :class="
-                      comp.is_active ? 'badge bg-success' : 'badge bg-danger'
+                  <span :class="comp.is_active ? 'badge bg-success' : 'badge bg-danger'
                     ">
                     {{ comp.is_active ? "Active" : "Inactive" }}
                   </span>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    @click="openEditComponent(comp)">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="openEditComponent(comp)">
                     Edit
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="confirmDeleteComponent(comp)">
+                  <button class="btn btn-sm btn-outline-danger" @click="confirmDeleteComponent(comp)">
                     Delete
                   </button>
                 </td>
@@ -249,18 +87,12 @@
         </div>
       </div>
 
-      <!-- Weight summary per subject -->
-      <div
-        v-if="filterComponentSubjectId && components.length > 0"
-        class="mt-3">
-        <div
-          class="alert py-2 small mb-0"
-          :class="
-            totalWeight === 100
-              ? 'alert-success'
-              : totalWeight > 100
-                ? 'alert-danger'
-                : 'alert-warning'
+      <div v-if="filterComponentSubjectId && components.length > 0" class="mt-3">
+        <div class="alert py-2 small mb-0" :class="totalWeight === 100
+          ? 'alert-success'
+          : totalWeight > 100
+            ? 'alert-danger'
+            : 'alert-warning'
           ">
           <strong>Total weight for this subject: {{ totalWeight }}%</strong>
           <span v-if="totalWeight === 100"> — ✓ Fully allocated</span>
@@ -270,17 +102,11 @@
       </div>
     </div>
 
-    <!-- ── Tab: Student Grades ───────────────────────────────────────────── -->
     <div v-if="tab === 'grades'">
       <h6 class="fw-bold mb-3">Student Grades</h6>
-
-      <!-- Filters -->
       <div class="row g-2 mb-3">
         <div class="col-sm-3">
-          <select
-            v-model="gradeFilterSectionId"
-            class="form-select form-select-sm"
-            @change="onGradeSectionChange">
+          <select v-model="gradeFilterSectionId" class="form-select form-select-sm" @change="onGradeSectionChange">
             <option value="">Select Section</option>
             <option v-for="s in sections" :key="s.id" :value="s.id">
               {{ s.grade_level?.name }} — {{ s.name }}
@@ -288,10 +114,7 @@
           </select>
         </div>
         <div class="col-sm-3">
-          <select
-            v-model="gradeFilterSubjectId"
-            class="form-select form-select-sm"
-            :disabled="!gradeFilterSectionId"
+          <select v-model="gradeFilterSubjectId" class="form-select form-select-sm" :disabled="!gradeFilterSectionId"
             @change="onGradeSubjectChange">
             <option value="">Select Subject</option>
             <option v-for="s in subjects" :key="s.id" :value="s.id">
@@ -300,10 +123,7 @@
           </select>
         </div>
         <div class="col-sm-2">
-          <select
-            v-model="gradeFilterQuarter"
-            class="form-select form-select-sm"
-            :disabled="!gradeFilterSubjectId"
+          <select v-model="gradeFilterQuarter" class="form-select form-select-sm" :disabled="!gradeFilterSubjectId"
             @change="loadGradeSheet">
             <option value="">Select Quarter</option>
             <option value="1">Quarter 1</option>
@@ -314,115 +134,66 @@
         </div>
       </div>
 
-      <!-- Grade sheet -->
-      <div
-        v-if="
-          !gradeFilterSectionId || !gradeFilterSubjectId || !gradeFilterQuarter
-        ">
+      <div v-if="
+        !gradeFilterSectionId || !gradeFilterSubjectId || !gradeFilterQuarter
+      ">
         <div class="text-center text-muted py-5">
           Select a section, subject, and quarter to view and input grades.
         </div>
       </div>
 
       <div v-else>
-        <!-- ── Skeleton for grade sheet ── -->
-        <div v-if="gradesLoading">
+        <div v-if="gradesError" class="text-center py-5 text-danger">
+          {{ gradesError }}
+        </div>
+
+        <div v-if="activeComponents.length === 0" class="alert alert-warning small">
+          No active grading components found for this subject. Go to
+          <strong>Grading Components</strong> tab to add them first.
+        </div>
+        <div v-else>
           <div class="card border-0 shadow-sm">
             <div class="card-body p-0">
               <div class="table-responsive">
-                <table class="table table-bordered mb-0 table-sm">
+                <table class="table table-hover table-bordered mb-0 small">
                   <thead class="table-light">
                     <tr>
-                      <!-- Student column -->
-                      <th style="min-width: 140px">
-                        <div
-                          class="skeleton"
-                          style="
-                            width: 56px;
-                            height: 14px;
-                            border-radius: 3px;
-                          "></div>
+                      <th class="text-nowrap">Student</th>
+                      <th v-for="comp in activeComponents" :key="comp.id" class="text-center text-nowrap">
+                        {{ comp.name }}
+                        <div class="text-muted fw-normal" style="font-size: 0.7rem">
+                          {{ comp.weight }}%
+                        </div>
                       </th>
-                      <!-- 3 placeholder component columns -->
-                      <th
-                        v-for="c in 3"
-                        :key="c"
-                        class="text-center"
-                        style="min-width: 90px">
-                        <div
-                          class="skeleton mx-auto mb-1"
-                          style="
-                            width: 70px;
-                            height: 14px;
-                            border-radius: 3px;
-                          "></div>
-                        <div
-                          class="skeleton mx-auto"
-                          style="
-                            width: 28px;
-                            height: 11px;
-                            border-radius: 3px;
-                          "></div>
-                      </th>
-                      <!-- Final Grade -->
-                      <th class="text-center">
-                        <div
-                          class="skeleton mx-auto"
-                          style="
-                            width: 72px;
-                            height: 14px;
-                            border-radius: 3px;
-                          "></div>
-                      </th>
-                      <!-- Status -->
-                      <th class="text-center">
-                        <div
-                          class="skeleton mx-auto"
-                          style="
-                            width: 44px;
-                            height: 14px;
-                            border-radius: 3px;
-                          "></div>
-                      </th>
+                      <th class="text-center text-nowrap">Final Grade</th>
+                      <th class="text-center">Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="r in 8" :key="r">
-                      <!-- Student name -->
-                      <td>
-                        <div
-                          class="skeleton"
-                          :style="`width:${100 + ((r * 21) % 60)}px;height:14px;border-radius:3px`"></div>
+                    <tr v-for="row in gradeSheet" :key="row.enrollment.id" :class="{ 'table-danger': row.isFailing }">
+                      <td class="text-nowrap">
+                        {{ fullName(row.enrollment.student) }}
                       </td>
-                      <!-- Score input placeholders -->
-                      <td v-for="c in 3" :key="c" class="text-center">
-                        <div
-                          class="skeleton mx-auto"
-                          style="
-                            width: 64px;
-                            height: 28px;
-                            border-radius: 4px;
-                          "></div>
+                      <td v-for="comp in activeComponents" :key="comp.id" class="text-center" style="min-width: 90px">
+                        <input type="number" min="0" max="100" step="0.01"
+                          class="form-control form-control-sm text-center" style="width: 80px; margin: 0 auto"
+                          :value="getScore(row, comp.id)" @change="onScoreChange(row, comp, $event)"
+                          :disabled="isCellDisabled(row, comp)" />
                       </td>
-                      <!-- Final grade -->
+                      <td class="text-center fw-semibold">
+                        {{ row.finalGrade ?? "—" }}
+                      </td>
                       <td class="text-center">
-                        <div
-                          class="skeleton mx-auto"
-                          style="
-                            width: 32px;
-                            height: 14px;
-                            border-radius: 3px;
-                          "></div>
+                        <span v-if="row.finalGrade !== null">
+                          <span v-if="row.isFailing" class="badge bg-danger">Failing</span>
+                          <span v-else class="badge bg-success">Passing</span>
+                        </span>
+                        <span v-else class="text-muted">—</span>
                       </td>
-                      <!-- Status badge -->
-                      <td class="text-center">
-                        <div
-                          class="skeleton mx-auto"
-                          style="
-                            width: 52px;
-                            height: 20px;
-                            border-radius: 12px;
-                          "></div>
+                    </tr>
+                    <tr v-if="gradeSheet.length === 0">
+                      <td :colspan="activeComponents.length + 3" class="text-center text-muted py-4">
+                        No enrolled students found for this section.
                       </td>
                     </tr>
                   </tbody>
@@ -430,109 +201,16 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <div v-else-if="gradesError" class="text-center py-5 text-danger">
-          {{ gradesError }}
-        </div>
-
-        <div v-else>
-          <!-- No components warning -->
-          <div
-            v-if="activeComponents.length === 0"
-            class="alert alert-warning small">
-            No active grading components found for this subject. Go to
-            <strong>Grading Components</strong> tab to add them first.
-          </div>
-
-          <div v-else>
-            <div class="card border-0 shadow-sm">
-              <div class="card-body p-0">
-                <div class="table-responsive">
-                  <table class="table table-hover table-bordered mb-0 small">
-                    <thead class="table-light">
-                      <tr>
-                        <th class="text-nowrap">Student</th>
-                        <th
-                          v-for="comp in activeComponents"
-                          :key="comp.id"
-                          class="text-center text-nowrap">
-                          {{ comp.name }}
-                          <div
-                            class="text-muted fw-normal"
-                            style="font-size: 0.7rem">
-                            {{ comp.weight }}%
-                          </div>
-                        </th>
-                        <th class="text-center text-nowrap">Final Grade</th>
-                        <th class="text-center">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="row in gradeSheet"
-                        :key="row.enrollment.id"
-                        :class="{ 'table-danger': row.isFailing }">
-                        <td class="text-nowrap">
-                          {{ fullName(row.enrollment.student) }}
-                        </td>
-                        <td
-                          v-for="comp in activeComponents"
-                          :key="comp.id"
-                          class="text-center"
-                          style="min-width: 90px">
-                          <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            step="0.01"
-                            class="form-control form-control-sm text-center"
-                            style="width: 80px; margin: 0 auto"
-                            :value="getScore(row, comp.id)"
-                            @change="onScoreChange(row, comp, $event)"
-                            :disabled="isCellDisabled(row, comp)" />
-                        </td>
-                        <td class="text-center fw-semibold">
-                          {{ row.finalGrade ?? "—" }}
-                        </td>
-                        <td class="text-center">
-                          <span v-if="row.finalGrade !== null">
-                            <span v-if="row.isFailing" class="badge bg-danger"
-                              >Failing</span
-                            >
-                            <span v-else class="badge bg-success">Passing</span>
-                          </span>
-                          <span v-else class="text-muted">—</span>
-                        </td>
-                      </tr>
-                      <tr v-if="gradeSheet.length === 0">
-                        <td
-                          :colspan="activeComponents.length + 3"
-                          class="text-center text-muted py-4">
-                          No enrolled students found for this section.
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-2 small text-muted">
-              Scores are saved automatically on input. Final grade is computed
-              by the server. Failing threshold: below 75.
-            </div>
+          <div class="mt-2 small text-muted">
+            Scores are saved automatically on input. Final grade is computed
+            by the server. Failing threshold: below 75.
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── Grading Component Modal ───────────────────────────────────────── -->
-    <div
-      class="modal fade"
-      id="componentModal"
-      tabindex="-1"
-      ref="componentModalEl">
+    <div class="modal fade" id="componentModal" tabindex="-1" ref="componentModalEl">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -541,15 +219,10 @@
                 isEditingComponent ? "Edit Component" : "Add Grading Component"
               }}
             </h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeComponentModal"></button>
+            <button type="button" class="btn-close" @click="closeComponentModal"></button>
           </div>
           <div class="modal-body">
-            <div
-              v-if="componentFormError"
-              class="alert alert-danger py-2 small">
+            <div v-if="componentFormError" class="alert alert-danger py-2 small">
               {{ componentFormError }}
             </div>
 
@@ -564,53 +237,30 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Name</label>
-              <input
-                v-model="componentForm.name"
-                type="text"
-                class="form-control"
-                placeholder="e.g. Written Work" />
+              <input v-model="componentForm.name" type="text" class="form-control" placeholder="e.g. Written Work" />
             </div>
             <div class="mb-3">
               <label class="form-label">Code</label>
-              <input
-                v-model="componentForm.code"
-                type="text"
-                class="form-control"
-                placeholder="e.g. WW" />
+              <input v-model="componentForm.code" type="text" class="form-control" placeholder="e.g. WW" />
             </div>
             <div class="mb-3">
               <label class="form-label">Weight (%)</label>
-              <input
-                v-model.number="componentForm.weight"
-                type="number"
-                min="0"
-                max="100"
-                step="0.01"
-                class="form-control"
-                placeholder="e.g. 30" />
+              <input v-model.number="componentForm.weight" type="number" min="0" max="100" step="0.01"
+                class="form-control" placeholder="e.g. 30" />
               <div class="form-text text-muted" v-if="componentForm.subject_id">
                 Current total for this subject:
-                <strong
-                  >{{ weightForSubject(componentForm.subject_id) }}%</strong
-                >
+                <strong>{{ weightForSubject(componentForm.subject_id) }}%</strong>
                 ({{ 100 - weightForSubject(componentForm.subject_id) }}%
                 remaining)
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button
-              class="btn btn-secondary btn-sm"
-              @click="closeComponentModal">
+            <button class="btn btn-secondary btn-sm" @click="closeComponentModal">
               Cancel
             </button>
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="componentSaving"
-              @click="saveComponent">
-              <span
-                v-if="componentSaving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-primary btn-sm" :disabled="componentSaving" @click="saveComponent">
+              <span v-if="componentSaving" class="spinner-border spinner-border-sm me-1"></span>
               {{ isEditingComponent ? "Update" : "Create" }}
             </button>
           </div>
@@ -618,29 +268,17 @@
       </div>
     </div>
 
-    <!-- ── Delete Component Modal ────────────────────────────────────────── -->
-    <div
-      class="modal fade"
-      id="deleteComponentModal"
-      tabindex="-1"
-      ref="deleteComponentModalEl">
+    <div class="modal fade" id="deleteComponentModal" tabindex="-1" ref="deleteComponentModalEl">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-body text-center py-4">
             <p class="mb-1 fw-semibold">Delete grading component?</p>
             <p class="text-muted small mb-3">{{ selectedComponent?.name }}</p>
-            <button
-              class="btn btn-danger btn-sm me-2"
-              :disabled="componentSaving"
-              @click="deleteComponent">
-              <span
-                v-if="componentSaving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-danger btn-sm me-2" :disabled="componentSaving" @click="deleteComponent">
+              <span v-if="componentSaving" class="spinner-border spinner-border-sm me-1"></span>
               Delete
             </button>
-            <button
-              class="btn btn-secondary btn-sm"
-              @click="closeDeleteComponentModal">
+            <button class="btn btn-secondary btn-sm" @click="closeDeleteComponentModal">
               Cancel
             </button>
           </div>
@@ -652,6 +290,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
 import {
   gradingComponentService,
@@ -662,35 +301,25 @@ import { sectionService } from "@/services/grade";
 import { gradingQuarterService } from "@/services/grading";
 import { enrollmentService } from "@/services/enrollment";
 
-// ── Tab ───────────────────────────────────────────────────────────────────
 const tab = ref("components");
-
-// ── Shared data ───────────────────────────────────────────────────────────
 const subjects = ref([]);
 const sections = ref([]);
-
-// ── Grading Components tab ────────────────────────────────────────────────
 const components = ref([]);
 const componentsLoading = ref(false);
 const componentsError = ref("");
 const filterComponentSubjectId = ref("");
-
 const isEditingComponent = ref(false);
 const selectedComponent = ref(null);
 const componentForm = ref({ subject_id: "", name: "", code: "", weight: "" });
 const componentFormError = ref("");
 const componentSaving = ref(false);
-
 const componentModalEl = ref(null);
 const deleteComponentModalEl = ref(null);
 let componentModal = null;
 let deleteComponentModal = null;
-
-// ── Student Grades tab ────────────────────────────────────────────────────
 const gradeFilterSectionId = ref("");
 const gradeFilterSubjectId = ref("");
 const gradeFilterQuarter = ref("");
-
 const enrollments = ref([]);
 const activeComponents = ref([]);
 const existingGrades = ref([]);
@@ -699,7 +328,6 @@ const gradesError = ref("");
 const savingCell = ref("");
 const currentQuarter = ref("");
 
-// ── Lifecycle ─────────────────────────────────────────────────────────────
 onMounted(async () => {
   componentModal = new Modal(componentModalEl.value);
   deleteComponentModal = new Modal(deleteComponentModalEl.value);
@@ -711,7 +339,6 @@ onMounted(async () => {
   ]);
 });
 
-// ── Computed ──────────────────────────────────────────────────────────────
 const totalWeight = computed(() => {
   return components.value.reduce((sum, c) => sum + Number(c.weight), 0);
 });
@@ -728,7 +355,6 @@ const gradeSheet = computed(() => {
   });
 });
 
-// ── Fetch ─────────────────────────────────────────────────────────────────
 async function fetchCurrentQuarter() {
   const res = await gradingQuarterService.getQuarter();
   currentQuarter.value = res.data.current_quarter;
@@ -759,7 +385,6 @@ async function fetchComponents() {
   }
 }
 
-// ── Grade sheet loaders ───────────────────────────────────────────────────
 async function onGradeSectionChange() {
   gradeFilterSubjectId.value = "";
   gradeFilterQuarter.value = "";
@@ -823,7 +448,6 @@ async function loadGradeSheet() {
   }
 }
 
-// ── Grade sheet helpers ───────────────────────────────────────────────────
 function getScore(row, componentId) {
   const grade = row.grades.find((g) => g.grading_component?.id === componentId);
   return grade?.score ?? "";
@@ -881,7 +505,6 @@ async function onScoreChange(row, component, event) {
   }
 }
 
-// ── Component CRUD ────────────────────────────────────────────────────────
 function openCreateComponent() {
   isEditingComponent.value = false;
   componentForm.value = {
@@ -965,7 +588,6 @@ async function deleteComponent() {
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────
 function fullName(student) {
   if (!student) return "—";
   return [
@@ -988,20 +610,3 @@ function weightForSubject(subjectId) {
   return relevant.reduce((sum, c) => sum + Number(c.weight), 0);
 }
 </script>
-
-<style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-  100% {
-    background-position: 600px 0;
-  }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-}
-</style>

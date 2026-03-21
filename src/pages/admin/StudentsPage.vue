@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h5 class="fw-bold mb-0">Students</h5>
       <button class="btn btn-primary btn-sm" @click="addModal.open()">
@@ -8,127 +7,12 @@
       </button>
     </div>
 
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0">
-            <thead class="table-light">
-              <tr>
-                <!-- LRN -->
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 32px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <!-- Name -->
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 40px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <!-- Gender -->
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 46px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <!-- Date of Birth -->
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 76px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <!-- Email -->
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 36px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <!-- Status -->
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 44px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <!-- Actions -->
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 52px; height: 14px; border-radius: 3px"></div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="r in 8" :key="r">
-                <!-- LRN e.g. "STU-0012" -->
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${64 + ((r * 7) % 20)}px;height:13px;border-radius:3px`"></div>
-                </td>
-                <!-- Full name e.g. "Juan dela Cruz" -->
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${100 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
-                </td>
-                <!-- Gender e.g. "Male" -->
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${28 + ((r * 5) % 16)}px;height:14px;border-radius:3px`"></div>
-                </td>
-                <!-- Date e.g. "Jan 1, 2005" -->
-                <td>
-                  <div
-                    class="skeleton"
-                    style="width: 80px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <!-- Email -->
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${120 + ((r * 17) % 50)}px;height:13px;border-radius:3px`"></div>
-                </td>
-                <!-- Status badge -->
-                <td>
-                  <div
-                    class="skeleton"
-                    style="
-                      width: 52px;
-                      height: 20px;
-                      border-radius: 12px;
-                    "></div>
-                </td>
-                <!-- Actions: Edit + View -->
-                <td>
-                  <div class="d-flex gap-1">
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 38px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 38px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <LoadingTable :headers="['LRN', 'Name', 'Gender', 'Date of Birth', 'Email', 'Status', 'Action']"
+        loading-text="Loading students..." />
     </div>
 
     <div v-else>
-      <!-- Table -->
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
           <div v-if="error" class="text-center py-5 text-danger">
@@ -136,7 +20,7 @@
           </div>
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
-              <tr>
+              <tr class="text-center">
                 <th>LRN</th>
                 <th>Name</th>
                 <th>Gender</th>
@@ -152,31 +36,25 @@
                   No students yet.
                 </td>
               </tr>
-              <tr v-for="student in students" :key="student.id">
+              <tr v-for="student in students" :key="student.id" class="text-center">
                 <td class="text-muted small">{{ student.student_number }}</td>
                 <td>{{ fullName(student) }}</td>
                 <td class="text-capitalize">{{ student.gender }}</td>
                 <td>{{ formatDate(student.date_of_birth) }}</td>
                 <td class="text-muted small">{{ student.user.email }}</td>
                 <td>
-                  <span
-                    :class="
-                      student.user.is_active
-                        ? 'badge bg-success'
-                        : 'badge bg-danger'
+                  <span :class="student.user.is_active
+                    ? 'badge bg-success'
+                    : 'badge bg-danger'
                     ">
                     {{ student.user.is_active ? "Active" : "Inactive" }}
                   </span>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    @click="openEdit(student)">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="openEdit(student)">
                     Edit
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-secondary"
-                    @click="openView(student)">
+                  <button class="btn btn-sm btn-outline-secondary" @click="openView(student)">
                     View
                   </button>
                 </td>
@@ -187,47 +65,30 @@
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div
-      class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+    <div class="d-flex justify-content-between align-items-center mt-3 small text-muted"
       v-if="pagination.last_page > 1">
-      <span
-        >Showing {{ pagination.from }}–{{ pagination.to }} of
-        {{ pagination.total }}</span
-      >
+      <span>Showing {{ pagination.from }}–{{ pagination.to }} of
+        {{ pagination.total }}</span>
       <div class="d-flex gap-1">
-        <button
-          class="btn btn-sm btn-outline-secondary"
-          :disabled="pagination.current_page === 1"
+        <button class="btn btn-sm btn-outline-secondary" :disabled="pagination.current_page === 1"
           @click="fetchStudents(pagination.current_page - 1)">
           Prev
         </button>
-        <button
-          class="btn btn-sm btn-outline-secondary"
-          :disabled="pagination.current_page === pagination.last_page"
+        <button class="btn btn-sm btn-outline-secondary" :disabled="pagination.current_page === pagination.last_page"
           @click="fetchStudents(pagination.current_page + 1)">
           Next
         </button>
       </div>
     </div>
 
-    <!-- Add Student Modal -->
     <AddUserModal ref="addModal" role="student" @created="fetchStudents()" />
 
-    <!-- Edit Modal -->
-    <div
-      class="modal fade"
-      id="editStudentModal"
-      tabindex="-1"
-      ref="editModalEl">
+    <div class="modal fade" id="editStudentModal" tabindex="-1" ref="editModalEl">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h6 class="modal-title fw-bold">Edit Student</h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeEditModal"></button>
+            <button type="button" class="btn-close" @click="closeEditModal"></button>
           </div>
           <div class="modal-body">
             <div v-if="formError" class="alert alert-danger py-2 small">
@@ -236,49 +97,29 @@
             <div class="row mb-3">
               <div class="col">
                 <label class="form-label">First Name</label>
-                <input
-                  v-model="form.first_name"
-                  type="text"
-                  class="form-control" />
+                <input v-model="form.first_name" type="text" class="form-control" />
               </div>
               <div class="col">
                 <label class="form-label">Last Name</label>
-                <input
-                  v-model="form.last_name"
-                  type="text"
-                  class="form-control" />
+                <input v-model="form.last_name" type="text" class="form-control" />
               </div>
             </div>
             <div class="row mb-3">
               <div class="col">
-                <label class="form-label"
-                  >Middle Name
-                  <span class="text-muted small">(optional)</span></label
-                >
-                <input
-                  v-model="form.middle_name"
-                  type="text"
-                  class="form-control" />
+                <label class="form-label">Middle Name
+                  <span class="text-muted small">(optional)</span></label>
+                <input v-model="form.middle_name" type="text" class="form-control" />
               </div>
               <div class="col">
-                <label class="form-label"
-                  >Suffix
-                  <span class="text-muted small">(optional)</span></label
-                >
-                <input
-                  v-model="form.suffix"
-                  type="text"
-                  class="form-control"
-                  placeholder="e.g. Jr." />
+                <label class="form-label">Suffix
+                  <span class="text-muted small">(optional)</span></label>
+                <input v-model="form.suffix" type="text" class="form-control" placeholder="e.g. Jr." />
               </div>
             </div>
             <div class="row mb-3">
               <div class="col">
                 <label class="form-label">Date of Birth</label>
-                <input
-                  v-model="form.date_of_birth"
-                  type="date"
-                  class="form-control" />
+                <input v-model="form.date_of_birth" type="date" class="form-control" />
               </div>
               <div class="col">
                 <label class="form-label">Gender</label>
@@ -294,13 +135,8 @@
             <button class="btn btn-secondary btn-sm" @click="closeEditModal">
               Cancel
             </button>
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="saving"
-              @click="saveStudent">
-              <span
-                v-if="saving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-primary btn-sm" :disabled="saving" @click="saveStudent">
+              <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
               Update
             </button>
           </div>
@@ -308,20 +144,12 @@
       </div>
     </div>
 
-    <!-- View Modal -->
-    <div
-      class="modal fade"
-      id="viewStudentModal"
-      tabindex="-1"
-      ref="viewModalEl">
+    <div class="modal fade" id="viewStudentModal" tabindex="-1" ref="viewModalEl">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h6 class="modal-title fw-bold">Student Profile</h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeViewModal"></button>
+            <button type="button" class="btn-close" @click="closeViewModal"></button>
           </div>
           <div class="modal-body" v-if="viewStudent">
             <div class="row mb-3">
@@ -347,11 +175,9 @@
               </div>
               <div class="col-md-6">
                 <p class="text-muted small mb-1">Account Status</p>
-                <span
-                  :class="
-                    viewStudent.user.is_active
-                      ? 'badge bg-success'
-                      : 'badge bg-danger'
+                <span :class="viewStudent.user.is_active
+                  ? 'badge bg-success'
+                  : 'badge bg-danger'
                   ">
                   {{ viewStudent.user.is_active ? "Active" : "Inactive" }}
                 </span>
@@ -361,9 +187,7 @@
             <hr />
 
             <p class="fw-semibold small mb-2">Enrollments</p>
-            <div
-              v-if="viewStudent.enrollments?.length === 0"
-              class="text-muted small">
+            <div v-if="viewStudent.enrollments?.length === 0" class="text-muted small">
               No enrollment records found.
             </div>
             <table v-else class="table table-sm table-bordered">
@@ -376,9 +200,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="enrollment in viewStudent.enrollments"
-                  :key="enrollment.id">
+                <tr v-for="enrollment in viewStudent.enrollments" :key="enrollment.id">
                   <td>{{ enrollment.school_year }}</td>
                   <td>{{ enrollment.grade_level?.name ?? "—" }}</td>
                   <td>{{ enrollment.section?.name ?? "—" }}</td>
@@ -400,6 +222,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
 import { studentService } from "@/services/student";
 import AddUserModal from "@/components/AddUserModal.vue";
@@ -525,10 +348,12 @@ function closeViewModal() {
   0% {
     background-position: -600px 0;
   }
+
   100% {
     background-position: 600px 0;
   }
 }
+
 .skeleton {
   background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
   background-size: 600px 100%;

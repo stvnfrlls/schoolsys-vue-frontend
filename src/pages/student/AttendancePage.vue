@@ -2,66 +2,49 @@
   <div>
     <h5 class="fw-bold mb-4">My Attendance</h5>
 
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <!-- Summary cards skeleton -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-sm-3" v-for="n in 4" :key="n">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
-              <div
-                class="skeleton mb-2"
-                style="width: 70px; height: 12px; border-radius: 4px"></div>
-              <div
-                class="skeleton"
-                style="width: 40px; height: 28px; border-radius: 4px"></div>
+              <div class="skeleton mb-2" style="width: 70px; height: 12px; border-radius: 4px"></div>
+              <div class="skeleton" style="width: 40px; height: 28px; border-radius: 4px"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Table skeleton -->
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
           <table class="table table-sm mb-0">
             <thead class="table-light">
               <tr>
                 <th v-for="c in 4" :key="c">
-                  <div
-                    class="skeleton"
-                    style="height: 12px; border-radius: 4px"></div>
+                  <div class="skeleton" style="height: 12px; border-radius: 4px"></div>
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="r in 5" :key="r">
                 <td>
-                  <div
-                    class="skeleton"
-                    style="width: 90px; height: 12px; border-radius: 4px"></div>
+                  <div class="skeleton" style="width: 90px; height: 12px; border-radius: 4px"></div>
                 </td>
                 <td>
-                  <div
-                    class="skeleton"
-                    style="
+                  <div class="skeleton" style="
                       width: 120px;
                       height: 12px;
                       border-radius: 4px;
                     "></div>
                 </td>
                 <td class="text-center">
-                  <div
-                    class="skeleton mx-auto"
-                    style="
+                  <div class="skeleton mx-auto" style="
                       width: 55px;
                       height: 20px;
                       border-radius: 12px;
                     "></div>
                 </td>
                 <td>
-                  <div
-                    class="skeleton"
-                    style="width: 80px; height: 12px; border-radius: 4px"></div>
+                  <div class="skeleton" style="width: 80px; height: 12px; border-radius: 4px"></div>
                 </td>
               </tr>
             </tbody>
@@ -75,7 +58,6 @@
     </div>
 
     <div v-else>
-      <!-- Summary cards -->
       <div class="row g-3 mb-4">
         <div class="col-6 col-sm-3">
           <div class="card border-0 shadow-sm h-100">
@@ -111,31 +93,20 @@
         </div>
       </div>
 
-      <!-- Flagged warning -->
-      <div
-        v-if="summary.is_flagged"
-        class="alert alert-danger d-flex align-items-center mb-4">
+      <div v-if="summary.is_flagged" class="alert alert-danger d-flex align-items-center mb-4">
         <strong class="me-2">⚠ Flagged:</strong>
         You have {{ summary.absent }} absences. Excessive absences may affect
         your standing.
       </div>
 
-      <!-- Filter by status -->
       <div class="d-flex align-items-center gap-2 mb-3">
         <span class="small text-muted">Filter:</span>
-        <button
-          v-for="s in statusFilters"
-          :key="s.value"
-          class="btn btn-sm"
-          :class="
-            filterStatus === s.value ? s.activeClass : 'btn-outline-secondary'
-          "
-          @click="filterStatus = s.value">
+        <button v-for="s in statusFilters" :key="s.value" class="btn btn-sm" :class="filterStatus === s.value ? s.activeClass : 'btn-outline-secondary'
+          " @click="filterStatus = s.value">
           {{ s.label }}
         </button>
       </div>
 
-      <!-- Records table -->
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
           <table class="table table-hover mb-0">
@@ -148,10 +119,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="record in filteredRecords"
-                :key="record.id"
-                :class="rowClass(record.status)">
+              <tr v-for="record in filteredRecords" :key="record.id" :class="rowClass(record.status)">
                 <td>{{ formatDate(record.date) }}</td>
                 <td>{{ record.subject?.name ?? "Daily" }}</td>
                 <td class="text-center">
@@ -246,6 +214,7 @@ function formatDate(date) {
   0% {
     background-position: -600px 0;
   }
+
   100% {
     background-position: 600px 0;
   }

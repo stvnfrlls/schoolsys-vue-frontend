@@ -1,23 +1,16 @@
 <template>
   <div>
-    <!-- Tabs -->
     <ul class="nav nav-tabs mb-4">
       <li class="nav-item">
-        <button
-          class="nav-link"
-          :class="{ active: tab === 'take' }"
-          @click="tab = 'take'">
+        <button class="nav-link" :class="{ active: tab === 'take' }" @click="tab = 'take'">
           Take Attendance
         </button>
       </li>
       <li class="nav-item">
-        <button
-          class="nav-link"
-          :class="{ active: tab === 'flagged' }"
-          @click="
-            tab = 'flagged';
-            fetchFlagged();
-          ">
+        <button class="nav-link" :class="{ active: tab === 'flagged' }" @click="
+          tab = 'flagged';
+        fetchFlagged();
+        ">
           Flagged Students
           <span v-if="flaggedCount > 0" class="badge bg-danger ms-1">
             {{ flaggedCount }}
@@ -26,15 +19,10 @@
       </li>
     </ul>
 
-    <!-- ── Tab: Take Attendance ──────────────────────────────────────────── -->
     <div v-if="tab === 'take'">
-      <!-- Filters -->
       <div class="row g-2 mb-3">
         <div class="col-sm-3">
-          <select
-            v-model="filterSectionId"
-            class="form-select form-select-sm"
-            @change="onSectionChange">
+          <select v-model="filterSectionId" class="form-select form-select-sm" @change="onSectionChange">
             <option value="">Select Section</option>
             <option v-for="s in sections" :key="s.id" :value="s.id">
               {{ s.grade_level?.name }} — {{ s.name }}
@@ -42,10 +30,7 @@
           </select>
         </div>
         <div class="col-sm-3">
-          <select
-            v-model="filterSubjectId"
-            class="form-select form-select-sm"
-            :disabled="!filterSectionId">
+          <select v-model="filterSubjectId" class="form-select form-select-sm" :disabled="!filterSectionId">
             <option value="">Daily (no subject)</option>
             <option v-for="s in subjects" :key="s.id" :value="s.id">
               {{ s.name }}
@@ -53,305 +38,111 @@
           </select>
         </div>
         <div class="col-sm-2">
-          <input
-            v-model="filterDate"
-            type="date"
-            class="form-control form-control-sm" />
+          <input v-model="filterDate" type="date" class="form-control form-control-sm" />
         </div>
         <div class="col-sm-auto">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="!filterSectionId || !filterDate"
+          <button class="btn btn-sm btn-outline-secondary" :disabled="!filterSectionId || !filterDate"
             @click="loadAttendanceSheet">
             Load
           </button>
         </div>
       </div>
 
-      <!-- Sheet not loaded yet -->
       <div v-if="!sheetLoaded" class="text-center text-muted py-5">
         Select a section and date, then click Load.
       </div>
 
       <div v-else>
-        <!-- ── Skeleton for attendance sheet ── -->
-        <div v-if="sheetLoading">
-          <!-- Bulk action bar skeleton -->
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <div
-              class="skeleton"
-              style="width: 76px; height: 13px; border-radius: 3px"></div>
-            <div
-              class="skeleton"
-              style="width: 62px; height: 28px; border-radius: 4px"></div>
-            <div
-              class="skeleton"
-              style="width: 54px; height: 28px; border-radius: 4px"></div>
-            <div
-              class="skeleton"
-              style="width: 46px; height: 28px; border-radius: 4px"></div>
-            <div
-              class="skeleton ms-auto"
-              style="width: 180px; height: 13px; border-radius: 3px"></div>
-          </div>
-
-          <div class="card border-0 shadow-sm">
-            <div class="card-body p-0">
-              <table class="table table-sm mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <!-- Student -->
-                    <th>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 52px;
-                          height: 14px;
-                          border-radius: 3px;
-                        "></div>
-                    </th>
-                    <!-- LRN -->
-                    <th>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 32px;
-                          height: 14px;
-                          border-radius: 3px;
-                        "></div>
-                    </th>
-                    <!-- Status -->
-                    <th>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 44px;
-                          height: 14px;
-                          border-radius: 3px;
-                        "></div>
-                    </th>
-                    <!-- Remarks -->
-                    <th>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 56px;
-                          height: 14px;
-                          border-radius: 3px;
-                        "></div>
-                    </th>
-                    <!-- Save -->
-                    <th class="text-center">
-                      <div
-                        class="skeleton mx-auto"
-                        style="
-                          width: 34px;
-                          height: 14px;
-                          border-radius: 3px;
-                        "></div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="r in 8" :key="r">
-                    <!-- Student full name -->
-                    <td>
-                      <div
-                        class="skeleton"
-                        :style="`width:${100 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
-                    </td>
-                    <!-- LRN -->
-                    <td>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 66px;
-                          height: 13px;
-                          border-radius: 3px;
-                        "></div>
-                    </td>
-                    <!-- Status buttons: 3 toggle buttons -->
-                    <td>
-                      <div class="d-flex gap-1">
-                        <div
-                          class="skeleton"
-                          style="
-                            width: 60px;
-                            height: 26px;
-                            border-radius: 4px;
-                          "></div>
-                        <div
-                          class="skeleton"
-                          style="
-                            width: 54px;
-                            height: 26px;
-                            border-radius: 4px;
-                          "></div>
-                        <div
-                          class="skeleton"
-                          style="
-                            width: 44px;
-                            height: 26px;
-                            border-radius: 4px;
-                          "></div>
-                      </div>
-                    </td>
-                    <!-- Remarks input -->
-                    <td>
-                      <div
-                        class="skeleton"
-                        style="
-                          width: 160px;
-                          height: 28px;
-                          border-radius: 4px;
-                        "></div>
-                    </td>
-                    <!-- Save button -->
-                    <td class="text-center">
-                      <div
-                        class="skeleton mx-auto"
-                        style="
-                          width: 46px;
-                          height: 28px;
-                          border-radius: 4px;
-                        "></div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div v-else-if="sheetError" class="text-center py-5 text-danger">
+        <div v-if="sheetError" class="text-center py-5 text-danger">
           {{ sheetError }}
         </div>
 
-        <div v-else>
-          <!-- Bulk actions -->
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <span class="small text-muted">Mark all as:</span>
-            <button
-              class="btn btn-sm btn-outline-success"
-              @click="markAll('present')">
-              Present
-            </button>
-            <button
-              class="btn btn-sm btn-outline-danger"
-              @click="markAll('absent')">
-              Absent
-            </button>
-            <button
-              class="btn btn-sm btn-outline-warning"
-              @click="markAll('late')">
-              Late
-            </button>
-            <div class="ms-auto small text-muted">
-              {{ enrollments.length }} student(s) ·
-              <span class="text-success"
-                >{{ statusCount("present") }} present</span
-              >
-              ·
-              <span class="text-danger"
-                >{{ statusCount("absent") }} absent</span
-              >
-              ·
-              <span class="text-warning">{{ statusCount("late") }} late</span>
-            </div>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="small text-muted">Mark all as:</span>
+          <button class="btn btn-sm btn-outline-success" @click="markAll('present')">
+            Present
+          </button>
+          <button class="btn btn-sm btn-outline-danger" @click="markAll('absent')">
+            Absent
+          </button>
+          <button class="btn btn-sm btn-outline-warning" @click="markAll('late')">
+            Late
+          </button>
+          <div class="ms-auto small text-muted">
+            {{ enrollments.length }} student(s) ·
+            <span class="text-success">{{ statusCount("present") }} present</span>
+            ·
+            <span class="text-danger">{{ statusCount("absent") }} absent</span>
+            ·
+            <span class="text-warning">{{ statusCount("late") }} late</span>
           </div>
+        </div>
 
-          <!-- Attendance table -->
-          <div class="card border-0 shadow-sm">
-            <div class="card-body p-0">
-              <table class="table table-hover mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Student</th>
-                    <th>LRN</th>
-                    <th>Status</th>
-                    <th>
-                      Remarks
-                      <span class="text-muted fw-normal small">(optional)</span>
-                    </th>
-                    <th class="text-center">Save</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="row in attendanceSheet"
-                    :key="row.enrollment.id"
-                    :class="rowClass(row.status)">
-                    <td>{{ fullName(row.enrollment.student) }}</td>
-                    <td class="text-muted small">
-                      {{ row.enrollment.student?.student_number ?? "—" }}
-                    </td>
-                    <td>
-                      <div class="d-flex gap-1">
-                        <button
-                          v-for="s in statuses"
-                          :key="s.value"
-                          class="btn btn-sm"
-                          :class="
-                            row.status === s.value
-                              ? row.attendanceId
-                                ? s.activeClass
-                                : s.outlineClass
-                              : 'btn-outline-secondary'
-                          "
-                          @click="row.status = s.value">
-                          {{ s.label }}
-                        </button>
-                      </div>
-                    </td>
-                    <td>
-                      <input
-                        v-model="row.remarks"
-                        type="text"
-                        class="form-control form-control-sm"
-                        placeholder="e.g. Sick leave"
-                        style="max-width: 200px" />
-                    </td>
-                    <td class="text-center">
-                      <button
-                        class="btn btn-sm btn-primary"
-                        :disabled="savingRow === row.enrollment.id"
-                        @click="saveRow(row)">
-                        <span
-                          v-if="savingRow === row.enrollment.id"
-                          class="spinner-border spinner-border-sm"></span>
-                        <span v-else>Save</span>
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr class="text-center">
+                  <th>Student</th>
+                  <th>LRN</th>
+                  <th>Status</th>
+                  <th>
+                    Remarks
+                    <span class="text-muted fw-normal small">(optional)</span>
+                  </th>
+                  <th class="text-center">Save</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in attendanceSheet" :key="row.enrollment.id" :class="rowClass(row.status)"
+                  class="text-center">
+                  <td>{{ fullName(row.enrollment.student) }}</td>
+                  <td class="text-muted small">
+                    {{ row.enrollment.student?.student_number ?? "—" }}
+                  </td>
+                  <td>
+                    <div class="d-flex gap-1 justify-content-center">
+                      <button v-for="s in statuses" :key="s.value" class="btn btn-sm" :class="row.status === s.value
+                        ? row.attendanceId
+                          ? s.activeClass
+                          : s.outlineClass
+                        : 'btn-outline-secondary'
+                        " @click="row.status = s.value">
+                        {{ s.label }}
                       </button>
-                    </td>
-                  </tr>
-                  <tr v-if="attendanceSheet.length === 0">
-                    <td colspan="5" class="text-center text-muted py-4">
-                      No enrolled students found for this section.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                    </div>
+                  </td>
+                  <td>
+                    <input v-model="row.remarks" type="text" class="form-control form-control-sm"
+                      placeholder="e.g. Sick leave" style="max-width: 200px; margin: 0 auto;" />
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-sm btn-primary" :disabled="savingRow === row.enrollment.id"
+                      @click="saveRow(row)">
+                      <span v-if="savingRow === row.enrollment.id" class="spinner-border spinner-border-sm"></span>
+                      <span v-else>Save</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr v-if="attendanceSheet.length === 0">
+                  <td colspan="5" class="text-center text-muted py-4">
+                    No enrolled students found for this section.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+        </div>
 
-          <!-- Save all button -->
-          <div
-            class="d-flex justify-content-end mt-3"
-            v-if="attendanceSheet.length > 0">
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="savingAll"
-              @click="saveAll">
-              <span
-                v-if="savingAll"
-                class="spinner-border spinner-border-sm me-1"></span>
-              Save All
-            </button>
-          </div>
+        <div class="d-flex justify-content-end mt-3" v-if="attendanceSheet.length > 0">
+          <button class="btn btn-primary btn-sm" :disabled="savingAll" @click="saveAll">
+            <span v-if="savingAll" class="spinner-border spinner-border-sm me-1"></span>
+            Save All
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- ── Tab: Flagged Students ─────────────────────────────────────────── -->
     <div v-if="tab === 'flagged'">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -365,94 +156,9 @@
         </button>
       </div>
 
-      <!-- ── Skeleton for flagged list ── -->
       <div v-if="flaggedLoading">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body p-0">
-            <table class="table table-sm mb-0">
-              <thead class="table-light">
-                <tr>
-                  <!-- Student -->
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <!-- LRN -->
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 32px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <!-- Section -->
-                  <th>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                  <!-- Absences -->
-                  <th class="text-center">
-                    <div
-                      class="skeleton mx-auto"
-                      style="
-                        width: 56px;
-                        height: 14px;
-                        border-radius: 3px;
-                      "></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="r in 5" :key="r">
-                  <!-- Student full name -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${100 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- LRN -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 66px;
-                        height: 13px;
-                        border-radius: 3px;
-                      "></div>
-                  </td>
-                  <!-- Section e.g. "Grade 7 — Section A" -->
-                  <td>
-                    <div
-                      class="skeleton"
-                      :style="`width:${100 + ((r * 15) % 40)}px;height:14px;border-radius:3px`"></div>
-                  </td>
-                  <!-- Absence count badge -->
-                  <td class="text-center">
-                    <div
-                      class="skeleton mx-auto"
-                      style="
-                        width: 24px;
-                        height: 20px;
-                        border-radius: 12px;
-                      "></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <LoadingTable :headers="['Student', 'LRN', 'Section', 'Absences']"
+          loading-text="Loading flagged students..." />
       </div>
 
       <div v-else-if="flaggedError" class="text-center py-5 text-danger">
@@ -472,10 +178,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="item in flaggedStudents"
-                  :key="item.id"
-                  class="table-warning">
+                <tr v-for="item in flaggedStudents" :key="item.id" class="table-warning">
                   <td>{{ fullName(item.student) }}</td>
                   <td class="text-muted small">
                     {{ item.student?.student_number ?? "—" }}
@@ -506,6 +209,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { attendanceService } from "@/services/attendance";
 import { sectionService } from "@/services/grade";
 import { subjectService } from "@/services/subject";
@@ -703,19 +407,3 @@ function rowClass(status) {
   return "";
 }
 </script>
-
-<style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-  100% {
-    background-position: 600px 0;
-  }
-}
-.skeleton {
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-}
-</style>
