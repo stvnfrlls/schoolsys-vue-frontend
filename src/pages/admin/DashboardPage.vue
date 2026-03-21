@@ -1,52 +1,29 @@
 <template>
   <div>
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <!-- Mirrors: 4 stat cards -->
       <div class="row g-3 mb-4">
         <div class="col-sm-6 col-lg-3" v-for="n in 4" :key="n">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
-              <!-- Mirrors: .text-muted.small label -->
-              <div
-                class="skeleton mb-2"
-                style="width: 110px; height: 13px; border-radius: 4px"></div>
-              <!-- Mirrors: .fs-4.fw-bold value -->
-              <div
-                class="skeleton mb-2"
-                style="width: 56px; height: 32px; border-radius: 4px"></div>
-              <!-- Mirrors: .text-muted.small sub (cards 2 & 3 have it, mimicking real layout) -->
-              <div
-                v-if="n === 2"
-                class="skeleton"
-                style="width: 80px; height: 13px; border-radius: 4px"></div>
+              <div class="skeleton mb-2" style="width: 110px; height: 13px; border-radius: 4px"></div>
+              <div class="skeleton mb-2" style="width: 56px; height: 32px; border-radius: 4px"></div>
+              <div v-if="n === 2" class="skeleton" style="width: 80px; height: 13px; border-radius: 4px"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Mirrors: welcome card -->
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <!-- Mirrors: h6.fw-semibold -->
-          <div
-            class="skeleton mb-2"
-            style="width: 180px; height: 18px; border-radius: 4px"></div>
-          <!-- Mirrors: p.text-muted.small -->
-          <div
-            class="skeleton"
-            style="width: 220px; height: 13px; border-radius: 4px"></div>
+          <div class="skeleton mb-2" style="width: 180px; height: 18px; border-radius: 4px"></div>
+          <div class="skeleton" style="width: 220px; height: 13px; border-radius: 4px"></div>
         </div>
       </div>
     </div>
 
     <div v-else>
-      <!-- Stat cards -->
       <div class="row g-3 mb-4">
-        <div
-          class="col-sm-6 col-lg-3"
-          v-for="card in statCards"
-          :key="card.label">
+        <div class="col-sm-6 col-lg-3" v-for="card in statCards" :key="card.label">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
               <div class="text-muted small mb-1">{{ card.label }}</div>
@@ -62,12 +39,10 @@
         </div>
       </div>
 
-      <!-- Error -->
       <div v-if="error" class="alert alert-warning small py-2">
         {{ error }}
       </div>
 
-      <!-- Welcome -->
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h6 class="fw-semibold mb-1">Welcome back, {{ auth.user?.name }}</h6>
@@ -86,14 +61,8 @@
                 <span v-if="loading">—</span>
                 <span v-else>{{ quarterLabels[currentQuarter] }}</span>
               </div>
-              <button
-                v-for="q in 4"
-                :key="q"
-                class="btn btn-sm me-2"
-                :disabled="updatingQuarter"
-                :value="q"
-                :class="currentQuarter == q ? 'btn-primary' : 'btn-secondary'"
-                @click="updateQuarter">
+              <button v-for="q in 4" :key="q" class="btn btn-sm me-2" :disabled="updatingQuarter" :value="q"
+                :class="currentQuarter == q ? 'btn-primary' : 'btn-secondary'" @click="updateQuarter">
                 {{ quarterLabels[q] }}
               </button>
             </div>
@@ -158,7 +127,7 @@ onMounted(async () => {
     }
 
     if (usersRes.status === "fulfilled") {
-      const users = usersRes.value.data ?? [];
+      const users = usersRes.value.data.data ?? [];
       totalTeachers.value = users.filter((u) =>
         u.roles?.some(
           (r) => (typeof r === "string" ? r : r.name) === "faculty",
@@ -222,6 +191,7 @@ async function updateQuarter(event) {
   0% {
     background-position: -600px 0;
   }
+
   100% {
     background-position: 600px 0;
   }

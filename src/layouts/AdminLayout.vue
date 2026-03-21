@@ -204,7 +204,7 @@ const dropdowns = reactive({
 
 const pageTitle = computed(() => route.name ?? "Dashboard");
 
-const academicRoutes = ["grades-sections", "subjects", "scheduling", "grading"];
+const academicRoutes = ["grades-sections", "subjects", "scheduling", "grading", "assignment"];
 const studentRoutes = ["students", "enrollments", "attendance"];
 const adminRoutes = ["users", "faculty"];
 

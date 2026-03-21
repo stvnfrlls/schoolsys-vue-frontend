@@ -34,13 +34,10 @@
       </div>
     </div>
 
-    <!-- Today's schedule preview -->
     <div class="card border-0 shadow-sm mt-4" v-if="todaySchedules.length > 0">
       <div class="card-body">
         <h6 class="fw-semibold mb-3">Today's Classes</h6>
-        <div
-          v-for="s in todaySchedules"
-          :key="s.id"
+        <div v-for="s in todaySchedules" :key="s.id"
           class="d-flex align-items-center justify-content-between border rounded px-3 py-2 mb-2">
           <div>
             <div class="fw-semibold small">{{ s.subject?.name }}</div>

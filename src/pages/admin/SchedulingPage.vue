@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h5 class="fw-bold mb-0">Scheduling</h5>
       <button class="btn btn-primary btn-sm" @click="openCreate">
@@ -8,7 +7,6 @@
       </button>
     </div>
 
-    <!-- Filters -->
     <div class="row g-2 mb-3">
       <div class="col-sm-3">
         <select v-model="filterSectionId" class="form-select form-select-sm">
@@ -35,150 +33,25 @@
         </select>
       </div>
       <div class="col-sm-2">
-        <input
-          v-model="filterSchoolYear"
-          type="text"
-          class="form-control form-control-sm"
+        <input v-model="filterSchoolYear" type="text" class="form-control form-control-sm"
           placeholder="School Year (e.g. 2025-2026)" />
       </div>
       <div class="col-sm-auto">
         <button class="btn btn-sm btn-outline-secondary" @click="applyFilters">
           Filter
         </button>
-        <button
-          class="btn btn-sm btn-link text-muted ms-1"
-          @click="clearFilters">
+        <button class="btn btn-sm btn-link text-muted ms-1" @click="clearFilters">
           Clear
         </button>
       </div>
     </div>
 
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0">
-            <thead class="table-light">
-              <tr>
-                <th style="width: 40px">
-                  <div
-                    class="skeleton"
-                    style="width: 14px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 28px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 36px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 52px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 52px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 52px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 68px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 56px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 52px; height: 14px; border-radius: 3px"></div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="r in 8" :key="r">
-                <td>
-                  <div
-                    class="skeleton"
-                    style="width: 22px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${50 + ((r * 7) % 26)}px;height:20px;border-radius:4px`"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    style="
-                      width: 120px;
-                      height: 13px;
-                      border-radius: 3px;
-                    "></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${70 + ((r * 19) % 50)}px;height:14px;border-radius:3px`"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${56 + ((r * 11) % 28)}px;height:14px;border-radius:3px`"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${90 + ((r * 21) % 50)}px;height:14px;border-radius:3px`"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    style="width: 68px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    style="width: 28px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <td>
-                  <div class="d-flex gap-1">
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 38px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 46px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <LoadingTable
+        :headers="['#', 'Day', 'Time', 'Subject', 'Section', 'Teacher', 'School Year', 'Semester', 'Actions']"
+        loading-text="Loading schedules..." />
     </div>
 
-    <!-- ── Table ─────────────────────────────────────────────────────────── -->
     <div v-else>
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
@@ -187,7 +60,7 @@
           </div>
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
-              <tr>
+              <tr class="text-center">
                 <th>#</th>
                 <th>Day</th>
                 <th>Time</th>
@@ -205,7 +78,7 @@
                   No schedules found.
                 </td>
               </tr>
-              <tr v-for="schedule in schedules" :key="schedule.id">
+              <tr v-for="schedule in schedules" :key="schedule.id" class="text-center">
                 <td class="text-muted small">{{ schedule.id }}</td>
                 <td>
                   <span class="badge bg-light text-dark border text-capitalize">
@@ -217,7 +90,7 @@
                   {{ formatTime(schedule.end_time) }}
                 </td>
                 <td>{{ schedule.subject?.name ?? "—" }}</td>
-                <td>{{ schedule.section?.name ?? "—" }}</td>
+                <td>{{ schedule.section.grade_level.name ?? "" }} - {{ schedule.section?.name ?? "—" }}</td>
                 <td>
                   {{
                     schedule.teacher ? teacherFullName(schedule.teacher) : "—"
@@ -228,14 +101,10 @@
                   {{ schedule.semester }}
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    @click="openEdit(schedule)">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="openEdit(schedule)">
                     Edit
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="confirmDelete(schedule)">
+                  <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(schedule)">
                     Delete
                   </button>
                 </td>
@@ -245,24 +114,16 @@
         </div>
       </div>
 
-      <!-- Pagination -->
-      <div
-        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+      <div class="d-flex justify-content-between align-items-center mt-3 small text-muted"
         v-if="pagination.last_page > 1">
-        <span
-          >Showing {{ pagination.from }}–{{ pagination.to }} of
-          {{ pagination.total }}</span
-        >
+        <span>Showing {{ pagination.from }}–{{ pagination.to }} of
+          {{ pagination.total }}</span>
         <div class="d-flex gap-1">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === 1"
+          <button class="btn btn-sm btn-outline-secondary" :disabled="pagination.current_page === 1"
             @click="fetchSchedules(pagination.current_page - 1)">
             Prev
           </button>
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === pagination.last_page"
+          <button class="btn btn-sm btn-outline-secondary" :disabled="pagination.current_page === pagination.last_page"
             @click="fetchSchedules(pagination.current_page + 1)">
             Next
           </button>
@@ -270,9 +131,6 @@
       </div>
     </div>
 
-    <!-- ── Modals: outside v-if/v-else so they are never destroyed ───────── -->
-
-    <!-- Create/Edit Modal -->
     <div class="modal fade" id="scheduleModal" tabindex="-1" ref="modalEl">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -280,10 +138,7 @@
             <h6 class="modal-title fw-bold">
               {{ isEditing ? "Edit Schedule" : "Add Schedule" }}
             </h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeModal"></button>
+            <button type="button" class="btn-close" @click="closeModal"></button>
           </div>
           <div class="modal-body">
             <div v-if="formError" class="alert alert-danger py-2 small">
@@ -292,10 +147,7 @@
 
             <div class="mb-3">
               <label class="form-label">Section</label>
-              <select
-                v-model="form.section_id"
-                class="form-select"
-                @change="onSectionChange">
+              <select v-model="form.section_id" class="form-select" @change="onSectionChange">
                 <option disabled value="">Select section</option>
                 <option v-for="s in sections" :key="s.id" :value="s.id">
                   {{ s.grade_level?.name }} — {{ s.name }}
@@ -306,33 +158,24 @@
             <div class="mb-3">
               <label class="form-label">
                 Subject
-                <span v-if="!form.section_id" class="text-muted small"
-                  >(select a section first)</span
-                >
+                <span v-if="!form.section_id" class="text-muted small">(select a section first)</span>
               </label>
-              <select
-                v-model="form.subject_id"
-                class="form-select"
-                :disabled="!form.section_id">
+              <select v-model="form.subject_id" class="form-select" :disabled="!form.section_id">
                 <option disabled value="">Select subject</option>
                 <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">
                   {{ s.name }}<template v-if="s.code"> ({{ s.code }})</template>
                 </option>
               </select>
-              <div
-                v-if="form.section_id && !subjectFilterActive"
-                class="form-text text-warning">
+              <div v-if="form.section_id && !subjectFilterActive" class="form-text text-warning">
                 ⚠ Subjects haven't been assigned to grade levels yet — showing
                 all subjects. Go to <strong>Subjects → Assign</strong> to set
                 this up.
               </div>
-              <div
-                v-if="
-                  form.section_id &&
-                  subjectFilterActive &&
-                  filteredSubjects.length === 0
-                "
-                class="form-text text-danger">
+              <div v-if="
+                form.section_id &&
+                subjectFilterActive &&
+                filteredSubjects.length === 0
+              " class="form-text text-danger">
                 No subjects are assigned to this section's grade level.
               </div>
             </div>
@@ -349,39 +192,32 @@
 
             <div class="mb-3">
               <label class="form-label">Day</label>
-              <select v-model="form.day" class="form-select">
-                <option disabled value="">Select day</option>
-                <option v-for="d in days" :key="d.value" :value="d.value">
-                  {{ d.label }}
-                </option>
-              </select>
+              <div class="days-checkbox-group d-flex gap-2">
+                <div v-for="d in days" :key="d.value" class="form-check">
+                  <input type="checkbox" :id="`day-${d.value}`" :checked="form.days?.includes(d.value)"
+                    @change="toggleDay(d.value)" class="form-check-input" />
+                  <label :for="`day-${d.value}`" class="form-check-label">
+                    {{ d.label }}
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div class="row mb-3">
               <div class="col">
                 <label class="form-label">Start Time</label>
-                <input
-                  v-model="form.start_time"
-                  type="time"
-                  class="form-control" />
+                <input v-model="form.start_time" type="time" class="form-control" />
               </div>
               <div class="col">
                 <label class="form-label">End Time</label>
-                <input
-                  v-model="form.end_time"
-                  type="time"
-                  class="form-control" />
+                <input v-model="form.end_time" type="time" class="form-control" />
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col">
                 <label class="form-label">School Year</label>
-                <input
-                  v-model="form.school_year"
-                  type="text"
-                  class="form-control"
-                  placeholder="e.g. 2025-2026" />
+                <input v-model="form.school_year" type="text" class="form-control" placeholder="e.g. 2025-2026" />
               </div>
               <div class="col">
                 <label class="form-label">Semester</label>
@@ -398,13 +234,8 @@
             <button class="btn btn-secondary btn-sm" @click="closeModal">
               Cancel
             </button>
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="saving"
-              @click="saveSchedule">
-              <span
-                v-if="saving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-primary btn-sm" :disabled="saving" @click="saveSchedule">
+              <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
               {{ isEditing ? "Update" : "Create" }}
             </button>
           </div>
@@ -412,12 +243,7 @@
       </div>
     </div>
 
-    <!-- Delete Confirm Modal -->
-    <div
-      class="modal fade"
-      id="deleteScheduleModal"
-      tabindex="-1"
-      ref="deleteModalEl">
+    <div class="modal fade" id="deleteScheduleModal" tabindex="-1" ref="deleteModalEl">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-body text-center py-4">
@@ -430,13 +256,8 @@
               {{ formatTime(selectedSchedule?.start_time) }} –
               {{ formatTime(selectedSchedule?.end_time) }}
             </p>
-            <button
-              class="btn btn-danger btn-sm me-2"
-              :disabled="saving"
-              @click="deleteSchedule">
-              <span
-                v-if="saving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-danger btn-sm me-2" :disabled="saving" @click="deleteSchedule">
+              <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
               Delete
             </button>
             <button class="btn btn-secondary btn-sm" @click="closeDeleteModal">
@@ -451,6 +272,7 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
 import { scheduleService, facultyService } from "@/services/schedule";
 import { sectionService } from "@/services/grade";
@@ -477,7 +299,7 @@ const form = ref({
   section_id: "",
   subject_id: "",
   teacher_id: "",
-  day: "",
+  days: [],
   start_time: "",
   end_time: "",
   school_year: currentSchoolYear(),
@@ -522,6 +344,16 @@ const filteredSubjects = computed(() => {
     sub.grade_levels?.some((gl) => gl.id === section.grade_level.id),
   );
 });
+
+const toggleDay = (day) => {
+  if (!form.value.days) form.value.days = []
+
+  if (form.value.days.includes(day)) {
+    form.value.days = form.value.days.filter(d => d !== day)
+  } else {
+    form.value.days.push(day)
+  }
+}
 
 async function fetchSchedules(page = 1) {
   loading.value = true;
@@ -582,7 +414,7 @@ async function openCreate() {
     section_id: "",
     subject_id: "",
     teacher_id: "",
-    day: "",
+    days: [],
     start_time: "",
     end_time: "",
     school_year: currentSchoolYear(),
@@ -600,7 +432,7 @@ async function openEdit(schedule) {
     section_id: schedule.section.id,
     subject_id: schedule.subject.id,
     teacher_id: schedule.teacher.user_id,
-    day: schedule.day,
+    days: schedule.days,
     start_time: schedule.start_time,
     end_time: schedule.end_time,
     school_year: schedule.school_year,
@@ -634,7 +466,7 @@ async function saveSchedule() {
     "section_id",
     "subject_id",
     "teacher_id",
-    "day",
+    "days",
     "start_time",
     "end_time",
     "school_year",
@@ -705,19 +537,3 @@ function formatTime(time) {
   return `${hour}:${String(m).padStart(2, "0")} ${period}`;
 }
 </script>
-
-<style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-  100% {
-    background-position: 600px 0;
-  }
-}
-.skeleton {
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-}
-</style>

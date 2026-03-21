@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h5 class="fw-bold mb-0">Subjects</h5>
       <button class="btn btn-primary btn-sm" @click="openCreate">
@@ -8,145 +7,11 @@
       </button>
     </div>
 
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0">
-            <thead class="table-light">
-              <tr>
-                <th style="width: 40px">
-                  <div
-                    class="skeleton"
-                    style="width: 14px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 40px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 36px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 74px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 80px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 44px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div
-                    class="skeleton"
-                    style="width: 52px; height: 14px; border-radius: 3px"></div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="r in 7" :key="r">
-                <td>
-                  <div
-                    class="skeleton"
-                    style="width: 22px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    :style="`width:${80 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    style="
-                      width: 38px;
-                      height: 20px;
-                      border-radius: 12px;
-                    "></div>
-                </td>
-                <td>
-                  <div
-                    v-if="r % 3 !== 0"
-                    class="skeleton"
-                    :style="`width:${100 + ((r * 17) % 80)}px;height:13px;border-radius:3px`"></div>
-                  <div
-                    v-else
-                    class="skeleton"
-                    style="width: 16px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <td>
-                  <div class="d-flex gap-1 flex-wrap">
-                    <div
-                      class="skeleton"
-                      :style="`width:${44 + ((r * 11) % 24)}px;height:20px;border-radius:4px`"></div>
-                    <div
-                      v-if="r % 2 === 0"
-                      class="skeleton"
-                      style="
-                        width: 52px;
-                        height: 20px;
-                        border-radius: 4px;
-                      "></div>
-                  </div>
-                </td>
-                <td>
-                  <div
-                    class="skeleton"
-                    style="
-                      width: 52px;
-                      height: 20px;
-                      border-radius: 12px;
-                    "></div>
-                </td>
-                <td>
-                  <div class="d-flex gap-1 flex-wrap">
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 38px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 50px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 74px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 46px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <LoadingTable :headers="['#', 'Name', 'Code', 'Description', 'Grade Levels', 'Status', 'Actions']"
+        loading-text="Loading subjects..." />
     </div>
 
-    <!-- ── Table ─────────────────────────────────────────────────────────── -->
     <div v-else>
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
@@ -155,7 +20,7 @@
           </div>
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
-              <tr>
+              <tr class="text-center">
                 <th>#</th>
                 <th>Name</th>
                 <th>Code</th>
@@ -168,17 +33,10 @@
             <tbody>
               <tr v-if="subjects.length === 0">
                 <td colspan="7" class="text-center text-muted py-5">
-                  <div class="mb-2" style="font-size: 1.5rem">📚</div>
                   No subjects yet.
-                  <a
-                    href="#"
-                    class="ms-1 text-primary text-decoration-none"
-                    @click.prevent="openCreate"
-                    >Add one</a
-                  >.
                 </td>
               </tr>
-              <tr v-for="subject in subjects" :key="subject.id">
+              <tr v-for="subject in subjects" :key="subject.id" class="text-center">
                 <td class="text-muted small">{{ subject.id }}</td>
                 <td>{{ subject.name }}</td>
                 <td>
@@ -188,50 +46,30 @@
                   {{ subject.description ?? "—" }}
                 </td>
                 <td>
-                  <span
-                    v-for="gl in subject.grade_levels"
-                    :key="gl.id"
-                    class="badge bg-light text-dark border me-1"
-                    >{{ gl.name }}</span
-                  >
-                  <span
-                    v-if="subject.grade_levels.length === 0"
-                    class="text-muted small"
-                    >None</span
-                  >
+                  <span v-for="gl in subject.grade_levels" :key="gl.id" class="badge bg-light text-dark border me-1">{{
+                    gl.name }}</span>
+                  <span v-if="subject.grade_levels.length === 0" class="text-muted small">None</span>
                 </td>
                 <td>
-                  <span
-                    :class="
-                      subject.is_active ? 'badge bg-success' : 'badge bg-danger'
+                  <span :class="subject.is_active ? 'badge bg-success' : 'badge bg-danger'
                     ">
                     {{ subject.is_active ? "Active" : "Inactive" }}
                   </span>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    @click="openEdit(subject)">
+                  <button class="btn btn-sm btn-outline-primary me-1" @click="openEdit(subject)">
                     Edit
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-secondary me-1"
-                    @click="openAssign(subject)">
+                  <button class="btn btn-sm btn-outline-secondary me-1" @click="openAssign(subject)">
                     Assign
                   </button>
-                  <button
-                    class="btn btn-sm me-1"
-                    :class="
-                      subject.is_active
-                        ? 'btn-outline-warning'
-                        : 'btn-outline-success'
-                    "
-                    @click="toggleActive(subject)">
+                  <button class="btn btn-sm me-1" :class="subject.is_active
+                    ? 'btn-outline-warning'
+                    : 'btn-outline-success'
+                    " @click="toggleActive(subject)">
                     {{ subject.is_active ? "Deactivate" : "Activate" }}
                   </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="confirmDelete(subject)">
+                  <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(subject)">
                     Delete
                   </button>
                 </td>
@@ -241,24 +79,16 @@
         </div>
       </div>
 
-      <!-- Pagination -->
-      <div
-        class="d-flex justify-content-between align-items-center mt-3 small text-muted"
+      <div class="d-flex justify-content-between align-items-center mt-3 small text-muted"
         v-if="pagination.last_page > 1">
-        <span
-          >Showing {{ pagination.from }}–{{ pagination.to }} of
-          {{ pagination.total }}</span
-        >
+        <span>Showing {{ pagination.from }}–{{ pagination.to }} of
+          {{ pagination.total }}</span>
         <div class="d-flex gap-1">
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === 1"
+          <button class="btn btn-sm btn-outline-secondary" :disabled="pagination.current_page === 1"
             @click="fetchSubjects(pagination.current_page - 1)">
             Prev
           </button>
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            :disabled="pagination.current_page === pagination.last_page"
+          <button class="btn btn-sm btn-outline-secondary" :disabled="pagination.current_page === pagination.last_page"
             @click="fetchSubjects(pagination.current_page + 1)">
             Next
           </button>
@@ -266,9 +96,6 @@
       </div>
     </div>
 
-    <!-- ── Modals: outside v-if/v-else so they are never destroyed ───────── -->
-
-    <!-- Create/Edit Modal -->
     <div class="modal fade" id="subjectModal" tabindex="-1" ref="modalEl">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -276,10 +103,7 @@
             <h6 class="modal-title fw-bold">
               {{ isEditing ? "Edit Subject" : "Add Subject" }}
             </h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeModal"></button>
+            <button type="button" class="btn-close" @click="closeModal"></button>
           </div>
           <div class="modal-body">
             <div v-if="formError" class="alert alert-danger py-2 small">
@@ -287,41 +111,25 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Name</label>
-              <input
-                v-model="form.name"
-                type="text"
-                class="form-control"
-                placeholder="e.g. Mathematics" />
+              <input v-model="form.name" type="text" class="form-control" placeholder="e.g. Mathematics" />
             </div>
             <div class="mb-3">
               <label class="form-label">Code</label>
-              <input
-                v-model="form.code"
-                type="text"
-                class="form-control"
-                placeholder="e.g. MAT" />
+              <input v-model="form.code" type="text" class="form-control" placeholder="e.g. MAT" />
             </div>
             <div class="mb-3">
               <label class="form-label">
                 Description <span class="text-muted small">(optional)</span>
               </label>
-              <textarea
-                v-model="form.description"
-                class="form-control"
-                rows="2"></textarea>
+              <textarea v-model="form.description" class="form-control" rows="2"></textarea>
             </div>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeModal">
               Cancel
             </button>
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="saving"
-              @click="saveSubject">
-              <span
-                v-if="saving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-primary btn-sm" :disabled="saving" @click="saveSubject">
+              <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
               {{ isEditing ? "Update" : "Create" }}
             </button>
           </div>
@@ -329,7 +137,6 @@
       </div>
     </div>
 
-    <!-- Assign Grade Level Modal -->
     <div class="modal fade" id="assignModal" tabindex="-1" ref="assignModalEl">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -337,17 +144,13 @@
             <h6 class="modal-title fw-bold">
               Assign Grade Levels — {{ selectedSubject?.name }}
             </h6>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeAssignModal"></button>
+            <button type="button" class="btn-close" @click="closeAssignModal"></button>
           </div>
           <div class="modal-body">
             <div v-if="assignError" class="alert alert-danger py-2 small">
               {{ assignError }}
             </div>
 
-            <!-- Loading spinner -->
             <div v-if="assignLoading" class="text-center py-4 text-muted">
               <div class="spinner-border spinner-border-sm me-2"></div>
               Loading...
@@ -356,14 +159,10 @@
             <template v-else>
               <p class="small fw-semibold mb-2">Currently Assigned</p>
               <div class="mb-3">
-                <div
-                  v-if="selectedSubject?.grade_levels.length === 0"
-                  class="text-muted small">
+                <div v-if="selectedSubject?.grade_levels.length === 0" class="text-muted small">
                   None assigned yet.
                 </div>
-                <div
-                  v-for="gl in selectedSubject?.grade_levels"
-                  :key="gl.id"
+                <div v-for="gl in selectedSubject?.grade_levels" :key="gl.id"
                   class="d-flex align-items-center justify-content-between border rounded px-3 py-2 mb-2">
                   <div>
                     <span class="fw-semibold small">{{ gl.name }}</span>
@@ -372,9 +171,7 @@
                       {{ gl.pivot.hours_per_week }} hrs/week
                     </span>
                   </div>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    @click="removeGradeLevel(gl.id)">
+                  <button class="btn btn-sm btn-outline-danger" @click="removeGradeLevel(gl.id)">
                     Remove
                   </button>
                 </div>
@@ -387,10 +184,7 @@
                 <label class="form-label">Grade Level</label>
                 <select v-model="assignForm.grade_level_id" class="form-select">
                   <option disabled value="">Select grade level</option>
-                  <option
-                    v-for="g in availableGradeLevels"
-                    :key="g.id"
-                    :value="g.id">
+                  <option v-for="g in availableGradeLevels" :key="g.id" :value="g.id">
                     {{ g.name }}
                   </option>
                 </select>
@@ -398,19 +192,12 @@
               <div class="row">
                 <div class="col">
                   <label class="form-label">Units</label>
-                  <input
-                    v-model.number="assignForm.units"
-                    type="number"
-                    step="0.5"
-                    class="form-control"
+                  <input v-model.number="assignForm.units" type="number" step="0.5" class="form-control"
                     placeholder="e.g. 1.0" />
                 </div>
                 <div class="col">
                   <label class="form-label">Hours/Week</label>
-                  <input
-                    v-model.number="assignForm.hours_per_week"
-                    type="number"
-                    class="form-control"
+                  <input v-model.number="assignForm.hours_per_week" type="number" class="form-control"
                     placeholder="e.g. 3" />
                 </div>
               </div>
@@ -420,13 +207,8 @@
             <button class="btn btn-secondary btn-sm" @click="closeAssignModal">
               Close
             </button>
-            <button
-              class="btn btn-primary btn-sm"
-              :disabled="assignSaving || assignLoading"
-              @click="addGradeLevel">
-              <span
-                v-if="assignSaving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-primary btn-sm" :disabled="assignSaving || assignLoading" @click="addGradeLevel">
+              <span v-if="assignSaving" class="spinner-border spinner-border-sm me-1"></span>
               Add
             </button>
           </div>
@@ -434,24 +216,14 @@
       </div>
     </div>
 
-    <!-- Delete Confirm Modal -->
-    <div
-      class="modal fade"
-      id="deleteSubjectModal"
-      tabindex="-1"
-      ref="deleteModalEl">
+    <div class="modal fade" id="deleteSubjectModal" tabindex="-1" ref="deleteModalEl">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-body text-center py-4">
             <p class="mb-1 fw-semibold">Delete subject?</p>
             <p class="text-muted small mb-3">{{ selectedSubject?.name }}</p>
-            <button
-              class="btn btn-danger btn-sm me-2"
-              :disabled="saving"
-              @click="deleteSubject">
-              <span
-                v-if="saving"
-                class="spinner-border spinner-border-sm me-1"></span>
+            <button class="btn btn-danger btn-sm me-2" :disabled="saving" @click="deleteSubject">
+              <span v-if="saving" class="spinner-border spinner-border-sm me-1"></span>
               Delete
             </button>
             <button class="btn btn-secondary btn-sm" @click="closeDeleteModal">
@@ -466,6 +238,7 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
 import { subjectService } from "@/services/subject";
 import { gradeLevelService } from "@/services/grade";
@@ -671,19 +444,3 @@ async function deleteSubject() {
   }
 }
 </script>
-
-<style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-  100% {
-    background-position: 600px 0;
-  }
-}
-.skeleton {
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-}
-</style>

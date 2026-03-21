@@ -2,13 +2,9 @@
   <div>
     <h5 class="fw-bold mb-4">My Schedule</h5>
 
-    <!-- Filters -->
     <div class="row g-2 mb-3">
       <div class="col-sm-3">
-        <input
-          v-model="filterSchoolYear"
-          type="text"
-          class="form-control form-control-sm"
+        <input v-model="filterSchoolYear" type="text" class="form-control form-control-sm"
           placeholder="School Year (e.g. 2025-2026)" />
       </div>
       <div class="col-sm-2">
@@ -23,86 +19,15 @@
         <button class="btn btn-sm btn-outline-secondary" @click="fetchSchedule">
           Filter
         </button>
-        <button
-          class="btn btn-sm btn-link text-muted ms-1"
-          @click="clearFilters">
+        <button class="btn btn-sm btn-link text-muted ms-1" @click="clearFilters">
           Clear
         </button>
       </div>
     </div>
 
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <div v-for="n in 1" :key="n" class="mb-4">
-        <!-- Day label skeleton -->
-        <div
-          class="skeleton mb-2"
-          style="width: 90px; height: 16px; border-radius: 4px"></div>
-        <div class="card border-0 shadow-sm">
-          <div class="card-body p-0">
-            <table class="table table-sm mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th v-for="c in 5" :key="c">
-                    <div
-                      class="skeleton"
-                      style="height: 12px; border-radius: 4px"></div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="r in 3" :key="r">
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 100px;
-                        height: 12px;
-                        border-radius: 4px;
-                      "></div>
-                  </td>
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 110px;
-                        height: 12px;
-                        border-radius: 4px;
-                      "></div>
-                  </td>
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 120px;
-                        height: 12px;
-                        border-radius: 4px;
-                      "></div>
-                  </td>
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 70px;
-                        height: 12px;
-                        border-radius: 4px;
-                      "></div>
-                  </td>
-                  <td>
-                    <div
-                      class="skeleton"
-                      style="
-                        width: 40px;
-                        height: 12px;
-                        border-radius: 4px;
-                      "></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <LoadingTable :headers="['Time', 'Subject', 'Teacher', 'School Year', 'Semester']"
+        loading-text="Loading schedules..." />
     </div>
 
     <div v-else-if="error" class="text-center py-5 text-danger">
@@ -114,7 +39,6 @@
         No schedule found.
       </div>
 
-      <!-- Grouped by day -->
       <div v-for="day in activeDays" :key="day" class="mb-4">
         <h6 class="fw-semibold text-capitalize mb-2">{{ day }}</h6>
         <div class="card border-0 shadow-sm">
@@ -153,6 +77,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { studentService } from "@/services/student";
 
 const schedules = ref([]);
@@ -212,20 +137,3 @@ function formatTime(time) {
   return `${hour}:${String(m).padStart(2, "0")} ${period}`;
 }
 </script>
-
-<style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-  100% {
-    background-position: 600px 0;
-  }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-}
-</style>

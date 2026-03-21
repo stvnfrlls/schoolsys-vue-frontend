@@ -1,39 +1,24 @@
 <template>
   <div>
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <!-- Profile card skeleton -->
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
-          <div
-            class="skeleton mb-3"
-            style="width: 100px; height: 16px; border-radius: 4px"></div>
+          <div class="skeleton mb-3" style="width: 100px; height: 16px; border-radius: 4px"></div>
           <div class="row">
             <div class="col-md-6 mb-3" v-for="n in 6" :key="n">
-              <div
-                class="skeleton mb-1"
-                style="width: 80px; height: 11px; border-radius: 4px"></div>
-              <div
-                class="skeleton"
-                style="width: 140px; height: 15px; border-radius: 4px"></div>
+              <div class="skeleton mb-1" style="width: 80px; height: 11px; border-radius: 4px"></div>
+              <div class="skeleton" style="width: 140px; height: 15px; border-radius: 4px"></div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Enrollment card skeleton -->
       <div class="card border-0 shadow-sm">
         <div class="card-body">
-          <div
-            class="skeleton mb-3"
-            style="width: 140px; height: 16px; border-radius: 4px"></div>
+          <div class="skeleton mb-3" style="width: 140px; height: 16px; border-radius: 4px"></div>
           <div class="row">
             <div class="col-md-6 mb-3" v-for="n in 4" :key="n">
-              <div
-                class="skeleton mb-1"
-                style="width: 80px; height: 11px; border-radius: 4px"></div>
-              <div
-                class="skeleton"
-                style="width: 120px; height: 15px; border-radius: 4px"></div>
+              <div class="skeleton mb-1" style="width: 80px; height: 11px; border-radius: 4px"></div>
+              <div class="skeleton" style="width: 120px; height: 15px; border-radius: 4px"></div>
             </div>
           </div>
         </div>
@@ -45,7 +30,6 @@
     </div>
 
     <div v-else-if="profile">
-      <!-- Profile card -->
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
           <h6 class="fw-semibold mb-3">My Profile</h6>
@@ -72,11 +56,9 @@
             </div>
             <div class="col-md-6">
               <p class="text-muted small mb-1">Account Status</p>
-              <span
-                :class="
-                  profile.user?.is_active
-                    ? 'badge bg-success'
-                    : 'badge bg-danger'
+              <span :class="profile.user?.is_active
+                  ? 'badge bg-success'
+                  : 'badge bg-danger'
                 ">
                 {{ profile.user?.is_active ? "Active" : "Inactive" }}
               </span>
@@ -85,7 +67,6 @@
         </div>
       </div>
 
-      <!-- Active enrollment card -->
       <div class="card border-0 shadow-sm">
         <div class="card-body">
           <h6 class="fw-semibold mb-3">Current Enrollment</h6>
@@ -184,6 +165,7 @@ function enrollmentBadge(status) {
   0% {
     background-position: -600px 0;
   }
+
   100% {
     background-position: 600px 0;
   }

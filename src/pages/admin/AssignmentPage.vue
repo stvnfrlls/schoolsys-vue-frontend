@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h5 class="fw-bold mb-0">Assignments</h5>
       <button class="btn btn-sm btn-primary mb-3" @click="openAddModal">
@@ -8,106 +7,11 @@
       </button>
     </div>
 
-    <!-- ── Skeleton loading ───────────────────────────────────────────────── -->
     <div v-if="loading">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-          <table class="table table-sm mb-0">
-            <thead class="table-light">
-              <tr>
-                <th style="width: 40px">
-                  <div class="skeleton" style="width: 14px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div class="skeleton" style="width: 40px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div class="skeleton" style="width: 36px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div class="skeleton" style="width: 74px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div class="skeleton" style="width: 80px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div class="skeleton" style="width: 44px; height: 14px; border-radius: 3px"></div>
-                </th>
-                <th>
-                  <div class="skeleton" style="width: 52px; height: 14px; border-radius: 3px"></div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="r in 7" :key="r">
-                <td>
-                  <div class="skeleton" style="width: 22px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <td>
-                  <div class="skeleton" :style="`width:${80 + ((r * 23) % 60)}px;height:14px;border-radius:3px`"></div>
-                </td>
-                <td>
-                  <div class="skeleton" style="
-                      width: 38px;
-                      height: 20px;
-                      border-radius: 12px;
-                    "></div>
-                </td>
-                <td>
-                  <div v-if="r % 3 !== 0" class="skeleton"
-                    :style="`width:${100 + ((r * 17) % 80)}px;height:13px;border-radius:3px`"></div>
-                  <div v-else class="skeleton" style="width: 16px; height: 13px; border-radius: 3px"></div>
-                </td>
-                <td>
-                  <div class="d-flex gap-1 flex-wrap">
-                    <div class="skeleton" :style="`width:${44 + ((r * 11) % 24)}px;height:20px;border-radius:4px`">
-                    </div>
-                    <div v-if="r % 2 === 0" class="skeleton" style="
-                        width: 52px;
-                        height: 20px;
-                        border-radius: 4px;
-                      "></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="skeleton" style="
-                      width: 52px;
-                      height: 20px;
-                      border-radius: 12px;
-                    "></div>
-                </td>
-                <td>
-                  <div class="d-flex gap-1 flex-wrap">
-                    <div class="skeleton" style="
-                        width: 38px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div class="skeleton" style="
-                        width: 50px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div class="skeleton" style="
-                        width: 74px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                    <div class="skeleton" style="
-                        width: 46px;
-                        height: 26px;
-                        border-radius: 4px;
-                      "></div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <LoadingTable :headers="['#', 'Subject', 'Title', 'Points', 'Due Date', 'Published', 'Actions']"
+        loading-text="Loading subjects..." />
     </div>
 
-    <!-- ── Table ─────────────────────────────────────────────────────────── -->
     <div v-else>
       <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
@@ -116,7 +20,7 @@
           </div>
           <table v-else class="table table-hover mb-0">
             <thead class="table-light">
-              <tr>
+              <tr class="text-center">
                 <th>#</th>
                 <th>Subject</th>
                 <th>Title</th>
@@ -132,7 +36,7 @@
                   No Assignments yet.
                 </td>
               </tr>
-              <tr v-for="assignment in assignments" :key="assignment.id">
+              <tr v-for="assignment in assignments" :key="assignment.id" class="text-center">
                 <td class="text-muted small">{{ assignment.id }}</td>
                 <td>{{ assignment.subject.name }} <span class="badge bg-secondary">{{ assignment.subject.code }}</span>
                 </td>
@@ -167,7 +71,6 @@
         </div>
       </div>
 
-      <!-- Pagination -->
       <div class="d-flex justify-content-between align-items-center mt-3 small text-muted"
         v-if="pagination.last_page > 1">
         <span>Showing {{ pagination.from }}–{{ pagination.to }} of
@@ -187,22 +90,16 @@
     <div class="modal fade" tabindex="-1" ref="addModalEl">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-
-          <!-- Header -->
           <div class="modal-header">
             <h6 class="modal-title fw-bold">Add Assignment</h6>
             <button type="button" class="btn-close" @click="closeAddModal"></button>
           </div>
 
-          <!-- Body -->
           <div class="modal-body">
-
-            <!-- Basic Info -->
             <div class="mb-3">
               <label class="form-label">Title</label>
               <input v-model="addForm.title" class="form-control" placeholder="Enter title" />
             </div>
-
             <div class="row mb-3">
               <div class="col">
                 <label class="form-label">Points</label>
@@ -213,7 +110,6 @@
                 <input v-model="addForm.due_date" type="datetime-local" class="form-control" />
               </div>
             </div>
-
             <div class="row mb-3">
               <div class="col">
                 <label class="form-label">Grade Section</label>
@@ -235,7 +131,6 @@
                 </select>
               </div>
             </div>
-
             <div class="row mb-3">
               <div class="col">
                 <label class="form-label">Status</label>
@@ -254,54 +149,39 @@
                 </select>
               </div>
             </div>
-
-            <!-- Description -->
             <div class="mb-3">
               <label class="form-label">Description</label>
               <textarea v-model="addForm.description" class="form-control" rows="3"
                 placeholder="Enter description"></textarea>
             </div>
-
-            <!-- Instructions -->
             <div class="mb-3">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="form-label mb-0">Instructions</label>
                 <button class="btn btn-sm btn-outline-primary" @click="addInstruction">+ Add</button>
               </div>
-
               <div v-if="addForm.instructions.length === 0" class="text-muted small">
                 No instructions yet.
               </div>
-
               <div v-for="(inst, index) in addForm.instructions" :key="index" class="border rounded p-2 mb-2">
                 <div class="row g-2 align-items-center">
-
-                  <!-- Type -->
                   <div class="col-3">
                     <select v-model="inst.type" class="form-select form-select-sm">
                       <option value="text">Text</option>
                       <option value="bullet">Bullet</option>
                     </select>
                   </div>
-
-                  <!-- Content -->
                   <div class="col">
                     <input v-model="inst.content" class="form-control form-control-sm"
                       placeholder="Enter instruction..." />
                   </div>
-
-                  <!-- Remove -->
                   <div class="col-auto">
                     <button class="btn btn-sm btn-outline-danger" @click="removeInstruction(index)">✕</button>
                   </div>
-
                 </div>
               </div>
-
             </div>
           </div>
 
-          <!-- Footer -->
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeAddModal">Cancel</button>
             <button class="btn btn-primary btn-sm" @click="saveAdd" :disabled="savingAdd">
@@ -318,7 +198,6 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
-          <!-- Header -->
           <div class="modal-header">
             <h6 class="modal-title fw-bold">
               Assignment Details
@@ -326,19 +205,16 @@
             <button type="button" class="btn-close" @click="closeViewModal"></button>
           </div>
 
-          <!-- Body -->
           <div class="modal-body">
             <div v-if="!selectedAssignment" class="text-muted text-center py-4">
               No assignment selected.
             </div>
 
             <div v-else>
-              <!-- Title -->
               <h5 class="fw-bold mb-2">
                 {{ selectedAssignment.title }}
               </h5>
 
-              <!-- Subject -->
               <div class="mb-2 text-muted small">
                 {{ selectedAssignment.subject?.name }}
                 <span class="badge bg-secondary">
@@ -346,7 +222,6 @@
                 </span>
               </div>
 
-              <!-- Meta Info -->
               <div class="row mb-3 small">
                 <div class="col-md-4">
                   <strong>Points:</strong><br />
@@ -364,7 +239,6 @@
                 </div>
               </div>
 
-              <!-- Description -->
               <div>
                 <strong>Description</strong>
                 <div class="border rounded p-3 mt-2 bg-light mb-3">
@@ -386,12 +260,10 @@
                   <div v-else>
                     <template v-for="(item, index) in parsedInstructions" :key="index">
 
-                      <!-- Text -->
                       <p v-if="item.type === 'text'" class="mb-2">
                         {{ item.content }}
                       </p>
 
-                      <!-- Bullet -->
                       <ul v-else-if="item.type === 'bullet'" class="mb-2 ps-3">
                         <li>{{ item.content }}</li>
                       </ul>
@@ -404,7 +276,6 @@
             </div>
           </div>
 
-          <!-- Footer -->
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeViewModal">
               Close
@@ -419,16 +290,13 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
-          <!-- Header -->
           <div class="modal-header">
             <h6 class="modal-title fw-bold">Edit Assignment</h6>
             <button type="button" class="btn-close" @click="closeEditModal"></button>
           </div>
 
-          <!-- Body -->
           <div class="modal-body">
 
-            <!-- Basic Info -->
             <div class="mb-3">
               <label class="form-label">Title</label>
               <input v-model="editForm.title" class="form-control" placeholder="Enter title" />
@@ -486,14 +354,12 @@
               </div>
             </div>
 
-            <!-- Description -->
             <div class="mb-3">
               <label class="form-label">Description</label>
               <textarea v-model="editForm.description" class="form-control" rows="3"
                 placeholder="Enter description"></textarea>
             </div>
 
-            <!-- Instructions (unchanged) -->
             <div class="mb-3">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="form-label mb-0">Instructions</label>
@@ -525,7 +391,6 @@
 
           </div>
 
-          <!-- Footer -->
           <div class="modal-footer">
             <button class="btn btn-secondary btn-sm" @click="closeEditModal">
               Cancel
@@ -544,13 +409,13 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
+import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
 import { assignmentService } from "@/services/assignment";
 import { sectionService } from "@/services/grade";
 import { subjectService } from "@/services/subject";
 import { facultyService } from "@/services/schedule";
 
-// ---------- Refs ----------
 const assignments = ref([]);
 const sections = ref([]);
 const subjects = ref([]);
@@ -571,11 +436,9 @@ let addModalInstance = null;
 let viewModalInstance = null;
 let editModalInstance = null;
 
-// Track which modal is open
 const isAddModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 
-// ---------- Forms ----------
 const addForm = ref({
   title: "",
   gradelevel_id: "",
@@ -603,7 +466,6 @@ const editForm = ref({
   instructions: [],
 });
 
-// ---------- Computed ----------
 const parsedInstructions = computed(() => {
   try {
     const raw = selectedAssignment.value?.details?.instructions;
@@ -634,7 +496,6 @@ const filteredSubjectsEdit = computed(() => {
   );
 });
 
-// ---------- Lifecycle ----------
 onMounted(async () => {
   await Promise.all([
     fetchAssignments(),
@@ -644,7 +505,6 @@ onMounted(async () => {
   ]);
 });
 
-// ---------- Fetch Assignments ----------
 async function fetchAssignments(page = 1) {
   loading.value = true;
   error.value = "";
@@ -682,7 +542,6 @@ async function fetchFaculty() {
   faculty.value = res.data?.data ?? res.data;
 }
 
-// ---------- Save Assignment ----------
 async function saveAssignment(isEdit = false) {
   const form = isEdit ? editForm.value : addForm.value;
   const setSaving = isEdit ? saving : savingAdd;
@@ -729,7 +588,6 @@ async function saveAssignment(isEdit = false) {
 const saveAdd = () => saveAssignment(false);
 const saveEdit = () => saveAssignment(true);
 
-// ---------- Delete ----------
 async function deleteAssignment(assignment) {
   if (!confirm(`Are you sure you want to delete "${assignment.title}"?`)) return;
 
@@ -745,7 +603,6 @@ async function deleteAssignment(assignment) {
   }
 }
 
-// ---------- Modals ----------
 function openAddModal() {
   addForm.value = {
     title: "",
@@ -782,7 +639,6 @@ function openEditModal(assignment) {
   const details = assignment.details || {};
   let instructions = details.instructions ? JSON.parse(details.instructions) : [];
 
-  // Keep as number to match the sections data type
   const sectionId = assignment.section_id || "";
   const subjectId = assignment.subject_id || "";
   const teacherId = assignment.teacher_id || "";
@@ -816,7 +672,6 @@ function onSectionChange() {
   editForm.value.subject_id = "";
 }
 
-// ---------- Instructions ----------
 function addInstruction() {
   if (isAddModalOpen.value) addForm.value.instructions.push({ type: "text", content: "" });
   else if (isEditModalOpen.value) editForm.value.instructions.push({ type: "text", content: "" });
@@ -827,7 +682,6 @@ function removeInstruction(index) {
   else if (isEditModalOpen.value) editForm.value.instructions.splice(index, 1);
 }
 
-// ---------- Pagination ----------
 function goToPage(page) {
   if (page >= 1 && page <= pagination.value.last_page) fetchAssignments(page);
 }
@@ -835,7 +689,6 @@ function goToPage(page) {
 const nextPage = () => goToPage(pagination.value.current_page + 1);
 const prevPage = () => goToPage(pagination.value.current_page - 1);
 
-// ---------- Date Formatting ----------
 function formatForInput(datetime) {
   if (!datetime) return "";
   const d = new Date(datetime);
@@ -867,21 +720,3 @@ function teacherFullName(teacher) {
     .join(" ");
 }
 </script>
-
-<style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -600px 0;
-  }
-
-  100% {
-    background-position: 600px 0;
-  }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.4s infinite linear;
-}
-</style>

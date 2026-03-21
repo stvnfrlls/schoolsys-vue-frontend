@@ -2,13 +2,9 @@
   <div>
     <h5 class="fw-bold mb-4">Attendance</h5>
 
-    <!-- Filters -->
     <div class="row g-2 mb-3">
       <div class="col-sm-3">
-        <select
-          v-model="filterSectionId"
-          class="form-select form-select-sm"
-          @change="onSectionChange">
+        <select v-model="filterSectionId" class="form-select form-select-sm" @change="onSectionChange">
           <option value="">Select Section</option>
           <option v-for="s in mySections" :key="s.id" :value="s.id">
             {{ s.grade_level?.name }} — {{ s.name }}
@@ -16,10 +12,7 @@
         </select>
       </div>
       <div class="col-sm-3">
-        <select
-          v-model="filterSubjectId"
-          class="form-select form-select-sm"
-          :disabled="!filterSectionId">
+        <select v-model="filterSubjectId" class="form-select form-select-sm" :disabled="!filterSectionId">
           <option value="">Daily (no subject)</option>
           <option v-for="s in subjectsForSection" :key="s.id" :value="s.id">
             {{ s.name }}
@@ -27,16 +20,10 @@
         </select>
       </div>
       <div class="col-sm-2">
-        <input
-          v-model="filterDate"
-          type="date"
-          class="form-control form-control-sm" />
+        <input v-model="filterDate" type="date" class="form-control form-control-sm" />
       </div>
       <div class="col-sm-auto">
-        <button
-          class="btn btn-sm btn-outline-secondary"
-          :disabled="!filterSectionId || !filterDate"
-          @click="loadSheet">
+        <button class="btn btn-sm btn-outline-secondary" :disabled="!filterSectionId || !filterDate" @click="loadSheet">
           Load
         </button>
       </div>
@@ -51,7 +38,6 @@
       <div v-else-if="sheetError" class="text-center py-5 text-danger">{{ sheetError }}</div>
 
       <div v-else>
-        <!-- Bulk actions -->
         <div class="d-flex align-items-center gap-2 mb-3">
           <span class="small text-muted">Mark all as:</span>
           <button class="btn btn-sm btn-outline-success" @click="markAll('present')">Present</button>
@@ -78,44 +64,27 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="row in attendanceSheet"
-                  :key="row.enrollment.id"
-                  :class="rowClass(row.status)">
+                <tr v-for="row in attendanceSheet" :key="row.enrollment.id" :class="rowClass(row.status)">
                   <td>{{ fullName(row.enrollment.student) }}</td>
                   <td class="text-muted small">{{ row.enrollment.student?.student_number ?? '—' }}</td>
                   <td>
                     <div class="d-flex gap-1">
-                      <button
-                        v-for="s in statuses"
-                        :key="s.value"
-                        class="btn btn-sm"
-                        :class="
-                          row.status === s.value
-                            ? (row.attendanceId ? s.activeClass : s.outlineClass)
-                            : 'btn-outline-secondary'
-                        "
-                        @click="row.status = s.value">
+                      <button v-for="s in statuses" :key="s.value" class="btn btn-sm" :class="row.status === s.value
+                          ? (row.attendanceId ? s.activeClass : s.outlineClass)
+                          : 'btn-outline-secondary'
+                        " @click="row.status = s.value">
                         {{ s.label }}
                       </button>
                     </div>
                   </td>
                   <td>
-                    <input
-                      v-model="row.remarks"
-                      type="text"
-                      class="form-control form-control-sm"
-                      placeholder="e.g. Sick leave"
-                      style="max-width: 200px" />
+                    <input v-model="row.remarks" type="text" class="form-control form-control-sm"
+                      placeholder="e.g. Sick leave" style="max-width: 200px" />
                   </td>
                   <td class="text-center">
-                    <button
-                      class="btn btn-sm btn-primary"
-                      :disabled="savingRow === row.enrollment.id"
+                    <button class="btn btn-sm btn-primary" :disabled="savingRow === row.enrollment.id"
                       @click="saveRow(row)">
-                      <span
-                        v-if="savingRow === row.enrollment.id"
-                        class="spinner-border spinner-border-sm"></span>
+                      <span v-if="savingRow === row.enrollment.id" class="spinner-border spinner-border-sm"></span>
                       <span v-else>Save</span>
                     </button>
                   </td>
@@ -131,10 +100,7 @@
         </div>
 
         <div class="d-flex justify-content-end mt-3" v-if="attendanceSheet.length > 0">
-          <button
-            class="btn btn-primary btn-sm"
-            :disabled="savingAll"
-            @click="saveAll">
+          <button class="btn btn-primary btn-sm" :disabled="savingAll" @click="saveAll">
             <span v-if="savingAll" class="spinner-border spinner-border-sm me-1"></span>
             Save All
           </button>
@@ -162,12 +128,11 @@ const savingRow = ref(null)
 const savingAll = ref(false)
 
 const statuses = [
-  { value: 'present', label: 'Present', activeClass: 'btn-success',          outlineClass: 'btn-outline-success' },
-  { value: 'absent',  label: 'Absent',  activeClass: 'btn-danger',           outlineClass: 'btn-outline-danger' },
-  { value: 'late',    label: 'Late',    activeClass: 'btn-warning text-dark', outlineClass: 'btn-outline-warning' },
+  { value: 'present', label: 'Present', activeClass: 'btn-success', outlineClass: 'btn-outline-success' },
+  { value: 'absent', label: 'Absent', activeClass: 'btn-danger', outlineClass: 'btn-outline-danger' },
+  { value: 'late', label: 'Late', activeClass: 'btn-warning text-dark', outlineClass: 'btn-outline-warning' },
 ]
 
-// Derive unique sections the teacher is assigned to
 const mySections = computed(() => {
   const seen = new Set()
   const result = []
@@ -180,7 +145,6 @@ const mySections = computed(() => {
   return result
 })
 
-// Derive subjects for the selected section
 const subjectsForSection = computed(() => {
   if (!filterSectionId.value) return []
   const seen = new Set()
