@@ -99,6 +99,11 @@ const routes = [
                 name: 'Teacher Attendance',
                 component: () => import('@/pages/teacher/AttendancePage.vue'),
             },
+            {
+                path: 'assignment',
+                name: 'Teacher Assignment',
+                component: () => import('@/pages/teacher/AssignmentPage.vue'),
+            },
         ]
     },
 
@@ -127,6 +132,11 @@ const routes = [
                 path: 'attendance',
                 name: 'Student Attendance',
                 component: () => import('@/pages/student/AttendancePage.vue'),
+            },
+            {
+                path: 'assignment',
+                name: 'Student Assignment',
+                component: () => import('@/pages/student/AssignmentPage.vue'),
             },
         ]
     },
