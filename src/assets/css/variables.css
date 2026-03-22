@@ -1,0 +1,58 @@
+/* ============================================================
+   SchoolSys — Global Design Tokens
+   Import once in main.js:  import '@/assets/css/variables.css'
+   ============================================================ */
+
+:root {
+    /* ── Brand ───────────────────────────────────────────── */
+    --ss-navy: #0d1b2a;
+    /* primary dark / hero backgrounds */
+    --ss-accent: #2563eb;
+    /* primary action color (buttons, links) */
+    --ss-accent-hover: #1d4ed8;
+    /* accent on hover / active */
+    --ss-accent-light: #eff6ff;
+    /* accent tint (badges, highlights) */
+    --ss-accent-border: #bfdbfe;
+    /* accent border (card hover states) */
+
+    /* ── Neutrals ────────────────────────────────────────── */
+    --ss-white: #ffffff;
+    --ss-light: #f8fafc;
+    /* page background, section alternates */
+    --ss-border: #e2e8f0;
+    /* dividers, card borders, input borders */
+
+    /* ── Text ────────────────────────────────────────────── */
+    --ss-text: #1e293b;
+    /* primary text */
+    --ss-muted: #64748b;
+    /* secondary / descriptive text */
+    --ss-subtle: #94a3b8;
+    /* placeholders, disabled, ghost links */
+    --ss-faint: #cbd5e1;
+    /* decorative text, large display numbers */
+
+    /* ── Semantic ────────────────────────────────────────── */
+    --ss-success: #16a34a;
+    --ss-success-light: #f0fdf4;
+    --ss-warning: #d97706;
+    --ss-warning-light: #fffbeb;
+    --ss-danger: #dc2626;
+    --ss-danger-light: #fef2f2;
+    --ss-info: #0284c7;
+    --ss-info-light: #f0f9ff;
+
+    /* ── Typography ──────────────────────────────────────── */
+    --ss-font-ui: 'Outfit', sans-serif;
+    --ss-font-display: 'DM Serif Display', serif;
+
+    /* ── Spacing & Shape ─────────────────────────────────── */
+    --ss-radius: 4px;
+    --ss-radius-lg: 6px;
+
+    /* ── Shadows ─────────────────────────────────────────── */
+    --ss-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --ss-shadow-md: 0 4px 20px rgba(37, 99, 235, 0.07);
+    --ss-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+}

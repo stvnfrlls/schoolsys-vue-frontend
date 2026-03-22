@@ -1,0 +1,332 @@
+/* ============================================================
+   SchoolSys — Global Table & Page Styles
+   Targets Bootstrap's existing classes directly.
+   No .vue file changes needed on any page.
+   Import in main.js:  import '@/assets/css/tables.css'
+   ============================================================ */
+
+/* ── Page header ─────────────────────────────────────── */
+.d-flex.justify-content-between h5.fw-bold,
+.d-flex.justify-content-between h5 {
+    font-family: var(--ss-font-ui);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ss-text);
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+/* ── Table card ──────────────────────────────────────── */
+.card.border-0.shadow-sm {
+    background: var(--ss-white);
+    border: 1px solid var(--ss-border) !important;
+    border-radius: var(--ss-radius-lg) !important;
+    box-shadow: var(--ss-shadow-sm) !important;
+}
+
+/* ── Table base ──────────────────────────────────────── */
+.table {
+    font-family: var(--ss-font-ui);
+    font-size: 0.855rem;
+    color: var(--ss-text);
+    margin: 0;
+}
+
+.table thead tr {
+    border-bottom: 1px solid var(--ss-border);
+}
+
+.table>thead.table-light>tr>th,
+thead.table-light th,
+.table-light {
+    background-color: var(--ss-light) !important;
+    color: var(--ss-muted) !important;
+}
+
+.table thead th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ss-muted);
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    border: none;
+    background: var(--ss-light);
+}
+
+.table tbody tr {
+    border-bottom: 1px solid var(--ss-border);
+    transition: background 0.12s;
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table-hover>tbody>tr:hover>* {
+    background-color: #f8fafc;
+    color: inherit;
+}
+
+.table tbody td {
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+    border: none;
+    color: var(--ss-text);
+}
+
+.table .text-muted {
+    color: var(--ss-muted) !important;
+    font-size: 0.82rem;
+}
+
+/* ── Badges ──────────────────────────────────────────── */
+.badge {
+    font-family: var(--ss-font-ui);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.28rem 0.65rem;
+    border-radius: var(--ss-radius);
+}
+
+.badge.bg-success {
+    background-color: var(--ss-success-light) !important;
+    color: var(--ss-success) !important;
+    border: 1px solid #bbf7d0;
+}
+
+.badge.bg-danger {
+    background-color: var(--ss-danger-light) !important;
+    color: var(--ss-danger) !important;
+    border: 1px solid #fecaca;
+}
+
+.badge.bg-secondary {
+    background-color: var(--ss-light) !important;
+    color: var(--ss-muted) !important;
+    border: 1px solid var(--ss-border);
+}
+
+.badge.bg-primary {
+    background-color: var(--ss-accent-light) !important;
+    color: var(--ss-accent) !important;
+    border: 1px solid var(--ss-accent-border);
+}
+
+.badge.bg-warning {
+    background-color: var(--ss-warning-light) !important;
+    color: var(--ss-warning) !important;
+    border: 1px solid #fde68a;
+}
+
+.badge.bg-info {
+    background-color: var(--ss-info-light) !important;
+    color: var(--ss-info) !important;
+    border: 1px solid #bae6fd;
+}
+
+/* text-dark override used with bg-info on role badge */
+.badge.bg-info.text-dark {
+    color: var(--ss-info) !important;
+}
+
+/* ── Action buttons (table rows) ─────────────────────── */
+.btn.btn-sm {
+    font-family: var(--ss-font-ui);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--ss-radius);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn.btn-sm.btn-outline-primary {
+    color: var(--ss-accent);
+    border-color: var(--ss-accent-border);
+    background: var(--ss-accent-light);
+}
+
+.btn.btn-sm.btn-outline-primary:hover {
+    background: var(--ss-accent);
+    color: var(--ss-white);
+    border-color: var(--ss-accent);
+}
+
+.btn.btn-sm.btn-outline-warning {
+    color: var(--ss-warning);
+    border-color: #fde68a;
+    background: var(--ss-warning-light);
+}
+
+.btn.btn-sm.btn-outline-warning:hover {
+    background: var(--ss-warning);
+    color: var(--ss-white);
+    border-color: var(--ss-warning);
+}
+
+.btn.btn-sm.btn-outline-success {
+    color: var(--ss-success);
+    border-color: #bbf7d0;
+    background: var(--ss-success-light);
+}
+
+.btn.btn-sm.btn-outline-success:hover {
+    background: var(--ss-success);
+    color: var(--ss-white);
+    border-color: var(--ss-success);
+}
+
+.btn.btn-sm.btn-outline-danger {
+    color: var(--ss-danger);
+    border-color: #fecaca;
+    background: var(--ss-danger-light);
+}
+
+.btn.btn-sm.btn-outline-danger:hover {
+    background: var(--ss-danger);
+    color: var(--ss-white);
+    border-color: var(--ss-danger);
+}
+
+.btn.btn-sm.btn-outline-secondary {
+    color: var(--ss-muted);
+    border-color: var(--ss-border);
+    background: var(--ss-white);
+}
+
+.btn.btn-sm.btn-outline-secondary:hover:not(:disabled) {
+    background: var(--ss-light);
+    color: var(--ss-text);
+    border-color: var(--ss-border);
+}
+
+.btn.btn-sm.btn-outline-secondary:disabled {
+    opacity: 0.4;
+}
+
+/* ── Primary / Secondary / Danger buttons ────────────── */
+.btn.btn-primary {
+    background: var(--ss-accent);
+    border-color: var(--ss-accent);
+    font-family: var(--ss-font-ui);
+    font-weight: 600;
+    color: var(--ss-white);
+    border-radius: var(--ss-radius);
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.btn.btn-primary:hover:not(:disabled),
+.btn.btn-primary:focus {
+    background: var(--ss-accent-hover);
+    border-color: var(--ss-accent-hover);
+    color: var(--ss-white);
+}
+
+.btn.btn-secondary {
+    background: var(--ss-white);
+    border-color: var(--ss-border);
+    color: var(--ss-muted);
+    font-family: var(--ss-font-ui);
+    border-radius: var(--ss-radius);
+}
+
+.btn.btn-secondary:hover {
+    background: var(--ss-light);
+    color: var(--ss-text);
+    border-color: var(--ss-border);
+}
+
+.btn.btn-danger {
+    background: var(--ss-danger);
+    border-color: var(--ss-danger);
+    font-family: var(--ss-font-ui);
+    font-weight: 600;
+    border-radius: var(--ss-radius);
+}
+
+/* ── Modal ───────────────────────────────────────────── */
+.modal-content {
+    font-family: var(--ss-font-ui);
+    border: 1px solid var(--ss-border);
+    border-radius: var(--ss-radius-lg);
+    box-shadow: var(--ss-shadow-lg);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--ss-border);
+    padding: 1.1rem 1.4rem;
+}
+
+.modal-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ss-text);
+    letter-spacing: -0.01em;
+}
+
+.modal-body {
+    padding: 1.4rem;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--ss-border);
+    padding: 0.9rem 1.4rem;
+}
+
+.modal .form-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ss-text);
+    margin-bottom: 0.35rem;
+}
+
+.modal .form-control,
+.modal .form-select {
+    font-family: var(--ss-font-ui);
+    font-size: 0.855rem;
+    border: 1px solid var(--ss-border);
+    border-radius: var(--ss-radius);
+    color: var(--ss-text);
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus {
+    border-color: var(--ss-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+.modal .form-control::placeholder {
+    color: var(--ss-subtle);
+}
+
+.modal .form-text {
+    font-size: 0.75rem;
+    color: var(--ss-muted);
+}
+
+/* ── Skeleton ────────────────────────────────────────── */
+@keyframes ss-shimmer {
+    0% {
+        background-position: -600px 0;
+    }
+
+    100% {
+        background-position: 600px 0;
+    }
+}
+
+.skeleton {
+    border-radius: var(--ss-radius);
+    background: linear-gradient(90deg,
+            var(--ss-border) 25%,
+            var(--ss-light) 50%,
+            var(--ss-border) 75%);
+    background-size: 600px 100%;
+    animation: ss-shimmer 1.4s infinite linear;
+}

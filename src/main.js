@@ -1,7 +1,9 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from './router'
-import { useAuthStore } from '@/stores/auth'  // Adjust path if needed
+import { useAuthStore } from '@/stores/auth'
+import '@/assets/css/variables.css'
+import '@/assets/css/tables.css'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
@@ -15,12 +17,11 @@ app.use(pinia)
 app.use(router)
 
 // Check expiration AFTER pinia is initialized
-router.beforeEach((to, from, next) => {
+router.beforeEach(() => {
     const auth = useAuthStore()
     if (typeof auth.checkAndClearExpiredAuth === 'function') {
         auth.checkAndClearExpiredAuth()
     }
-    next()
 })
 
 app.mount('#app')

@@ -3,6 +3,12 @@ import { useAuthStore } from '@/stores/auth'
 
 const routes = [
     {
+        path: '/',
+        name: 'Home',
+        component: () => import('@/pages/LandingPage.vue'),
+        meta: { guestOnly: true }
+    },
+    {
         path: '/login',
         name: 'Login',
         component: () => import('@/pages/auth/LoginPage.vue'),
@@ -142,12 +148,8 @@ const routes = [
     },
 
     {
-        path: '/',
-        redirect: '/login'
-    },
-    {
         path: '/:pathMatch(.*)*',
-        redirect: '/login'
+        redirect: '/'
     }
 ]
 
@@ -157,26 +159,23 @@ const router = createRouter({
 })
 
 // Route guard
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
     const auth = useAuthStore()
 
     if (to.meta.requiresAuth && !auth.isAuthenticated) {
-        return next('/login')
+        return '/login'
     }
 
     if (to.meta.guestOnly && auth.isAuthenticated) {
-        return next(roleHomeRoute(auth.userRole))
+        return roleHomeRoute(auth.userRole)
     }
 
     if (to.meta.role && auth.userRole !== to.meta.role) {
-        // Redirect to the user's own home instead of /login
         if (auth.isAuthenticated) {
-            return next(roleHomeRoute(auth.userRole))
+            return roleHomeRoute(auth.userRole)
         }
-        return next('/login')
+        return '/login'
     }
-
-    next()
 })
 
 // Returns the home route for a given role
