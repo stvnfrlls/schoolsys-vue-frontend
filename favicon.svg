@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background -->
+  <rect width="64" height="64" rx="13" fill="#0d1b2a"/>
+  <!-- Pediment -->
+  <polygon points="32,7 9,22.5 55,22.5" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Entablature -->
+  <rect x="8" y="22.5" width="48" height="3" rx="0.5" fill="#ffffff"/>
+  <!-- Columns -->
+  <rect x="15"   y="25.5" width="5" height="17.5" rx="1" fill="#ffffff"/>
+  <rect x="29.5" y="25.5" width="5" height="17.5" rx="1" fill="#ffffff"/>
+  <rect x="44"   y="25.5" width="5" height="17.5" rx="1" fill="#ffffff"/>
+  <!-- Door -->
+  <rect x="28.5" y="33" width="7" height="10" rx="1" fill="#2563eb"/>
+  <!-- Base -->
+  <rect x="8" y="43"  width="48" height="2.5" rx="0.5" fill="#ffffff"/>
+  <rect x="5" y="45.5" width="54" height="2.5" rx="0.5" fill="#ffffff" opacity="0.6"/>
+  <rect x="2" y="48"  width="60" height="2"   rx="0.5" fill="#ffffff" opacity="0.35"/>
+</svg>
