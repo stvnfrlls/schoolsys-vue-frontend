@@ -611,7 +611,7 @@ async function togglePublish(assignment) {
     await assignmentService.adminTogglePublish(assignment.id)
     await fetchAssignments()
   } catch {
-    alert(`Failed to update publish status: ${message}`)
+    alert(`Failed to update publish status.`)
   }
 }
 
