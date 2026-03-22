@@ -135,20 +135,11 @@
               </div>
             </div>
             <div class="row mb-3">
-              <div class="col">
+              <div class="col-6">
                 <label class="form-label">Status</label>
                 <select v-model="addForm.is_published" class="form-select">
                   <option :value="1">Published</option>
                   <option :value="0">Draft</option>
-                </select>
-              </div>
-              <div class="col">
-                <label class="form-label">Teacher</label>
-                <select v-model="addForm.teacher_id" class="form-select">
-                  <option disabled value="">Select teacher</option>
-                  <option v-for="t in faculty" :key="t.id" :value="t.id">
-                    {{ teacherFullName(t) }}
-                  </option>
                 </select>
               </div>
             </div>
@@ -339,20 +330,11 @@
             </div>
 
             <div class="row mb-3">
-              <div class="col">
+              <div class="col-3">
                 <label class="form-label">Status</label>
                 <select v-model="editForm.is_published" class="form-select">
                   <option :value="1">Published</option>
                   <option :value="0">Draft</option>
-                </select>
-              </div>
-              <div class="col">
-                <label class="form-label">Teacher</label>
-                <select v-model="editForm.teacher_id" class="form-select">
-                  <option disabled value="">Select teacher</option>
-                  <option v-for="t in faculty" :key="t.id" :value="t.id">
-                    {{ teacherFullName(t) }}
-                  </option>
                 </select>
               </div>
             </div>
@@ -414,15 +396,15 @@
 import { ref, onMounted, computed } from "vue";
 import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
+import { useAuthStore } from '@/stores/auth';
 import { assignmentService } from "@/services/assignment";
 import { sectionService } from "@/services/grade";
 import { subjectService } from "@/services/subject";
-import { facultyService } from "@/services/schedule";
 
+const authStore = useAuthStore();
 const assignments = ref([]);
 const sections = ref([]);
 const subjects = ref([]);
-const faculty = ref([]);
 const loading = ref(false);
 const error = ref("");
 const saving = ref(false);
@@ -447,7 +429,7 @@ const addForm = ref({
   gradelevel_id: "",
   section_id: "",
   subject_id: "",
-  teacher_id: "",
+  teacher_id: authStore.userRole === 'faculty' ? authStore.teacherId : '',
   total_points: "",
   due_date: "",
   is_published: 0,
@@ -460,7 +442,7 @@ const editForm = ref({
   gradelevel_id: "",
   section_id: "",
   subject_id: "",
-  teacher_id: "",
+  teacher_id: authStore.userRole === 'faculty' ? authStore.teacherId : '',
   title: "",
   total_points: "",
   due_date: "",
@@ -504,7 +486,6 @@ onMounted(async () => {
     fetchAssignments(),
     fetchSections(),
     fetchSubjects(),
-    fetchFaculty(),
   ]);
 });
 
@@ -513,7 +494,7 @@ async function fetchAssignments(page = 1) {
   error.value = "";
 
   try {
-    const res = await assignmentService.getAll({ page });
+    const res = await assignmentService.getFacultyAssignments({ page });
     assignments.value = res.data.data;
 
     pagination.value = {
@@ -531,18 +512,13 @@ async function fetchAssignments(page = 1) {
 }
 
 async function fetchSections() {
-  const res = await sectionService.getAll();
+  const res = await sectionService.mySections();
   sections.value = res.data;
 }
 
 async function fetchSubjects() {
   const res = await subjectService.getAll(1);
   subjects.value = res.data?.data ?? res.data;
-}
-
-async function fetchFaculty() {
-  const res = await facultyService.getAll();
-  faculty.value = res.data?.data ?? res.data;
 }
 
 async function saveAssignment(isEdit = false) {
@@ -574,10 +550,10 @@ async function saveAssignment(isEdit = false) {
 
   try {
     if (isEdit) {
-      await assignmentService.update(form.id, payload);
+      await assignmentService.updateByFaculty(form.id, payload);
       closeEditModal();
     } else {
-      await assignmentService.create(payload);
+      await assignmentService.createByFaculty(payload);
       closeAddModal();
     }
     await fetchAssignments();
@@ -608,7 +584,7 @@ async function deleteAssignment(assignment) {
 
 async function togglePublish(assignment) {
   try {
-    await assignmentService.adminTogglePublish(assignment.id)
+    await assignmentService.facultyTogglePublish(assignment.id)
     await fetchAssignments()
   } catch {
     alert(`Failed to update publish status: ${message}`)
@@ -620,7 +596,7 @@ function openAddModal() {
     title: "",
     section_id: "",
     subject_id: "",
-    teacher_id: "",
+    teacher_id: authStore.userRole === 'faculty' ? authStore.teacherId : '',
     total_points: "",
     due_date: "",
     is_published: 0,
@@ -653,7 +629,7 @@ function openEditModal(assignment) {
 
   const sectionId = assignment.section_id || "";
   const subjectId = assignment.subject_id || "";
-  const teacherId = assignment.teacher_id || "";
+  const teacherId = assignment.teacher_id || authStore.userRole === 'faculty' ? authStore.teacherId : '';
 
   editForm.value = {
     id: assignment.id,
@@ -719,16 +695,5 @@ function formatDateTime(datetime) {
     minute: "2-digit",
     hour12: true
   });
-}
-
-function teacherFullName(teacher) {
-  return [
-    teacher.first_name,
-    teacher.middle_name,
-    teacher.last_name,
-    teacher.suffix,
-  ]
-    .filter(Boolean)
-    .join(" ");
 }
 </script>

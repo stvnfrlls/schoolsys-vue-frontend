@@ -1,9 +1,7 @@
 <template>
   <div class="d-flex min-vh-100">
     <!-- Sidebar -->
-    <nav
-      class="d-flex flex-column bg-dark text-white p-3"
-      style="width: 250px; min-height: 100vh">
+    <nav class="d-flex flex-column bg-dark text-white p-3" style="width: 250px; min-height: 100vh">
       <div class="mb-4">
         <h6 class="fw-bold text-uppercase text-secondary small mb-0">
           School System
@@ -32,13 +30,16 @@
             <i class="bi bi-check-circle me-2"></i>Attendance
           </RouterLink>
         </li>
+        <li class="nav-item">
+          <RouterLink to="/teacher/assignment" class="nav-link text-white">
+            <i class="bi bi-check-circle me-2"></i>Assignment
+          </RouterLink>
+        </li>
       </ul>
 
       <div class="mt-auto pt-3 border-top border-secondary">
         <div class="small text-secondary mb-2">{{ auth.user?.name }}</div>
-        <button
-          class="btn btn-sm btn-outline-secondary w-100"
-          @click="handleLogout">
+        <button class="btn btn-sm btn-outline-secondary w-100" @click="handleLogout">
           Sign Out
         </button>
       </div>
@@ -46,8 +47,7 @@
 
     <!-- Main content -->
     <div class="flex-grow-1 bg-light">
-      <header
-        class="bg-white border-bottom px-4 py-3 d-flex align-items-center justify-content-between">
+      <header class="bg-white border-bottom px-4 py-3 d-flex align-items-center justify-content-between">
         <h6 class="mb-0 fw-semibold">{{ pageTitle }}</h6>
         <span class="badge bg-info text-dark text-capitalize">Faculty</span>
       </header>

@@ -22,6 +22,9 @@ export const gradeLevelService = {
 }
 
 export const sectionService = {
+    mySections() {
+        return api.get(`/teacher/sections`)
+    },
     getAll() {
         return api.get('/sections')
     },
