@@ -56,9 +56,8 @@
                   </button>
                 </td>
                 <td>
-                  <button class="btn btn-sm btn-outline-secondary me-1" @click="openViewModal(assignment)">
-                    View
-                  </button>
+                  <router-link :to="`/teacher/assignment/${assignment.id}/manage`"
+                    class="btn btn-sm btn-outline-secondary me-1">Manage</router-link>
                   <button class="btn btn-sm btn-outline-primary me-1" @click="openEditModal(assignment)">
                     Edit
                   </button>
@@ -611,12 +610,6 @@ function openAddModal() {
 function closeAddModal() {
   addModalInstance?.hide();
   isAddModalOpen.value = false;
-}
-
-function openViewModal(assignment) {
-  selectedAssignment.value = assignment;
-  if (!viewModalInstance) viewModalInstance = new Modal(viewModalEl.value);
-  viewModalInstance.show();
 }
 
 function closeViewModal() {

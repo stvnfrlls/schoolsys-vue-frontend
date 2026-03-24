@@ -46,9 +46,8 @@
                   {{ formatDateTime(assignment.due_date) }}
                 </td>
                 <td>
-                  <button class="btn btn-sm btn-outline-secondary me-1" @click="openViewModal(assignment)">
-                    View
-                  </button>
+                  <router-link :to="`/student/assignment/${assignment.id}/take`"
+                    class="btn btn-sm btn-outline-primary me-1">Take</router-link>
                 </td>
               </tr>
             </tbody>
@@ -161,9 +160,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import LoadingTable from '../../components/LoadingTable.vue';
-import { Modal } from "bootstrap";
 import { assignmentService } from "@/services/assignment";
 
 const assignments = ref([]);
@@ -174,15 +172,6 @@ const selectedAssignment = ref(null);
 
 const viewModalEl = ref(null);
 let viewModalInstance = null;
-
-const parsedInstructions = computed(() => {
-  try {
-    const raw = selectedAssignment.value?.details?.instructions;
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-});
 
 onMounted(async () => {
   await Promise.all([
@@ -210,12 +199,6 @@ async function fetchAssignments(page = 1) {
   } finally {
     loading.value = false;
   }
-}
-
-function openViewModal(assignment) {
-  selectedAssignment.value = assignment;
-  if (!viewModalInstance) viewModalInstance = new Modal(viewModalEl.value);
-  viewModalInstance.show();
 }
 
 function closeViewModal() {

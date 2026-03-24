@@ -56,9 +56,8 @@
                   </button>
                 </td>
                 <td>
-                  <button class="btn btn-sm btn-outline-secondary me-1" @click="openViewModal(assignment)">
-                    View
-                  </button>
+                  <router-link :to="`/admin/assignment/${assignment.id}/manage`"
+                    class="btn btn-sm btn-outline-secondary me-1">Manage</router-link>
                   <button class="btn btn-sm btn-outline-primary me-1" @click="openEditModal(assignment)">
                     Edit
                   </button>
@@ -152,36 +151,31 @@
                 </select>
               </div>
             </div>
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">Grading Component</label>
+                <select v-model="addForm.grading_component_id" class="form-select" :disabled="!addForm.subject_id">
+                  <option value="">None</option>
+                  <option v-for="gc in filteredGradingComponentsAdd" :key="gc.id" :value="gc.id">
+                    {{ gc.name }} ({{ gc.code }}) — {{ gc.weight }}%
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <label class="form-label">Quarter</label>
+                <select v-model="addForm.quarter" class="form-select">
+                  <option value="">None</option>
+                  <option :value="1">Quarter 1</option>
+                  <option :value="2">Quarter 2</option>
+                  <option :value="3">Quarter 3</option>
+                  <option :value="4">Quarter 4</option>
+                </select>
+              </div>
+            </div>
             <div class="mb-3">
               <label class="form-label">Description</label>
               <textarea v-model="addForm.description" class="form-control" rows="3"
                 placeholder="Enter description"></textarea>
-            </div>
-            <div class="mb-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label mb-0">Instructions</label>
-                <button class="btn btn-sm btn-outline-primary" @click="addInstruction">+ Add</button>
-              </div>
-              <div v-if="addForm.instructions.length === 0" class="text-muted small">
-                No instructions yet.
-              </div>
-              <div v-for="(inst, index) in addForm.instructions" :key="index" class="border rounded p-2 mb-2">
-                <div class="row g-2 align-items-center">
-                  <div class="col-3">
-                    <select v-model="inst.type" class="form-select form-select-sm">
-                      <option value="text">Text</option>
-                      <option value="bullet">Bullet</option>
-                    </select>
-                  </div>
-                  <div class="col">
-                    <input v-model="inst.content" class="form-control form-control-sm"
-                      placeholder="Enter instruction..." />
-                  </div>
-                  <div class="col-auto">
-                    <button class="btn btn-sm btn-outline-danger" @click="removeInstruction(index)">✕</button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -357,40 +351,34 @@
               </div>
             </div>
 
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">Grading Component</label>
+                <select v-model="editForm.grading_component_id" class="form-select" :disabled="!editForm.subject_id">
+                  <option value="">None</option>
+                  <option v-for="gc in filteredGradingComponentsEdit" :key="gc.id" :value="gc.id">
+                    {{ gc.name }} ({{ gc.code }}) — {{ gc.weight }}%
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <label class="form-label">Quarter</label>
+                <select v-model="editForm.quarter" class="form-select">
+                  <option value="">None</option>
+                  <option :value="1">Quarter 1</option>
+                  <option :value="2">Quarter 2</option>
+                  <option :value="3">Quarter 3</option>
+                  <option :value="4">Quarter 4</option>
+                </select>
+              </div>
+            </div>
+
             <div class="mb-3">
               <label class="form-label">Description</label>
               <textarea v-model="editForm.description" class="form-control" rows="3"
                 placeholder="Enter description"></textarea>
             </div>
 
-            <div class="mb-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label mb-0">Instructions</label>
-                <button class="btn btn-sm btn-outline-primary" @click="addInstruction">+ Add</button>
-              </div>
-
-              <div v-if="editForm.instructions.length === 0" class="text-muted small">
-                No instructions yet.
-              </div>
-
-              <div v-for="(inst, index) in editForm.instructions" :key="index" class="border rounded p-2 mb-2">
-                <div class="row g-2 align-items-center">
-                  <div class="col-3">
-                    <select v-model="inst.type" class="form-select form-select-sm">
-                      <option value="text">Text</option>
-                      <option value="bullet">Bullet</option>
-                    </select>
-                  </div>
-                  <div class="col">
-                    <input v-model="inst.content" class="form-control form-control-sm"
-                      placeholder="Enter instruction..." />
-                  </div>
-                  <div class="col-auto">
-                    <button class="btn btn-sm btn-outline-danger" @click="removeInstruction(index)">✕</button>
-                  </div>
-                </div>
-              </div>
-            </div>
 
           </div>
 
@@ -416,6 +404,7 @@ import LoadingTable from '../../components/LoadingTable.vue';
 import { Modal } from "bootstrap";
 import { assignmentService } from "@/services/assignment";
 import { sectionService } from "@/services/grade";
+import { gradingComponentService } from "@/services/grading";
 import { subjectService } from "@/services/subject";
 import { facultyService } from "@/services/schedule";
 
@@ -423,6 +412,7 @@ const assignments = ref([]);
 const sections = ref([]);
 const subjects = ref([]);
 const faculty = ref([]);
+const gradingComponents = ref([]);
 const loading = ref(false);
 const error = ref("");
 const saving = ref(false);
@@ -452,7 +442,8 @@ const addForm = ref({
   due_date: "",
   is_published: 0,
   description: "",
-  instructions: [],
+  grading_component_id: '',
+  quarter: ''
 });
 
 const editForm = ref({
@@ -466,16 +457,8 @@ const editForm = ref({
   due_date: "",
   is_published: 0,
   description: "",
-  instructions: [],
-});
-
-const parsedInstructions = computed(() => {
-  try {
-    const raw = selectedAssignment.value?.details?.instructions;
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  grading_component_id: '',
+  quarter: ''
 });
 
 const subjectFilterActive = computed(() => {
@@ -499,14 +482,27 @@ const filteredSubjectsEdit = computed(() => {
   );
 });
 
+const filteredGradingComponentsAdd = computed(() =>
+  gradingComponents.value.filter(gc => gc.subject?.id === addForm.value.subject_id)
+)
+const filteredGradingComponentsEdit = computed(() =>
+  gradingComponents.value.filter(gc => gc.subject?.id === editForm.value.subject_id)
+)
+
 onMounted(async () => {
   await Promise.all([
     fetchAssignments(),
     fetchSections(),
     fetchSubjects(),
     fetchFaculty(),
+    fetchGradingComponents(),
   ]);
 });
+
+async function fetchGradingComponents() {
+  const res = await gradingComponentService.getAll()
+  gradingComponents.value = res.data?.data ?? res.data
+}
 
 async function fetchAssignments(page = 1) {
   loading.value = true;
@@ -555,21 +551,19 @@ async function saveAssignment(isEdit = false) {
     return datetime.replace('T', ' ') + ':00';
   };
 
-  const instructionsJson = form.instructions?.length > 0
-    ? JSON.stringify(form.instructions)
-    : null;
 
   const payload = {
     gradelevel_id: form.gradelevel_id,
     section_id: form.section_id,
     subject_id: form.subject_id,
     teacher_id: form.teacher_id,
+    grading_component_id: form.grading_component_id || null,
+    quarter: form.quarter || null,
     title: form.title,
     total_points: form.total_points,
     due_date: formatDate(form.due_date),
     is_published: form.is_published ?? false,
     description: form.description || null,
-    instructions: instructionsJson,
   };
 
   try {
@@ -637,19 +631,12 @@ function closeAddModal() {
   isAddModalOpen.value = false;
 }
 
-function openViewModal(assignment) {
-  selectedAssignment.value = assignment;
-  if (!viewModalInstance) viewModalInstance = new Modal(viewModalEl.value);
-  viewModalInstance.show();
-}
-
 function closeViewModal() {
   viewModalInstance?.hide();
 }
 
 function openEditModal(assignment) {
   const details = assignment.details || {};
-  let instructions = details.instructions ? JSON.parse(details.instructions) : [];
 
   const sectionId = assignment.section_id || "";
   const subjectId = assignment.subject_id || "";
@@ -661,12 +648,13 @@ function openEditModal(assignment) {
     section_id: sectionId,
     subject_id: subjectId,
     teacher_id: teacherId,
+    grading_component_id: assignment.grading_component_id || '',
+    quarter: assignment.quarter || '',
     title: assignment.title,
     total_points: assignment.total_points,
     due_date: formatForInput(assignment.due_date),
     is_published: assignment.is_published ? 1 : 0,
     description: details.description || "",
-    instructions,
   };
 
   if (!editModalInstance) editModalInstance = new Modal(editModalEl.value);
@@ -684,15 +672,7 @@ function onSectionChange() {
   editForm.value.subject_id = "";
 }
 
-function addInstruction() {
-  if (isAddModalOpen.value) addForm.value.instructions.push({ type: "text", content: "" });
-  else if (isEditModalOpen.value) editForm.value.instructions.push({ type: "text", content: "" });
-}
 
-function removeInstruction(index) {
-  if (isAddModalOpen.value) addForm.value.instructions.splice(index, 1);
-  else if (isEditModalOpen.value) editForm.value.instructions.splice(index, 1);
-}
 
 function goToPage(page) {
   if (page >= 1 && page <= pagination.value.last_page) fetchAssignments(page);
