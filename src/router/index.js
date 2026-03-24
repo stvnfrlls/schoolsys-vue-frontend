@@ -76,6 +76,11 @@ const routes = [
                 name: 'Assignment',
                 component: () => import('@/pages/admin/AssignmentPage.vue'),
             },
+            {
+                path: 'assignment/:id/manage',
+                name: 'ManageAssignment',
+                component: () => import('@/pages/admin/ManageAssignmentPage.vue'),
+            },
         ]
     },
 
@@ -110,6 +115,11 @@ const routes = [
                 name: 'Teacher Assignment',
                 component: () => import('@/pages/teacher/AssignmentPage.vue'),
             },
+            {
+                path: 'assignment/:id/manage',
+                name: 'TeacherManageAssignment',
+                component: () => import('@/pages/teacher/ManageAssignmentPage.vue'),
+            },
         ]
     },
 
@@ -143,6 +153,11 @@ const routes = [
                 path: 'assignment',
                 name: 'Student Assignment',
                 component: () => import('@/pages/student/AssignmentPage.vue'),
+            },
+            {
+                path: 'assignment/:id/take',
+                name: 'TakeAssignment',
+                component: () => import('@/pages/student/TakeAssignmentPage.vue'),
             },
         ]
     },
